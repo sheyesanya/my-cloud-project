@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Spinner } from '../components/UI';
 
+const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779213802/Brandcasta_White_Logo_ojefvp.png';
+
 export default function Login() {
-  const navigate               = useNavigate();
+  const navigate                = useNavigate();
   const { login, signup, loginWithGoogle } = useAuth();
-  const [email, setEmail]      = useState('');
-  const [password, setPassword]= useState('');
-  const [loading, setLoading]  = useState(false);
-  const [error, setError]      = useState('');
-  const [mode, setMode]        = useState('login'); // 'login' | 'signup'
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState('');
+  const [mode, setMode]         = useState('login');
 
   const handle = async (fn) => {
     try { setLoading(true); setError(''); await fn(); navigate('/dashboard'); }
@@ -29,20 +31,22 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden"
       style={{ background: 'var(--bg-base)' }}
     >
-      {/* Background glows */}
       <div style={{ position:'absolute', top:-180, right:-180, width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle,rgba(99,102,241,0.18),transparent 70%)', pointerEvents:'none' }}/>
       <div style={{ position:'absolute', bottom:-180, left:-180, width:360, height:360, borderRadius:'50%', background:'radial-gradient(circle,rgba(168,85,247,0.12),transparent 70%)', pointerEvents:'none' }}/>
 
-      {/* Card */}
       <div
         className="relative w-full max-w-md"
         style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-strong)', borderRadius: 24, padding: '36px 40px' }}
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <div style={{ display:'inline-flex', alignItems:'center', gap:10, marginBottom:20 }}>
-            <div style={{ width:40, height:40, borderRadius:12, background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:16, color:'white' }}>BC</div>
-            <span style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:20, color:'white', letterSpacing:'-0.5px' }}>BrandCasta</span>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:12, marginBottom:20 }}>
+            <img
+              src={WHITE_LOGO}
+              alt="BrandCasta"
+              style={{ width: 48, height: 48, objectFit: 'contain' }}
+            />
+            <span style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:22, color:'white', letterSpacing:'-0.5px' }}>BrandCasta</span>
           </div>
           <h1 style={{ fontFamily:'Syne,sans-serif', fontSize:26, fontWeight:700, color:'white', letterSpacing:'-0.5px', lineHeight:1.1 }}>
             {mode === 'login' ? 'Welcome back' : 'Create account'}
@@ -52,7 +56,6 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Error */}
         {error && (
           <div style={{ marginBottom:18, padding:'11px 14px', borderRadius:10, background:'rgba(239,68,68,0.08)', color:'#fca5a5', fontSize:13, border:'1px solid rgba(239,68,68,0.18)' }}>
             {error}
@@ -102,18 +105,16 @@ export default function Login() {
             onFocus={(e) => { e.target.style.borderColor='rgba(99,102,241,0.5)'; e.target.style.background='rgba(99,102,241,0.06)'; }}
             onBlur={(e)  => { e.target.style.borderColor='rgba(255,255,255,0.1)'; e.target.style.background='rgba(255,255,255,0.05)'; }}
           />
-
           <button
             onClick={() => handle(() => mode === 'login' ? login(email, password) : signup(email, password))}
             disabled={loading}
             className="btn-primary w-full justify-center"
             style={{ padding: '13px', fontSize: 14, borderRadius: 12, marginTop: 4 }}
           >
-            {loading ? <><Spinner size={14}/> {mode === 'login' ? 'Signing in…' : 'Creating account…'}</> : mode === 'login' ? 'Sign In' : 'Create Account'}
+            {loading ? <><Spinner size={14}/> {mode === 'login' ? 'Signing in...' : 'Creating account...'}</> : mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
         </div>
 
-        {/* Toggle mode */}
         <p style={{ textAlign:'center', marginTop:18, fontSize:13, color:'var(--text-muted)' }}>
           {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
           <button
