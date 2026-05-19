@@ -1,0 +1,159 @@
+export const MEDIA_SEED = [
+
+  // =========================
+  // TV
+  // =========================
+
+  { name: "Arise TV", category: "TELEVISION", contactEmail: "bookings@arisetv.com" },
+
+  { name: "Channels Television", category: "TELEVISION", contactEmail: "bookings@channelstv.com" },
+
+  { name: "TVC Communications", category: "TELEVISION", contactEmail: "bookings@tvc.tv" },
+
+  { name: "Wazobia Max", category: "TELEVISION", contactEmail: "bookings@wazobiamax.tv" },
+
+  { name: "Nigerian Television Authority", category: "TELEVISION", contactEmail: "bookings@nta.ng" },
+
+  { name: "SuperSport", category: "TELEVISION", contactEmail: "bookings@supersport.tv" },
+
+  { name: "ONTV", category: "TELEVISION", contactEmail: "bookings@ontv.ng" },
+
+  { name: "HIP TV", category: "TELEVISION", contactEmail: "bookings@hiptv.com" },
+
+  { name: "Soundcity TV", category: "TELEVISION", contactEmail: "bookings@soundcity.tv" },
+
+  { name: "AFIA TV", category: "TELEVISION", contactEmail: "bookings@afiatv.com" },
+
+  { name: "Arewa 24", category: "TELEVISION", contactEmail: "bookings@arewa24.com" },
+
+  { name: "MiTV", category: "TELEVISION", contactEmail: "bookings@mitv.com" },
+
+  { name: "Silverbird TV", category: "TELEVISION", contactEmail: "bookings@silverbirdtv.com" },
+
+  { name: "WAP TV", category: "TELEVISION", contactEmail: "bookings@waptv.tv" },
+
+  { name: "Lagos Television", category: "TELEVISION", contactEmail: "bookings@lagostv.ng" },
+
+  { name: "Trace Naija", category: "TELEVISION", contactEmail: "bookings@trace.tv" },
+
+  { name: "EbonyLife TV", category: "TELEVISION", contactEmail: "bookings@ebonylife.tv" },
+
+  { name: "Afro Music English", category: "TELEVISION", contactEmail: "bookings@afromusic.tv" },
+
+  { name: "News Central", category: "TELEVISION", contactEmail: "bookings@newscentral.tv" },
+
+  { name: "Spice TV", category: "TELEVISION", contactEmail: "bookings@spicetv.tv" },
+
+  // =========================
+  // RADIO
+  // =========================
+
+  { name: "Cool FM", category: "RADIO_AUDIO", contactEmail: "bookings@coolfm.ng" },
+
+  { name: "The Beat FM", category: "RADIO_AUDIO", contactEmail: "bookings@thebeat99.fm" },
+
+  { name: "Wazobia FM", category: "RADIO_AUDIO", contactEmail: "bookings@wazobiafm.com" },
+
+  { name: "Nigeria Info FM", category: "RADIO_AUDIO", contactEmail: "bookings@nigeriainfo.fm" },
+
+  { name: "Classic FM", category: "RADIO_AUDIO", contactEmail: "bookings@classicfm.ng" },
+
+  { name: "Inspiration FM", category: "RADIO_AUDIO", contactEmail: "bookings@inspiration.fm" },
+
+  { name: "Soundcity Radio", category: "RADIO_AUDIO", contactEmail: "bookings@soundcity.fm" },
+
+  { name: "Brila FM", category: "RADIO_AUDIO", contactEmail: "bookings@brila.fm" },
+
+  { name: "Raypower FM", category: "RADIO_AUDIO", contactEmail: "bookings@raypower.fm" },
+
+  { name: "Urban96 FM", category: "RADIO_AUDIO", contactEmail: "bookings@urban96.fm" },
+
+  { name: "City FM", category: "RADIO_AUDIO", contactEmail: "bookings@cityfm.ng" },
+
+  { name: "Max FM", category: "RADIO_AUDIO", contactEmail: "bookings@maxfm.ng" },
+
+  { name: "UFM", category: "RADIO_AUDIO", contactEmail: "bookings@ufm.ng" },
+
+  { name: "Naija FM", category: "RADIO_AUDIO", contactEmail: "bookings@naijafm.com" },
+
+  { name: "Yanga FM", category: "RADIO_AUDIO", contactEmail: "bookings@yangafm.ng" },
+
+  { name: "Spice FM", category: "RADIO_AUDIO", contactEmail: "bookings@spicefm.ng" },
+
+  { name: "RadioX", category: "RADIO_AUDIO", contactEmail: "bookings@radiox.ng" },
+
+  { name: "Smooth FM", category: "RADIO_AUDIO", contactEmail: "bookings@smoothfm.ng" },
+
+  { name: "Vybz FM", category: "RADIO_AUDIO", contactEmail: "bookings@vybzfm.ng" },
+
+  { name: "Kiss FM", category: "RADIO_AUDIO", contactEmail: "bookings@kissfm.ng" },
+
+  // =========================
+  // PODCASTS
+  // =========================
+
+  { name: "I Said What I Said", category: "PODCASTS", contactEmail: "bookings@iswis.com" },
+
+  { name: "The Honest Bunch Podcast", category: "PODCASTS", contactEmail: "bookings@honestbunch.com" },
+
+  { name: "Tea With Tay", category: "PODCASTS", contactEmail: "bookings@teawithtay.com" },
+
+  { name: "Menisms", category: "PODCASTS", contactEmail: "bookings@menisms.com" },
+
+  { name: "WithChude", category: "PODCASTS", contactEmail: "bookings@withchude.com" },
+
+  { name: "Road to 30", category: "PODCASTS", contactEmail: "bookings@roadto30.com" },
+
+  { name: "234 Essential", category: "PODCASTS", contactEmail: "bookings@234essential.com" },
+
+  { name: "Loose Talk Podcast", category: "PODCASTS", contactEmail: "bookings@loosetalk.com" },
+
+  { name: "Bahd and Boujee Podcast", category: "PODCASTS", contactEmail: "bookings@bahdboujee.com" },
+
+  // =========================
+  // OOH
+  // =========================
+
+  { name: "XL Billboards", category: "OUT_OF_HOME", contactEmail: "bookings@xlbillboards.com" },
+
+  { name: "Alliance Media", category: "OUT_OF_HOME", contactEmail: "bookings@alliancemedia.com" },
+
+  { name: "Optimum Exposures", category: "OUT_OF_HOME", contactEmail: "bookings@optimum.com" },
+
+  { name: "Loatsad Promomedia", category: "OUT_OF_HOME", contactEmail: "bookings@loatsad.com" },
+
+  { name: "JCDecaux Nigeria", category: "OUT_OF_HOME", contactEmail: "bookings@jcdecaux.com" },
+
+  { name: "Afromedia", category: "OUT_OF_HOME", contactEmail: "bookings@afromedia.com" },
+
+  // =========================
+  // PRINT
+  // =========================
+
+  { name: "Punch Newspapers", category: "PRINT_MEDIA", contactEmail: "bookings@punchng.com" },
+
+  { name: "The Guardian Nigeria", category: "PRINT_MEDIA", contactEmail: "bookings@guardian.ng" },
+
+  { name: "BusinessDay", category: "PRINT_MEDIA", contactEmail: "bookings@businessday.ng" },
+
+  { name: "ThisDay", category: "PRINT_MEDIA", contactEmail: "bookings@thisdaylive.com" },
+
+  { name: "Vanguard Newspapers", category: "PRINT_MEDIA", contactEmail: "bookings@vanguardngr.com" },
+
+  { name: "The Nation Newspaper", category: "PRINT_MEDIA", contactEmail: "bookings@thenationonlineng.net" },
+
+  // =========================
+  // INFLUENCERS
+  // =========================
+
+  { name: "Davido", category: "INFLUENCERS", contactEmail: "bookings@davido.com" },
+
+  { name: "Broda Shaggi", category: "INFLUENCERS", contactEmail: "bookings@brodashaggi.com" },
+
+  { name: "Taaooma", category: "INFLUENCERS", contactEmail: "bookings@taaooma.com" },
+
+  { name: "Mr Macaroni", category: "INFLUENCERS", contactEmail: "bookings@mrmacaroni.com" },
+
+  { name: "Toke Makinwa", category: "INFLUENCERS", contactEmail: "bookings@tokemakinwa.com" },
+
+];
