@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         sans:    ['Inter',          'sans-serif'],
-        display: ['Syne',           'sans-serif'],
+        display: ['Manrope', 'sans-serif'],
         mono:    ['"JetBrains Mono"','monospace'],
       },
       colors: {

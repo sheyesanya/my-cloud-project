@@ -42,7 +42,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }}
             />
             <div>
-              <p style={{ fontFamily: 'Syne,sans-serif', fontWeight: 700, fontSize: 15, color: 'white', letterSpacing: '-0.3px', lineHeight: 1.1 }}>BrandCasta</p>
+              <p style={{ fontFamily: 'Manrope,sans-serif', fontWeight: 700, fontSize: 15, color: 'white', letterSpacing: '-0.3px', lineHeight: 1.1 }}>BrandCasta</p>
               <p style={{ fontSize: 9, color: 'var(--text-muted)', letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 3 }}>Campaign Ops</p>
             </div>
             <button className="lg:hidden ml-auto text-slate-400 text-lg" onClick={() => setMobileOpen(false)}>x</button>
