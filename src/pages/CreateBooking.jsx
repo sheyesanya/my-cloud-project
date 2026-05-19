@@ -7,7 +7,7 @@ import { getMedia, createCampaign, getUploadUrl } from '../services/api';
 
 const INIT = {
   brand_name: '', email: '', campaignBrief: '', promotionFiles: [],
-  category: '', mediaId: '', inventory_group: '', inventory_option: '', market: '', date: '',
+  category: '', mediaId: '', inventory_group: '', inventory_option: '', market: '', date: '', runs: 1,
 };
 
 const CATEGORY_LABELS = {
@@ -18,17 +18,17 @@ const CATEGORY_LABELS = {
 export default function CreateBooking() {
   const navigate = useNavigate();
 
-  const [form, setForm]               = useState(INIT);
-  const [media, setMedia]             = useState([]);
-  const [loadingMedia, setLM]         = useState(true);
-  const [submitting, setSub]          = useState(false);
-  const [errors, setErrors]           = useState({});
-  const [apiErr, setApiErr]           = useState('');
-  const [toast, setToast]             = useState(null);
+  const [form, setForm]                   = useState(INIT);
+  const [media, setMedia]                 = useState([]);
+  const [loadingMedia, setLM]             = useState(true);
+  const [submitting, setSub]              = useState(false);
+  const [errors, setErrors]               = useState({});
+  const [apiErr, setApiErr]               = useState('');
+  const [toast, setToast]                 = useState(null);
   const [campaignItems, setCampaignItems] = useState([]);
-  const [search, setSearch]           = useState('');
-  const [categoryFilter, setCatFilter]= useState('ALL');
-  const [step, setStep]               = useState(1); // 1 = brief, 2 = media, 3 = inventory
+  const [search, setSearch]               = useState('');
+  const [categoryFilter, setCatFilter]    = useState('ALL');
+  const [step, setStep]                   = useState(1);
 
   useEffect(() => {
     getMedia()
@@ -37,23 +37,20 @@ export default function CreateBooking() {
       .finally(() => setLM(false));
   }, []);
 
-  const set = (k, v) => {
-    setForm((f) => ({ ...f, [k]: v }));
-    setErrors((e) => ({ ...e, [k]: '' }));
-  };
+  const set = (k, v) => { setForm((f) => ({ ...f, [k]: v })); setErrors((e) => ({ ...e, [k]: '' })); };
 
-  // ── Derived
-  const selectedMedia      = media.find((m) => String(m.mediaId ?? m.id ?? m._id) === String(form.mediaId));
-  const selectedCategory   = INVENTORY_CONFIG[form.category];
-  const inventoryGroups    = selectedCategory?.inventoryGroups || {};
-  const selectedGroup      = inventoryGroups[form.inventory_group];
-  const inventoryOptions   = selectedGroup?.options || {};
-  const selectedOptionCfg  = inventoryOptions[form.inventory_option];
-  const availableMarkets   = selectedOptionCfg ? Object.keys(selectedOptionCfg.markets || {}) : [];
-  const mediaStoredPrice   = selectedMedia?.inventory?.[form.inventory_group]?.options?.[form.inventory_option]?.markets?.[form.market]?.price;
-  const configDefaultPrice = selectedOptionCfg?.markets?.[form.market]?.price;
-  const finalPrice         = mediaStoredPrice ?? configDefaultPrice ?? 0;
-  const campaignTotal      = campaignItems.reduce((s, i) => s + (i.price || 0), 0);
+  const selectedMedia     = media.find((m) => String(m.mediaId ?? m.id ?? m._id) === String(form.mediaId));
+  const selectedCategory  = INVENTORY_CONFIG[form.category];
+  const inventoryGroups   = selectedCategory?.inventoryGroups || {};
+  const selectedGroup     = inventoryGroups[form.inventory_group];
+  const inventoryOptions  = selectedGroup?.options || {};
+  const selectedOptionCfg = inventoryOptions[form.inventory_option];
+  const availableMarkets  = selectedOptionCfg ? Object.keys(selectedOptionCfg.markets || {}) : [];
+  const unitPrice         = selectedMedia?.inventory?.[form.inventory_group]?.options?.[form.inventory_option]?.markets?.[form.market]?.price
+                            ?? selectedOptionCfg?.markets?.[form.market]?.price ?? 0;
+  const runs              = Math.max(1, Number(form.runs) || 1);
+  const finalPrice        = unitPrice * runs;
+  const campaignTotal     = campaignItems.reduce((s, i) => s + (i.price || 0), 0);
 
   const filteredMedia = media.filter((m) => {
     const matchCat    = categoryFilter === 'ALL' || m.category === categoryFilter;
@@ -83,9 +80,9 @@ export default function CreateBooking() {
       mediaId: form.mediaId, mediaName: selectedMedia?.name,
       category: form.category, inventory_group: form.inventory_group,
       inventory_option: form.inventory_option, market: form.market,
-      date: form.date, price: finalPrice,
+      date: form.date, runs, price: finalPrice, unitPrice,
     }]);
-    setToast({ type:'success', message:'Added to campaign' });
+    setToast({ type:'success', message: runs > 1 ? `Added ${runs} runs to campaign` : 'Added to campaign' });
     setTimeout(() => setToast(null), 2500);
     setForm((prev) => ({ ...INIT, brand_name: prev.brand_name, email: prev.email, campaignBrief: prev.campaignBrief, promotionFiles: prev.promotionFiles }));
   };
@@ -120,7 +117,6 @@ export default function CreateBooking() {
     finally    { setSub(false); }
   };
 
-  // ── Shared input style
   const inp = (field) => ({
     width:'100%', padding:'12px 16px', borderRadius:12, fontSize:13, outline:'none',
     background: errors[field] ? 'rgba(239,68,68,0.06)' : 'rgba(255,255,255,0.05)',
@@ -144,12 +140,8 @@ export default function CreateBooking() {
             const done   = stepDone(s);
             return (
               <div key={s} style={{ display:'flex', alignItems:'center', flex: i < 2 ? 1 : 'none' }}>
-                <div
-                  onClick={() => setStep(s)}
-                  style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer', flexShrink:0 }}
-                >
-                  <div style={{
-                    width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, transition:'all 0.2s',
+                <div onClick={() => setStep(s)} style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer', flexShrink:0 }}>
+                  <div style={{ width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, transition:'all 0.2s',
                     background: done ? 'linear-gradient(135deg,#6366f1,#a855f7)' : active ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)',
                     border: active ? '1px solid rgba(99,102,241,0.5)' : done ? 'none' : '1px solid var(--border)',
                     color: done || active ? 'white' : 'var(--text-muted)',
@@ -166,10 +158,10 @@ export default function CreateBooking() {
 
         <form onSubmit={submit}>
 
-          {/* ── STEP 1: BRIEF ───────────────────────────────── */}
+          {/* ── STEP 1: BRIEF ── */}
           {step === 1 && (
             <div className="page-card" style={{ padding:28 }}>
-              <h2 style={{ fontFamily:'Syne,sans-serif', fontSize:18, fontWeight:700, color:'white', marginBottom:6, letterSpacing:'-0.3px' }}>Campaign Brief</h2>
+              <h2 style={{ fontFamily:'Manrope,sans-serif', fontSize:18, fontWeight:700, color:'white', marginBottom:6 }}>Campaign Brief</h2>
               <p style={{ fontSize:13, color:'var(--text-muted)', marginBottom:24 }}>Tell us about the brand and campaign goals</p>
 
               <div className="space-y-5">
@@ -178,37 +170,23 @@ export default function CreateBooking() {
                   <input style={inp('brand_name')} placeholder="e.g. Indomie Nigeria" value={form.brand_name} onChange={(e) => set('brand_name', e.target.value)}/>
                   {errors.brand_name && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.brand_name}</p>}
                 </div>
-
                 <div>
                   <label className="form-label">Contact Email *</label>
                   <input type="email" style={inp('email')} placeholder="brand@company.com" value={form.email} onChange={(e) => set('email', e.target.value)}/>
                   {errors.email && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.email}</p>}
                 </div>
-
                 <div>
                   <label className="form-label">Campaign Brief</label>
-                  <textarea
-                    rows={5}
-                    placeholder="Describe campaign goals, target audience, KPIs, creative direction, deliverables, timelines..."
-                    value={form.campaignBrief}
-                    onChange={(e) => set('campaignBrief', e.target.value)}
-                    style={{ ...inp(), resize:'vertical' }}
-                  />
+                  <textarea rows={5} placeholder="Describe campaign goals, target audience, KPIs, creative direction..." value={form.campaignBrief} onChange={(e) => set('campaignBrief', e.target.value)} style={{ ...inp(), resize:'vertical' }}/>
                 </div>
-
                 <div>
                   <label className="form-label">Promotion Files</label>
-                  <input
-                    type="file" multiple
-                    onChange={(e) => set('promotionFiles', Array.from(e.target.files))}
-                    style={{ ...inp(), padding:'10px 14px', cursor:'pointer' }}
-                  />
+                  <input type="file" multiple onChange={(e) => set('promotionFiles', Array.from(e.target.files))} style={{ ...inp(), padding:'10px 14px', cursor:'pointer' }}/>
                   <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:8 }}>Upload: decks, creatives, videos, PDFs, brand assets, media plans</p>
                   {form.promotionFiles?.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {form.promotionFiles.map((f, i) => (
                         <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 12px', borderRadius:10, background:'rgba(99,102,241,0.08)', border:'1px solid rgba(99,102,241,0.15)' }}>
-                          <svg width="13" height="13" fill="none" stroke="#a5b4fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                           <p style={{ fontSize:12, fontWeight:500, color:'var(--accent-light)' }}>{f.name}</p>
                           <p style={{ fontSize:11, color:'var(--text-muted)', marginLeft:'auto' }}>{(f.size/1024).toFixed(0)} KB</p>
                         </div>
@@ -219,86 +197,51 @@ export default function CreateBooking() {
               </div>
 
               <div className="flex justify-end mt-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!form.brand_name.trim()) { setErrors({ brand_name:'Required' }); return; }
-                    if (!form.email.trim())      { setErrors({ email:'Required' }); return; }
-                    setStep(2);
-                  }}
-                  className="btn-primary"
-                  style={{ padding:'11px 24px' }}
-                >
+                <button type="button" onClick={() => { if (!form.brand_name.trim()) { setErrors({ brand_name:'Required' }); return; } if (!form.email.trim()) { setErrors({ email:'Required' }); return; } setStep(2); }} className="btn-primary" style={{ padding:'11px 24px' }}>
                   Next: Select Media →
                 </button>
               </div>
             </div>
           )}
 
-          {/* ── STEP 2: SELECT MEDIA ────────────────────────── */}
+          {/* ── STEP 2: SELECT MEDIA ── */}
           {step === 2 && (
             <div className="space-y-4">
-              {/* Category + Search row */}
               <div className="page-card" style={{ padding:'16px 20px' }}>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => { setCatFilter(key); set('category', key === 'ALL' ? '' : key); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
-                      style={{
-                        padding:'6px 14px', borderRadius:20, fontSize:11, fontWeight:700, cursor:'pointer', transition:'all 0.15s',
+                    <button key={key} type="button" onClick={() => { setCatFilter(key); set('category', key === 'ALL' ? '' : key); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
+                      style={{ padding:'6px 14px', borderRadius:20, fontSize:11, fontWeight:700, cursor:'pointer', transition:'all 0.15s',
                         background: categoryFilter === key ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
                         color:       categoryFilter === key ? '#a5b4fc' : 'var(--text-muted)',
                         border:      categoryFilter === key ? '1px solid rgba(99,102,241,0.35)' : '1px solid var(--border)',
-                      }}
-                    >{label}</button>
+                      }}>{label}</button>
                   ))}
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search media organisations..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  style={{ ...inp(), padding:'10px 14px' }}
-                />
+                <input type="text" placeholder="Search media organisations..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ ...inp(), padding:'10px 14px' }}/>
               </div>
 
               {errors.mediaId && <p style={{ color:'#fca5a5', fontSize:12, padding:'0 4px' }}>{errors.mediaId}</p>}
-
               {loadingMedia && <div className="flex items-center gap-2 p-4" style={{ color:'var(--text-muted)', fontSize:13 }}><Spinner size={16}/> Loading media…</div>}
-
-              {!loadingMedia && filteredMedia.length === 0 && (
-                <div style={{ padding:'24px', textAlign:'center', color:'var(--text-muted)', fontSize:13 }}>No media matching your filters.</div>
-              )}
+              {!loadingMedia && filteredMedia.length === 0 && <div style={{ padding:'24px', textAlign:'center', color:'var(--text-muted)', fontSize:13 }}>No media matching your filters.</div>}
 
               <div className="grid grid-cols-1 gap-3">
                 {filteredMedia.map((m) => {
                   const id     = m.mediaId ?? m.id ?? m._id;
                   const active = String(form.mediaId) === String(id);
                   return (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => { set('mediaId', id); set('category', m.category || ''); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
-                      style={{
-                        display:'flex', alignItems:'center', justifyContent:'space-between',
-                        padding:'14px 18px', borderRadius:'var(--radius-lg)', textAlign:'left', cursor:'pointer', transition:'all 0.15s',
+                    <button key={id} type="button" onClick={() => { set('mediaId', id); set('category', m.category || ''); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
+                      style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', borderRadius:'var(--radius-lg)', textAlign:'left', cursor:'pointer', transition:'all 0.15s',
                         background: active ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.03)',
                         border: active ? '1px solid rgba(99,102,241,0.4)' : '1px solid var(--border)',
-                      }}
-                    >
+                      }}>
                       <div>
                         <p style={{ fontWeight:700, fontSize:14, color:'white' }}>{m.name}</p>
-                        <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:3, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:600 }}>
-                          {m.category?.replaceAll('_',' ')}
-                        </p>
+                        <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:3, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:600 }}>{m.category?.replaceAll('_',' ')}</p>
                       </div>
-                      {active && (
-                        <div style={{ width:18, height:18, borderRadius:'50%', background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                          <svg width="10" height="10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-                        </div>
-                      )}
+                      {active && <div style={{ width:18, height:18, borderRadius:'50%', background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                        <svg width="10" height="10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                      </div>}
                     </button>
                   );
                 })}
@@ -306,28 +249,20 @@ export default function CreateBooking() {
 
               <div className="flex justify-between mt-2">
                 <button type="button" onClick={() => setStep(1)} className="btn-secondary" style={{ padding:'11px 20px' }}>← Back</button>
-                <button
-                  type="button"
-                  onClick={() => { if (!form.mediaId) { setErrors({ mediaId:'Select a media organisation' }); return; } setStep(3); }}
-                  className="btn-primary"
-                  style={{ padding:'11px 24px' }}
-                >
+                <button type="button" onClick={() => { if (!form.mediaId) { setErrors({ mediaId:'Select a media organisation' }); return; } setStep(3); }} className="btn-primary" style={{ padding:'11px 24px' }}>
                   Next: Inventory →
                 </button>
               </div>
             </div>
           )}
 
-          {/* ── STEP 3: INVENTORY ───────────────────────────── */}
+          {/* ── STEP 3: INVENTORY ── */}
           {step === 3 && (
             <div className="space-y-4">
 
-              {/* Selected media recap */}
               {selectedMedia && (
                 <div style={{ padding:'14px 18px', borderRadius:'var(--radius-lg)', background:'rgba(99,102,241,0.08)', border:'1px solid rgba(99,102,241,0.2)', display:'flex', alignItems:'center', gap:12 }}>
-                  <div style={{ width:36, height:36, borderRadius:10, background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'white', flexShrink:0 }}>
-                    {selectedMedia.name[0]}
-                  </div>
+                  <div style={{ width:36, height:36, borderRadius:10, background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'white', flexShrink:0 }}>{selectedMedia.name[0]}</div>
                   <div>
                     <p style={{ fontWeight:700, color:'white', fontSize:14 }}>{selectedMedia.name}</p>
                     <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:1 }}>{selectedMedia.category?.replaceAll('_',' ')}</p>
@@ -342,11 +277,7 @@ export default function CreateBooking() {
                   {/* Category */}
                   <div>
                     <label className="form-label">Media Category *</label>
-                    <select
-                      style={inp('category')}
-                      value={form.category}
-                      onChange={(e) => { set('category', e.target.value); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
-                    >
+                    <select style={inp('category')} value={form.category} onChange={(e) => { set('category', e.target.value); set('inventory_group',''); set('inventory_option',''); set('market',''); }}>
                       <option value="">Select category</option>
                       {Object.entries(INVENTORY_CONFIG).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                     </select>
@@ -391,18 +322,49 @@ export default function CreateBooking() {
 
                   {/* Date */}
                   <div>
-                    <label className="form-label">Campaign Date *</label>
+                    <label className="form-label">Campaign Start Date *</label>
                     <input type="date" style={inp('date')} value={form.date} onChange={(e) => set('date', e.target.value)}/>
                     {errors.date && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.date}</p>}
                   </div>
 
-                  {/* Live Price */}
+                  {/* Runs — shown once a market is selected */}
                   {form.market && (
-                    <div style={{ padding:'16px 18px', borderRadius:'var(--radius-md)', background: finalPrice > 0 ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.08)', border: finalPrice > 0 ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(245,158,11,0.2)' }}>
-                      <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:6 }}>Estimated Placement Cost</p>
-                      {finalPrice > 0
-                        ? <p style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:28, color:'#a5b4fc', letterSpacing:'-0.5px' }}>₦{Number(finalPrice).toLocaleString()}</p>
-                        : <p style={{ fontSize:13, color:'#fcd34d', fontWeight:600 }}>No price configured for this market.</p>}
+                    <div>
+                      <label className="form-label">How many times should this run?</label>
+                      <p style={{ fontSize:12, color:'var(--text-muted)', marginBottom:10 }}>
+                        Each run = one broadcast or placement. e.g. 5 means this ad plays 5 times.
+                      </p>
+                      <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                        <button type="button" onClick={() => set('runs', Math.max(1, runs - 1))}
+                          style={{ width:36, height:36, borderRadius:10, border:'1px solid var(--border)', background:'rgba(255,255,255,0.05)', color:'white', fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>−</button>
+                        <div style={{ flex:1, textAlign:'center' }}>
+                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'white', lineHeight:1 }}>{runs}</p>
+                          <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:4 }}>{runs === 1 ? 'run' : 'runs'}</p>
+                        </div>
+                        <button type="button" onClick={() => set('runs', runs + 1)}
+                          style={{ width:36, height:36, borderRadius:10, border:'1px solid rgba(99,102,241,0.4)', background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>+</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Live Price Preview */}
+                  {form.market && (
+                    <div style={{ padding:'16px 18px', borderRadius:'var(--radius-md)', background: unitPrice > 0 ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.08)', border: unitPrice > 0 ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(245,158,11,0.2)' }}>
+                      {unitPrice > 0 ? (
+                        <>
+                          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: runs > 1 ? 8 : 0 }}>
+                            <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em' }}>
+                              {runs > 1 ? `₦${Number(unitPrice).toLocaleString()} × ${runs} runs` : 'Placement Cost'}
+                            </p>
+                          </div>
+                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'#a5b4fc', letterSpacing:'-0.5px' }}>
+                            ₦{Number(finalPrice).toLocaleString()}
+                          </p>
+                          {runs > 1 && <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:4 }}>₦{Number(unitPrice).toLocaleString()} per run</p>}
+                        </>
+                      ) : (
+                        <p style={{ fontSize:13, color:'#fcd34d', fontWeight:600 }}>No price configured for this market.</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -413,20 +375,23 @@ export default function CreateBooking() {
                 <div className="page-card" style={{ padding:20 }}>
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
                     <div>
-                      <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:16, color:'white' }}>Campaign Cart</p>
+                      <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:16, color:'white' }}>Campaign Cart</p>
                       <p style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>{campaignItems.length} item{campaignItems.length !== 1 ? 's' : ''}</p>
                     </div>
-                    <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:20, color:'#a5b4fc' }}>₦{campaignTotal.toLocaleString()}</p>
+                    <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:20, color:'#a5b4fc' }}>₦{campaignTotal.toLocaleString()}</p>
                   </div>
                   <div className="space-y-2">
                     {campaignItems.map((item, idx) => (
                       <div key={idx} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
                         <div>
                           <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{item.mediaName}</p>
-                          <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>{item.inventory_option?.replaceAll('_',' ')} · {item.market}</p>
+                          <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>
+                            {item.inventory_option?.replaceAll('_',' ')} · {item.market}
+                            {item.runs > 1 && <span style={{ marginLeft:6, padding:'2px 8px', borderRadius:20, background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:10, fontWeight:700 }}>×{item.runs} runs</span>}
+                          </p>
                         </div>
                         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                          <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:14, color:'#a5b4fc' }}>₦{Number(item.price).toLocaleString()}</p>
+                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color:'#a5b4fc' }}>₦{Number(item.price).toLocaleString()}</p>
                           <button type="button" onClick={() => removeCampaignItem(idx)} className="btn-danger" style={{ padding:'4px 10px', fontSize:11 }}>Remove</button>
                         </div>
                       </div>
@@ -435,14 +400,12 @@ export default function CreateBooking() {
                 </div>
               )}
 
-              {/* API Error */}
               {apiErr && (
                 <div style={{ padding:'12px 16px', borderRadius:'var(--radius-md)', background:'rgba(239,68,68,0.08)', color:'#fca5a5', fontSize:13, border:'1px solid rgba(239,68,68,0.18)' }}>
                   {apiErr}
                 </div>
               )}
 
-              {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <button type="button" onClick={() => setStep(2)} className="btn-secondary" style={{ padding:'11px 20px' }}>← Back</button>
                 <button type="button" onClick={addToCampaign} className="btn-secondary" style={{ flex:1, justifyContent:'center', padding:'11px' }}>
@@ -455,7 +418,6 @@ export default function CreateBooking() {
 
             </div>
           )}
-
         </form>
       </div>
     </Layout>
