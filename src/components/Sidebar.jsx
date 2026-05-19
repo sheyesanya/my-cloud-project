@@ -11,7 +11,7 @@ const NAV = [
   { to: '/analytics',      label: 'Analytics'       },
 ];
 
-const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779213802/Brandcasta_White_Logo_ojefvp.png';
+const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { logout, user } = useAuth();
