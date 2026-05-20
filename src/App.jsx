@@ -1,41 +1,59 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider }     from './context/AuthContext';
+import ProtectedRoute       from './components/ProtectedRoute';
+import RoleRoute            from './components/RoleRoute';
 
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
+// Public
+import Login                from './pages/Login';
+import RegisterClient       from './pages/RegisterClient';
+import RegisterProvider     from './pages/RegisterProvider';
 
-import Login          from './pages/Login';
-import Dashboard      from './pages/Dashboard';
-import Media          from './pages/Media';
-import Bookings       from './pages/Bookings';
-import CreateBooking  from './pages/CreateBooking';
-import CreateMedia    from './pages/CreateMedia';
-import Campaigns      from './pages/Campaigns';
-import CampaignDetails from './pages/CampaignDetails';
-import Analytics      from './pages/Analytics';
+// Shared
+import Dashboard            from './pages/Dashboard';
+import Media                from './pages/Media';
+import Bookings             from './pages/Bookings';
+import CreateBooking        from './pages/CreateBooking';
+import CreateMedia          from './pages/CreateMedia';
+import Campaigns            from './pages/Campaigns';
+import CampaignDetails      from './pages/CampaignDetails';
+import Analytics            from './pages/Analytics';
+
+// Admin only
+import AdminApplications    from './pages/AdminApplications';
+
+// Provider only
+import ProviderDashboard    from './pages/ProviderDashboard';
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Root */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/"                    element={<Navigate to="/dashboard" replace />} />
 
           {/* Public */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login"               element={<Login />} />
+          <Route path="/register"            element={<Navigate to="/register/client" replace />} />
+          <Route path="/register/client"     element={<RegisterClient />} />
+          <Route path="/register/provider"   element={<RegisterProvider />} />
 
-          {/* Protected */}
-          <Route path="/dashboard"      element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/media"          element={<ProtectedRoute><Media /></ProtectedRoute>} />
-          <Route path="/bookings"       element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
-          <Route path="/campaigns"      element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
+          {/* Protected — all logged-in users */}
+          <Route path="/dashboard"           element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/media"               element={<ProtectedRoute><Media /></ProtectedRoute>} />
+          <Route path="/bookings"            element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
+          <Route path="/campaigns"           element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
           <Route path="/campaigns/:campaignId" element={<ProtectedRoute><CampaignDetails /></ProtectedRoute>} />
-          <Route path="/create-booking" element={<ProtectedRoute><CreateBooking /></ProtectedRoute>} />
-          <Route path="/create-media"   element={<ProtectedRoute><CreateMedia /></ProtectedRoute>} />
-          <Route path="/analytics"      element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+          <Route path="/create-booking"      element={<ProtectedRoute><CreateBooking /></ProtectedRoute>} />
+          <Route path="/analytics"           element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          {/* Admin only */}
+          <Route path="/create-media"        element={<RoleRoute role="ADMIN"><CreateMedia /></RoleRoute>} />
+          <Route path="/applications"        element={<RoleRoute role="ADMIN"><AdminApplications /></RoleRoute>} />
+
+          {/* Provider (+ admin can view) */}
+          <Route path="/provider"            element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderDashboard /></RoleRoute>} />
+
+          <Route path="*"                    element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

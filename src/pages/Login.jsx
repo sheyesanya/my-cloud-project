@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Spinner } from '../components/UI';
 
-const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779213802/Brandcasta_White_Logo_ojefvp.png';
 
 export default function Login() {
   const navigate                = useNavigate();
@@ -46,9 +46,9 @@ export default function Login() {
               alt="BrandCasta"
               style={{ width: 48, height: 48, objectFit: 'contain' }}
             />
-            <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:22, color:'white', letterSpacing:'-0.5px' }}>BrandCasta</span>
+            <span style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:22, color:'white', letterSpacing:'-0.5px' }}>BrandCasta</span>
           </div>
-          <h1 style={{ fontFamily:'Manrope,sans-serif', fontSize:26, fontWeight:700, color:'white', letterSpacing:'-0.5px', lineHeight:1.1 }}>
+          <h1 style={{ fontFamily:'Syne,sans-serif', fontSize:26, fontWeight:700, color:'white', letterSpacing:'-0.5px', lineHeight:1.1 }}>
             {mode === 'login' ? 'Welcome back' : 'Create account'}
           </h1>
           <p style={{ fontSize:13, color:'var(--text-muted)', marginTop:8, lineHeight:1.6 }}>
