@@ -11,7 +11,7 @@ const FEATURES = [
   { icon:'🏙', title:'Out-of-Home',          desc:'Billboards, LED screens, BRT wraps, airport and mall inventory from Lagos to Abuja.' },
   { icon:'📰', title:'Print & Digital',      desc:'Punch, Guardian, BusinessDay and leading online publishers, display, inserts and sponsored content.' },
   { icon:'👤', title:'Influencers',          desc:'Macro, mid-tier and micro creators across Instagram, TikTok, YouTube and X.' },
-  { icon:'⚡', title:'One Dashboard',        desc:'Brief, book, approve, pay and track campaign delivery, all in one place.' },
+  { icon:'📃', title:'One Dashboard',        desc:'Brief, book, approve, pay and track campaign delivery, all in one place.' },
 ];
 
 const STATS = [
@@ -28,9 +28,9 @@ const STEPS = [
 ];
 
 const TESTIMONIALS = [
-  { quote:'BrandCasta made it incredibly easy to run a multi-platform campaign across radio and OOH in three cities at once. What used to take weeks of back-and-forth now takes hours.', name:'Chukwuemeka Obi', role:'Head of Marketing, Kuda Bank' },
-  { quote:'As a media owner, receiving booking requests directly to my inbox with one-click approve or decline has completely changed how I manage ad sales.', name:'Adaeze Nwosu', role:'Sales Director, Cool FM Lagos' },
-  { quote:'I was able to book podcast ads, billboard space and an influencer campaign all in one brief. The transparency on pricing and delivery proof is unmatched.', name:'Tunde Adegoke', role:'Brand Manager, PalmPay' },
+  { quote:'BrandCasta made it incredibly easy to run a multi-platform campaign across radio and OOH in three cities at once. What used to take weeks of back-and-forth now takes hours.', name:'Chukwuemeka Obi', role:'Head of Brand and Marketing, Annex Bank' },
+  { quote:'As a media owner, receiving booking requests directly to my inbox with one-click approve or decline has completely changed how I manage ad sales.', name:'Adaeze Nwosu', role:'Sales Director, Metaletry Lagos' },
+  { quote:'I was able to book podcast ads, billboard space and an influencer campaign all in one brief. The transparency on pricing and delivery proof is unmatched.', name:'Tunde Adegoke', role:'Brand Manager, ReaPay' },
 ];
 
 function CountUp({ target, suffix }) {
@@ -81,7 +81,7 @@ export default function Login() {
     finally { setLoading(false); }
   };
 
-  const scrollToAuth = () => document.getElementById('auth-panel').scrollIntoView({ behavior:'smooth' });
+  const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' });
 
   const inp = {
     width:'100%', padding:'11px 14px', borderRadius:10, fontSize:13, outline:'none',
@@ -92,58 +92,60 @@ export default function Login() {
   return (
     <div style={{ minHeight:'100vh', background:'#080810', color:'white', fontFamily:'Manrope,sans-serif', overflowX:'hidden' }}>
 
-      {/* ── Global style for gradient text ── */}
       <style>{`
         .grad { background: linear-gradient(135deg,#6366f1 0%,#a855f7 50%,#06b6d4 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .grad-teal { background: linear-gradient(135deg,#14b8a6,#06b6d4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .feat-card:hover { border-color: rgba(99,102,241,0.35) !important; transform: translateY(-2px); }
         .feat-card { transition: border-color 0.2s, transform 0.2s; }
         .step-num { background: linear-gradient(135deg,#6366f1,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .nav-link:hover { color: white !important; }
+        .footer-link:hover { color: white !important; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         .fade-in { animation: fadeIn 0.5s ease forwards; }
       `}</style>
 
-      {/* ── NAV ── */}
+      {/* NAV */}
       <nav style={{ position:'sticky', top:0, zIndex:100, background:'rgba(8,8,16,0.88)', backdropFilter:'blur(16px)', borderBottom:'1px solid rgba(255,255,255,0.06)', padding:'0 40px', display:'flex', alignItems:'center', justifyContent:'space-between', height:64 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <img src={WHITE_LOGO} alt="BrandCasta" style={{ width:34, height:34, objectFit:'contain' }}/>
           <span style={{ fontWeight:800, fontSize:18, letterSpacing:'-0.3px' }}>BrandCasta</span>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:28 }}>
-          {['Features','How it works','For Providers'].map(label => (
-            <button key={label} onClick={scrollToAuth} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.5)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>{label}</button>
+          {[
+            ['Features',      'features'],
+            ['How it works',  'how-it-works'],
+            ['For Providers', 'providers'],
+          ].map(([label, id]) => (
+            <button key={label} onClick={() => scrollTo(id)} className="nav-link"
+              style={{ background:'none', border:'none', color:'rgba(255,255,255,0.5)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif', transition:'color 0.15s' }}>
+              {label}
+            </button>
           ))}
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <Link to="/register/provider" style={{ fontSize:13, color:'rgba(255,255,255,0.55)', textDecoration:'none', fontWeight:600, padding:'8px 16px', borderRadius:9, border:'1px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.03)' }}>
             List your media
           </Link>
-          <button onClick={scrollToAuth} style={{ fontSize:13, fontWeight:700, padding:'8px 20px', borderRadius:9, background:'linear-gradient(135deg,#6366f1,#a855f7)', color:'white', border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
+          <button onClick={() => scrollTo('auth-panel')} style={{ fontSize:13, fontWeight:700, padding:'8px 20px', borderRadius:9, background:'linear-gradient(135deg,#6366f1,#a855f7)', color:'white', border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
             Sign In
           </button>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
+      {/* HERO */}
       <section style={{ maxWidth:1160, margin:'0 auto', padding:'96px 40px 72px', display:'grid', gridTemplateColumns:'1fr 400px', gap:72, alignItems:'center' }}>
-
-        {/* Left */}
         <div>
           <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'5px 14px', borderRadius:20, background:'rgba(99,102,241,0.1)', border:'1px solid rgba(99,102,241,0.22)', marginBottom:28 }}>
             <span style={{ width:6, height:6, borderRadius:'50%', background:'#86efac' }}/>
             <span style={{ fontSize:12, fontWeight:700, color:'#a5b4fc', letterSpacing:'0.06em' }}>Nigeria's Media Campaign Platform</span>
           </div>
-
           <h1 style={{ fontSize:56, fontWeight:800, lineHeight:1.06, letterSpacing:'-2px', marginBottom:22 }}>
             Book media campaigns<br/>
             <span className="grad">across Nigeria</span>
           </h1>
-
           <p style={{ fontSize:18, color:'rgba(255,255,255,0.5)', lineHeight:1.75, marginBottom:36, maxWidth:500 }}>
             One platform to discover, book and manage campaigns across TV, radio, podcasts, billboards, print and influencers, from Lagos to Abuja.
           </p>
-
-          {/* Stats */}
           <div style={{ display:'flex', gap:40, marginBottom:40, padding:'24px 28px', borderRadius:16, background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)' }}>
             {STATS.map(s => (
               <div key={s.label}>
@@ -154,9 +156,8 @@ export default function Login() {
               </div>
             ))}
           </div>
-
           <div style={{ display:'flex', gap:12 }}>
-            <button onClick={() => { setMode('signup'); scrollToAuth(); }}
+            <button onClick={() => { setMode('signup'); scrollTo('auth-panel'); }}
               style={{ padding:'14px 30px', borderRadius:12, background:'linear-gradient(135deg,#6366f1,#a855f7)', color:'white', fontWeight:700, fontSize:15, border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
               Start for free →
             </button>
@@ -167,7 +168,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Auth Panel */}
+        {/* AUTH PANEL */}
         <div id="auth-panel" style={{ background:'#0d0d1a', border:'1px solid rgba(255,255,255,0.09)', borderRadius:22, padding:30, position:'relative', overflow:'hidden' }}>
           <div style={{ position:'absolute', top:-80, right:-80, width:220, height:220, borderRadius:'50%', background:'radial-gradient(circle,rgba(99,102,241,0.12),transparent 70%)', pointerEvents:'none' }}/>
           <div style={{ position:'absolute', bottom:-60, left:-60, width:160, height:160, borderRadius:'50%', background:'radial-gradient(circle,rgba(168,85,247,0.08),transparent 70%)', pointerEvents:'none' }}/>
@@ -182,7 +183,6 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Mode tabs */}
           <div style={{ display:'flex', gap:4, background:'rgba(255,255,255,0.04)', borderRadius:10, padding:4, marginBottom:20, border:'1px solid rgba(255,255,255,0.07)' }}>
             {['login','signup'].map(m => (
               <button key={m} onClick={() => setMode(m)} style={{ flex:1, padding:'8px', borderRadius:7, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'Manrope,sans-serif', transition:'all 0.15s',
@@ -194,9 +194,7 @@ export default function Login() {
           </div>
 
           {error && (
-            <div style={{ padding:'10px 13px', borderRadius:9, background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.18)', color:'#fca5a5', fontSize:12, marginBottom:14 }}>
-              {error}
-            </div>
+            <div style={{ padding:'10px 13px', borderRadius:9, background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.18)', color:'#fca5a5', fontSize:12, marginBottom:14 }}>{error}</div>
           )}
 
           <button onClick={() => handle(loginWithGoogle)} disabled={loading}
@@ -231,8 +229,8 @@ export default function Login() {
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section style={{ background:'rgba(255,255,255,0.015)', borderTop:'1px solid rgba(255,255,255,0.05)', borderBottom:'1px solid rgba(255,255,255,0.05)', padding:'80px 40px' }}>
+      {/* FEATURES */}
+      <section id="features" style={{ background:'rgba(255,255,255,0.015)', borderTop:'1px solid rgba(255,255,255,0.05)', borderBottom:'1px solid rgba(255,255,255,0.05)', padding:'80px 40px' }}>
         <div style={{ maxWidth:1160, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:56 }}>
             <p style={{ fontSize:12, fontWeight:700, color:'#a5b4fc', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14 }}>Everything in one place</p>
@@ -255,8 +253,8 @@ export default function Login() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section style={{ maxWidth:1160, margin:'0 auto', padding:'80px 40px' }}>
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" style={{ maxWidth:1160, margin:'0 auto', padding:'80px 40px' }}>
         <div style={{ textAlign:'center', marginBottom:56 }}>
           <p style={{ fontSize:12, fontWeight:700, color:'#a5b4fc', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14 }}>Simple by design</p>
           <h2 style={{ fontSize:40, fontWeight:800, letterSpacing:'-1px' }}>
@@ -277,12 +275,11 @@ export default function Login() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
+      {/* TESTIMONIALS */}
       <section style={{ background:'rgba(255,255,255,0.015)', borderTop:'1px solid rgba(255,255,255,0.05)', borderBottom:'1px solid rgba(255,255,255,0.05)', padding:'80px 40px' }}>
         <div style={{ maxWidth:800, margin:'0 auto', textAlign:'center' }}>
           <p style={{ fontSize:12, fontWeight:700, color:'#a5b4fc', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14 }}>What users say</p>
           <h2 style={{ fontSize:36, fontWeight:800, letterSpacing:'-0.8px', marginBottom:48 }}>Real stories, <span className="grad">real results</span></h2>
-
           <div style={{ position:'relative', minHeight:180 }}>
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className="fade-in" style={{ display: i===activeTestimonial ? 'block' : 'none', padding:'32px', borderRadius:18, background:'#0d0d1a', border:'1px solid rgba(255,255,255,0.08)' }}>
@@ -294,7 +291,6 @@ export default function Login() {
               </div>
             ))}
           </div>
-
           <div style={{ display:'flex', justifyContent:'center', gap:8, marginTop:24 }}>
             {TESTIMONIALS.map((_, i) => (
               <button key={i} onClick={() => setActive(i)} style={{ width: i===activeTestimonial?24:8, height:8, borderRadius:20, background: i===activeTestimonial?'linear-gradient(135deg,#6366f1,#a855f7)':'rgba(255,255,255,0.15)', border:'none', cursor:'pointer', transition:'all 0.3s' }}/>
@@ -303,8 +299,8 @@ export default function Login() {
         </div>
       </section>
 
-      {/* ── PROVIDER CTA ── */}
-      <section style={{ maxWidth:1160, margin:'0 auto', padding:'80px 40px' }}>
+      {/* PROVIDER CTA */}
+      <section id="providers" style={{ maxWidth:1160, margin:'0 auto', padding:'80px 40px' }}>
         <div style={{ borderRadius:24, background:'linear-gradient(135deg,rgba(20,184,166,0.08),rgba(6,182,212,0.05))', border:'1px solid rgba(20,184,166,0.15)', padding:'56px 64px', display:'grid', gridTemplateColumns:'1fr auto', gap:48, alignItems:'center' }}>
           <div>
             <p style={{ fontSize:12, fontWeight:700, color:'#5eead4', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14 }}>Media organisations</p>
@@ -320,7 +316,7 @@ export default function Login() {
               style={{ padding:'14px 28px', borderRadius:12, background:'rgba(20,184,166,0.15)', border:'1px solid rgba(20,184,166,0.35)', color:'#5eead4', fontWeight:700, fontSize:14, textDecoration:'none', textAlign:'center', whiteSpace:'nowrap' }}>
               Apply as a Provider →
             </Link>
-            <button onClick={scrollToAuth}
+            <button onClick={() => scrollTo('auth-panel')}
               style={{ padding:'14px 28px', borderRadius:12, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.5)', fontWeight:600, fontSize:13, cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
               Already have an account?
             </button>
@@ -328,11 +324,9 @@ export default function Login() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* FOOTER */}
       <footer style={{ borderTop:'1px solid rgba(255,255,255,0.07)', padding:'56px 40px 32px' }}>
         <div style={{ maxWidth:1160, margin:'0 auto' }}>
-
-          {/* Top — brand + links */}
           <div style={{ display:'grid', gridTemplateColumns:'1.5fr 1fr 1fr 1fr', gap:48, marginBottom:56 }}>
 
             {/* Brand */}
@@ -346,8 +340,8 @@ export default function Login() {
               </p>
               <div style={{ display:'flex', gap:12 }}>
                 {[
-                  { icon:'𝕏', href:'https://x.com/brandcasta_ng' },
-                  { icon:'in', href:'https://linkedin.com/company/brandcasta_nigeria' },
+                  { icon:'𝕏',  href:'https://x.com/brandcasta_ng' },
+                  { icon:'in', href:'https://linkedin.com/company/brandcasta-nigeria' },
                   { icon:'ig', href:'https://instagram.com/brandcasta_ng' },
                 ].map(s => (
                   <a key={s.icon} href={s.href} target="_blank" rel="noreferrer"
@@ -361,51 +355,28 @@ export default function Login() {
             {/* Company */}
             <div>
               <p style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.5)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:18 }}>Company</p>
-              {[
-                { label:'About Us',  href:'#' },
-                { label:'Newsroom',  href:'#' },
-                { label:'Insights',  href:'#' },
-                { label:'Careers',   href:'#' },
-              ].map(l => (
-                <a key={l.label} href={l.href} style={{ display:'block', fontSize:14, color:'rgba(255,255,255,0.45)', textDecoration:'none', marginBottom:12, fontWeight:500, transition:'color 0.15s' }}
-                  onMouseEnter={e => e.target.style.color='white'} onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.45)'}>
-                  {l.label}
-                </a>
+              {[['About Us','#'],['Newsroom','#'],['Insights','#'],['Careers','#']].map(([label,href]) => (
+                <a key={label} href={href} className="footer-link" style={{ display:'block', fontSize:14, color:'rgba(255,255,255,0.45)', textDecoration:'none', marginBottom:12, fontWeight:500, transition:'color 0.15s' }}>{label}</a>
               ))}
             </div>
 
             {/* Support */}
             <div>
               <p style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.5)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:18 }}>Support</p>
-              {[
-                { label:'Contact',              href:'/contact' },
-                { label:'Docs',                 href:'#' },
-                { label:'FAQ',                  href:'#' },
-                { label:'hello@brandcasta.co',  href:'mailto:hello@brandcasta.co' },
-              ].map(l => (
-                <a key={l.label} href={l.href} style={{ display:'block', fontSize:14, color:'rgba(255,255,255,0.45)', textDecoration:'none', marginBottom:12, fontWeight:500, transition:'color 0.15s' }}
-                  onMouseEnter={e => e.target.style.color='white'} onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.45)'}>
-                  {l.label}
-                </a>
+              {[['Contact','#'],['Docs','#'],['FAQ','#'],['hello@brandcasta.co','mailto:hello@brandcasta.co']].map(([label,href]) => (
+                <a key={label} href={href} className="footer-link" style={{ display:'block', fontSize:14, color:'rgba(255,255,255,0.45)', textDecoration:'none', marginBottom:12, fontWeight:500, transition:'color 0.15s' }}>{label}</a>
               ))}
             </div>
 
             {/* Legal */}
             <div>
               <p style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.5)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:18 }}>Legal</p>
-              {[
-                { label:'Terms & Conditions', href:'/terms' },
-                { label:'Privacy Policy',     href:'/privacy' },
-              ].map(l => (
-                <a key={l.label} href={l.href} style={{ display:'block', fontSize:14, color:'rgba(255,255,255,0.45)', textDecoration:'none', marginBottom:12, fontWeight:500, transition:'color 0.15s' }}
-                  onMouseEnter={e => e.target.style.color='white'} onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.45)'}>
-                  {l.label}
-                </a>
+              {[['Terms & Conditions','/terms'],['Privacy Policy','/privacy']].map(([label,href]) => (
+                <Link key={label} to={href} className="footer-link" style={{ display:'block', fontSize:14, color:'rgba(255,255,255,0.45)', textDecoration:'none', marginBottom:12, fontWeight:500, transition:'color 0.15s' }}>{label}</Link>
               ))}
             </div>
           </div>
 
-          {/* Bottom bar */}
           <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:24, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
             <p style={{ fontSize:12, color:'rgba(255,255,255,0.22)' }}>© 2026 BrandCasta. All rights reserved.</p>
             <p style={{ fontSize:12, color:'rgba(255,255,255,0.22)' }}>Nigeria's media campaign operations platform.</p>
