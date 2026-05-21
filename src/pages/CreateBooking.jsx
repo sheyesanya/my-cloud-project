@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Spinner, Toast } from '../components/UI';
-import { INVENTORY_CONFIG } from '../config/inventoryConfig';
 import { getMedia, createCampaign, getUploadUrl } from '../services/api';
+import axios from 'axios';
 
 const INIT = {
   brand_name: '', email: '', campaignBrief: '', promotionFiles: [],
-  category: '', mediaId: '', inventory_group: '', inventory_option: '', market: '', date: '', runs: 1,
+  mediaId: '', inventory_group: '', inventory_option: '', market: '', date: '', runs: 1,
 };
 
-const CATEGORY_LABELS = {
-  ALL: 'All', TELEVISION: 'TV', RADIO_AUDIO: 'Radio', PODCASTS: 'Podcasts',
-  OUT_OF_HOME: 'OOH', PRINT_MEDIA: 'Print', INFLUENCERS: 'Influencers',
+const CAT_LABELS = {
+  ALL:'All', TELEVISION:'TV', RADIO_AUDIO:'Radio', PODCASTS:'Podcasts',
+  OUT_OF_HOME:'OOH', PRINT_MEDIA:'Print', INFLUENCERS:'Influencers',
 };
 
 export default function CreateBooking() {
@@ -40,23 +40,25 @@ export default function CreateBooking() {
   const set = (k, v) => { setForm((f) => ({ ...f, [k]: v })); setErrors((e) => ({ ...e, [k]: '' })); };
 
   const selectedMedia     = media.find((m) => String(m.mediaId ?? m.id ?? m._id) === String(form.mediaId));
-  const selectedCategory  = INVENTORY_CONFIG[form.category];
-  const inventoryGroups   = selectedCategory?.inventoryGroups || {};
-  const selectedGroup     = inventoryGroups[form.inventory_group];
-  const inventoryOptions  = selectedGroup?.options || {};
-  const selectedOptionCfg = inventoryOptions[form.inventory_option];
-  const availableMarkets  = selectedOptionCfg ? Object.keys(selectedOptionCfg.markets || {}) : [];
-  const unitPrice         = selectedMedia?.inventory?.[form.inventory_group]?.options?.[form.inventory_option]?.markets?.[form.market]?.price
-                            ?? selectedOptionCfg?.markets?.[form.market]?.price ?? 0;
-  const runs              = Math.max(1, Number(form.runs) || 1);
-  const finalPrice        = unitPrice * runs;
-  const campaignTotal     = campaignItems.reduce((s, i) => s + (i.price || 0), 0);
+
+  // ── Read inventory from the selected provider's own record
+  const providerInventory  = selectedMedia?.inventory || {};
+  const inventoryGroups    = providerInventory;
+  const selectedGroup      = inventoryGroups[form.inventory_group];
+  const inventoryOptions   = selectedGroup?.options || {};
+  const selectedOptionCfg  = inventoryOptions[form.inventory_option];
+  const availableMarkets   = selectedOptionCfg ? Object.keys(selectedOptionCfg.markets || {}) : [];
+  const unitPrice          = selectedOptionCfg?.markets?.[form.market]?.price ?? 0;
+  const runs               = Math.max(1, Number(form.runs) || 1);
+  const finalPrice         = unitPrice * runs;
+  const campaignTotal      = campaignItems.reduce((s, i) => s + (i.price || 0), 0);
+
+  const hasInventory = selectedMedia && Object.keys(providerInventory).length > 0;
 
   const filteredMedia = media.filter((m) => {
     const matchCat    = categoryFilter === 'ALL' || m.category === categoryFilter;
-    const matchForm   = !form.category || m.category === form.category;
     const matchSearch = !search || m.name?.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchForm && matchSearch;
+    return matchCat && matchSearch;
   });
 
   const validate = () => {
@@ -65,7 +67,6 @@ export default function CreateBooking() {
     if (!form.email.trim())      e.email = 'Required';
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email';
     if (!form.mediaId)           e.mediaId = 'Select a media organisation';
-    if (!form.category)          e.category = 'Select a category';
     if (!form.inventory_group)   e.inventory_group = 'Select inventory group';
     if (!form.inventory_option)  e.inventory_option = 'Select inventory option';
     if (!form.market)            e.market = 'Select market';
@@ -78,11 +79,15 @@ export default function CreateBooking() {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setCampaignItems((prev) => [...prev, {
       mediaId: form.mediaId, mediaName: selectedMedia?.name,
-      category: form.category, inventory_group: form.inventory_group,
-      inventory_option: form.inventory_option, market: form.market,
-      date: form.date, runs, price: finalPrice, unitPrice,
+      category: selectedMedia?.category || '',
+      inventory_group: form.inventory_group,
+      inventory_option: form.inventory_option,
+      market: form.market, date: form.date,
+      runs, price: finalPrice, unitPrice,
+      groupLabel:  selectedGroup?.label || form.inventory_group,
+      optionLabel: selectedOptionCfg?.label || form.inventory_option,
     }]);
-    setToast({ type:'success', message: runs > 1 ? `Added ${runs} runs to campaign` : 'Added to campaign' });
+    setToast({ type:'success', message: runs > 1 ? `Added ×${runs} runs to campaign` : 'Added to campaign' });
     setTimeout(() => setToast(null), 2500);
     setForm((prev) => ({ ...INIT, brand_name: prev.brand_name, email: prev.email, campaignBrief: prev.campaignBrief, promotionFiles: prev.promotionFiles }));
   };
@@ -94,7 +99,7 @@ export default function CreateBooking() {
     const out = [];
     for (const f of form.promotionFiles) {
       const signed = await getUploadUrl({ fileName: f.name, fileType: f.type });
-      await fetch(signed.uploadUrl, { method:'PUT', headers:{ 'Content-Type': f.type }, body: f });
+      await axios.put(signed.uploadUrl, f, { headers: { 'Content-Type': f.type } });
       out.push({ name: f.name, url: signed.fileUrl, type: f.type });
     }
     return out;
@@ -110,7 +115,13 @@ export default function CreateBooking() {
     setSub(true); setApiErr('');
     try {
       const files = await uploadFiles();
-      await createCampaign({ brand_name: form.brand_name.trim(), contactEmail: form.email.trim(), campaignBrief: form.campaignBrief, promotionFiles: files, items: campaignItems });
+      await createCampaign({
+        brand_name: form.brand_name.trim(),
+        contactEmail: form.email.trim(),
+        campaignBrief: form.campaignBrief,
+        promotionFiles: files,
+        items: campaignItems,
+      });
       setToast({ type:'success', message:'Campaign launched successfully!' });
       setTimeout(() => navigate('/campaigns'), 1800);
     } catch (e) { setApiErr(e.message); }
@@ -163,7 +174,6 @@ export default function CreateBooking() {
             <div className="page-card" style={{ padding:28 }}>
               <h2 style={{ fontFamily:'Manrope,sans-serif', fontSize:18, fontWeight:700, color:'white', marginBottom:6 }}>Campaign Brief</h2>
               <p style={{ fontSize:13, color:'var(--text-muted)', marginBottom:24 }}>Tell us about the brand and campaign goals</p>
-
               <div className="space-y-5">
                 <div>
                   <label className="form-label">Brand Name *</label>
@@ -182,7 +192,7 @@ export default function CreateBooking() {
                 <div>
                   <label className="form-label">Promotion Files</label>
                   <input type="file" multiple onChange={(e) => set('promotionFiles', Array.from(e.target.files))} style={{ ...inp(), padding:'10px 14px', cursor:'pointer' }}/>
-                  <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:8 }}>Upload: decks, creatives, videos, PDFs, brand assets, media plans</p>
+                  <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:8 }}>Upload: decks, creatives, videos, PDFs, brand assets</p>
                   {form.promotionFiles?.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {form.promotionFiles.map((f, i) => (
@@ -195,9 +205,12 @@ export default function CreateBooking() {
                   )}
                 </div>
               </div>
-
               <div className="flex justify-end mt-6">
-                <button type="button" onClick={() => { if (!form.brand_name.trim()) { setErrors({ brand_name:'Required' }); return; } if (!form.email.trim()) { setErrors({ email:'Required' }); return; } setStep(2); }} className="btn-primary" style={{ padding:'11px 24px' }}>
+                <button type="button" onClick={() => {
+                  if (!form.brand_name.trim()) { setErrors({ brand_name:'Required' }); return; }
+                  if (!form.email.trim())      { setErrors({ email:'Required' }); return; }
+                  setStep(2);
+                }} className="btn-primary" style={{ padding:'11px 24px' }}>
                   Next: Select Media →
                 </button>
               </div>
@@ -209,8 +222,8 @@ export default function CreateBooking() {
             <div className="space-y-4">
               <div className="page-card" style={{ padding:'16px 20px' }}>
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                    <button key={key} type="button" onClick={() => { setCatFilter(key); set('category', key === 'ALL' ? '' : key); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
+                  {Object.entries(CAT_LABELS).map(([key, label]) => (
+                    <button key={key} type="button" onClick={() => setCatFilter(key)}
                       style={{ padding:'6px 14px', borderRadius:20, fontSize:11, fontWeight:700, cursor:'pointer', transition:'all 0.15s',
                         background: categoryFilter === key ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
                         color:       categoryFilter === key ? '#a5b4fc' : 'var(--text-muted)',
@@ -229,15 +242,20 @@ export default function CreateBooking() {
                 {filteredMedia.map((m) => {
                   const id     = m.mediaId ?? m.id ?? m._id;
                   const active = String(form.mediaId) === String(id);
+                  const hasInv = m.inventory && Object.keys(m.inventory).length > 0;
                   return (
-                    <button key={id} type="button" onClick={() => { set('mediaId', id); set('category', m.category || ''); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
+                    <button key={id} type="button" onClick={() => { set('mediaId', id); set('inventory_group',''); set('inventory_option',''); set('market',''); }}
                       style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', borderRadius:'var(--radius-lg)', textAlign:'left', cursor:'pointer', transition:'all 0.15s',
                         background: active ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.03)',
                         border: active ? '1px solid rgba(99,102,241,0.4)' : '1px solid var(--border)',
                       }}>
                       <div>
                         <p style={{ fontWeight:700, fontSize:14, color:'white' }}>{m.name}</p>
-                        <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:3, textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:600 }}>{m.category?.replaceAll('_',' ')}</p>
+                        <div style={{ display:'flex', alignItems:'center', gap:8, marginTop:4 }}>
+                          <p style={{ fontSize:11, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', fontWeight:600 }}>{m.category?.replaceAll('_',' ')}</p>
+                          {hasInv && <span style={{ padding:'2px 7px', borderRadius:20, fontSize:9, fontWeight:700, background:'rgba(34,197,94,0.1)', color:'#86efac', border:'1px solid rgba(34,197,94,0.2)' }}>Inventory available</span>}
+                          {!hasInv && <span style={{ padding:'2px 7px', borderRadius:20, fontSize:9, fontWeight:700, background:'rgba(245,158,11,0.1)', color:'#fcd34d', border:'1px solid rgba(245,158,11,0.2)' }}>Pricing on request</span>}
+                        </div>
                       </div>
                       {active && <div style={{ width:18, height:18, borderRadius:'50%', background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                         <svg width="10" height="10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
@@ -249,7 +267,10 @@ export default function CreateBooking() {
 
               <div className="flex justify-between mt-2">
                 <button type="button" onClick={() => setStep(1)} className="btn-secondary" style={{ padding:'11px 20px' }}>← Back</button>
-                <button type="button" onClick={() => { if (!form.mediaId) { setErrors({ mediaId:'Select a media organisation' }); return; } setStep(3); }} className="btn-primary" style={{ padding:'11px 24px' }}>
+                <button type="button" onClick={() => {
+                  if (!form.mediaId) { setErrors({ mediaId:'Select a media organisation' }); return; }
+                  setStep(3);
+                }} className="btn-primary" style={{ padding:'11px 24px' }}>
                   Next: Inventory →
                 </button>
               </div>
@@ -271,21 +292,28 @@ export default function CreateBooking() {
                 </div>
               )}
 
-              <div className="page-card" style={{ padding:22 }}>
-                <div className="space-y-4">
+              {!hasInventory && (
+                <div style={{ padding:'20px', borderRadius:12, background:'rgba(245,158,11,0.08)', border:'1px solid rgba(245,158,11,0.2)', textAlign:'center' }}>
+                  <p style={{ fontWeight:700, color:'#fcd34d', marginBottom:8 }}>Pricing on request</p>
+                  <p style={{ fontSize:13, color:'var(--text-muted)', lineHeight:1.6 }}>
+                    This provider hasn't set up their inventory yet. Add them to your campaign and BrandCasta will reach out to get a custom quote.
+                  </p>
+                  <button type="button" onClick={() => {
+                    setCampaignItems(prev => [...prev, { mediaId: form.mediaId, mediaName: selectedMedia?.name, category: selectedMedia?.category || '', inventory_group:'CUSTOM', inventory_option:'CUSTOM', market:'NATIONAL', date: form.date || new Date().toISOString().split('T')[0], runs:1, price:0, unitPrice:0, groupLabel:'Custom Quote', optionLabel:'Pricing on request' }]);
+                    setToast({ type:'success', message:`${selectedMedia?.name} added — BrandCasta will get a quote` });
+                    setTimeout(() => setToast(null), 3000);
+                    setForm(prev => ({ ...INIT, brand_name: prev.brand_name, email: prev.email, campaignBrief: prev.campaignBrief, promotionFiles: prev.promotionFiles }));
+                  }} className="btn-primary" style={{ marginTop:14, padding:'10px 20px', fontSize:13 }}>
+                    Add & Request Quote
+                  </button>
+                </div>
+              )}
 
-                  {/* Category */}
-                  <div>
-                    <label className="form-label">Media Category *</label>
-                    <select style={inp('category')} value={form.category} onChange={(e) => { set('category', e.target.value); set('inventory_group',''); set('inventory_option',''); set('market',''); }}>
-                      <option value="">Select category</option>
-                      {Object.entries(INVENTORY_CONFIG).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-                    </select>
-                    {errors.category && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.category}</p>}
-                  </div>
+              {hasInventory && (
+                <div className="page-card" style={{ padding:22 }}>
+                  <div className="space-y-4">
 
-                  {/* Inventory Group */}
-                  {form.category && (
+                    {/* Inventory Group */}
                     <div>
                       <label className="form-label">Inventory Group *</label>
                       <select style={inp('inventory_group')} value={form.inventory_group} onChange={(e) => { set('inventory_group', e.target.value); set('inventory_option',''); set('market',''); }}>
@@ -294,81 +322,77 @@ export default function CreateBooking() {
                       </select>
                       {errors.inventory_group && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.inventory_group}</p>}
                     </div>
-                  )}
 
-                  {/* Inventory Option */}
-                  {form.inventory_group && (
-                    <div>
-                      <label className="form-label">Inventory Option *</label>
-                      <select style={inp('inventory_option')} value={form.inventory_option} onChange={(e) => { set('inventory_option', e.target.value); set('market',''); }}>
-                        <option value="">Select option</option>
-                        {Object.entries(inventoryOptions).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-                      </select>
-                      {errors.inventory_option && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.inventory_option}</p>}
-                    </div>
-                  )}
-
-                  {/* Market */}
-                  {form.inventory_option && (
-                    <div>
-                      <label className="form-label">Market *</label>
-                      <select style={inp('market')} value={form.market} onChange={(e) => set('market', e.target.value)}>
-                        <option value="">Select market</option>
-                        {availableMarkets.map((m) => <option key={m} value={m}>{m.replaceAll('_',' ')}</option>)}
-                      </select>
-                      {errors.market && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.market}</p>}
-                    </div>
-                  )}
-
-                  {/* Date */}
-                  <div>
-                    <label className="form-label">Campaign Start Date *</label>
-                    <input type="date" style={inp('date')} value={form.date} onChange={(e) => set('date', e.target.value)}/>
-                    {errors.date && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.date}</p>}
-                  </div>
-
-                  {/* Runs — shown once a market is selected */}
-                  {form.market && (
-                    <div>
-                      <label className="form-label">How many times should this run?</label>
-                      <p style={{ fontSize:12, color:'var(--text-muted)', marginBottom:10 }}>
-                        Each run = one broadcast or placement. e.g. 5 means this ad plays 5 times.
-                      </p>
-                      <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                        <button type="button" onClick={() => set('runs', Math.max(1, runs - 1))}
-                          style={{ width:36, height:36, borderRadius:10, border:'1px solid var(--border)', background:'rgba(255,255,255,0.05)', color:'white', fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>−</button>
-                        <div style={{ flex:1, textAlign:'center' }}>
-                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'white', lineHeight:1 }}>{runs}</p>
-                          <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:4 }}>{runs === 1 ? 'run' : 'runs'}</p>
-                        </div>
-                        <button type="button" onClick={() => set('runs', runs + 1)}
-                          style={{ width:36, height:36, borderRadius:10, border:'1px solid rgba(99,102,241,0.4)', background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>+</button>
+                    {/* Inventory Option */}
+                    {form.inventory_group && (
+                      <div>
+                        <label className="form-label">Inventory Option *</label>
+                        <select style={inp('inventory_option')} value={form.inventory_option} onChange={(e) => { set('inventory_option', e.target.value); set('market',''); }}>
+                          <option value="">Select option</option>
+                          {Object.entries(inventoryOptions).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+                        </select>
+                        {errors.inventory_option && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.inventory_option}</p>}
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Live Price Preview */}
-                  {form.market && (
-                    <div style={{ padding:'16px 18px', borderRadius:'var(--radius-md)', background: unitPrice > 0 ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.08)', border: unitPrice > 0 ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(245,158,11,0.2)' }}>
-                      {unitPrice > 0 ? (
-                        <>
-                          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: runs > 1 ? 8 : 0 }}>
-                            <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em' }}>
+                    {/* Market */}
+                    {form.inventory_option && (
+                      <div>
+                        <label className="form-label">Market *</label>
+                        <select style={inp('market')} value={form.market} onChange={(e) => set('market', e.target.value)}>
+                          <option value="">Select market</option>
+                          {availableMarkets.map((m) => <option key={m} value={m}>{m.replaceAll('_',' ')}</option>)}
+                        </select>
+                        {errors.market && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.market}</p>}
+                      </div>
+                    )}
+
+                    {/* Date */}
+                    <div>
+                      <label className="form-label">Campaign Start Date *</label>
+                      <input type="date" style={inp('date')} value={form.date} onChange={(e) => set('date', e.target.value)}/>
+                      {errors.date && <p style={{ color:'#fca5a5', fontSize:11, marginTop:5 }}>{errors.date}</p>}
+                    </div>
+
+                    {/* Runs */}
+                    {form.market && (
+                      <div>
+                        <label className="form-label">How many times should this run?</label>
+                        <p style={{ fontSize:12, color:'var(--text-muted)', marginBottom:10 }}>Each run = one broadcast or placement.</p>
+                        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                          <button type="button" onClick={() => set('runs', Math.max(1, runs - 1))}
+                            style={{ width:36, height:36, borderRadius:10, border:'1px solid var(--border)', background:'rgba(255,255,255,0.05)', color:'white', fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>−</button>
+                          <div style={{ flex:1, textAlign:'center' }}>
+                            <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'white', lineHeight:1 }}>{runs}</p>
+                            <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:4 }}>{runs === 1 ? 'run' : 'runs'}</p>
+                          </div>
+                          <button type="button" onClick={() => set('runs', runs + 1)}
+                            style={{ width:36, height:36, borderRadius:10, border:'1px solid rgba(99,102,241,0.4)', background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>+</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Price preview */}
+                    {form.market && (
+                      <div style={{ padding:'16px 18px', borderRadius:'var(--radius-md)', background: unitPrice > 0 ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.08)', border: unitPrice > 0 ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(245,158,11,0.2)' }}>
+                        {unitPrice > 0 ? (
+                          <>
+                            <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:4 }}>
                               {runs > 1 ? `₦${Number(unitPrice).toLocaleString()} × ${runs} runs` : 'Placement Cost'}
                             </p>
-                          </div>
-                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'#a5b4fc', letterSpacing:'-0.5px' }}>
-                            ₦{Number(finalPrice).toLocaleString()}
-                          </p>
-                          {runs > 1 && <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:4 }}>₦{Number(unitPrice).toLocaleString()} per run</p>}
-                        </>
-                      ) : (
-                        <p style={{ fontSize:13, color:'#fcd34d', fontWeight:600 }}>No price configured for this market.</p>
-                      )}
-                    </div>
-                  )}
+                            <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'#a5b4fc', letterSpacing:'-0.5px' }}>
+                              ₦{Number(finalPrice).toLocaleString()}
+                            </p>
+                            {runs > 1 && <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:4 }}>₦{Number(unitPrice).toLocaleString()} per run</p>}
+                          </>
+                        ) : (
+                          <p style={{ fontSize:13, color:'#fcd34d', fontWeight:600 }}>Pricing on request for this market.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Campaign Cart */}
               {campaignItems.length > 0 && (
@@ -386,12 +410,14 @@ export default function CreateBooking() {
                         <div>
                           <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{item.mediaName}</p>
                           <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>
-                            {item.inventory_option?.replaceAll('_',' ')} · {item.market}
+                            {item.optionLabel} · {item.market?.replaceAll('_',' ')}
                             {item.runs > 1 && <span style={{ marginLeft:6, padding:'2px 8px', borderRadius:20, background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:10, fontWeight:700 }}>×{item.runs} runs</span>}
                           </p>
                         </div>
                         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color:'#a5b4fc' }}>₦{Number(item.price).toLocaleString()}</p>
+                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color: item.price > 0 ? '#a5b4fc' : '#fcd34d' }}>
+                            {item.price > 0 ? `₦${Number(item.price).toLocaleString()}` : 'On request'}
+                          </p>
                           <button type="button" onClick={() => removeCampaignItem(idx)} className="btn-danger" style={{ padding:'4px 10px', fontSize:11 }}>Remove</button>
                         </div>
                       </div>
@@ -408,14 +434,15 @@ export default function CreateBooking() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button type="button" onClick={() => setStep(2)} className="btn-secondary" style={{ padding:'11px 20px' }}>← Back</button>
-                <button type="button" onClick={addToCampaign} className="btn-secondary" style={{ flex:1, justifyContent:'center', padding:'11px' }}>
-                  + Add Another Item
-                </button>
+                {hasInventory && (
+                  <button type="button" onClick={addToCampaign} className="btn-secondary" style={{ flex:1, justifyContent:'center', padding:'11px' }}>
+                    + Add Another Item
+                  </button>
+                )}
                 <button type="submit" disabled={submitting} className="btn-primary" style={{ flex:1, justifyContent:'center', padding:'11px' }}>
                   {submitting ? <><Spinner size={14}/> Launching…</> : `Launch Campaign${campaignItems.length > 0 ? ` (${campaignItems.length})` : ''}`}
                 </button>
               </div>
-
             </div>
           )}
         </form>
