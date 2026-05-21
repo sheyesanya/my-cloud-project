@@ -7,6 +7,8 @@ import RoleRoute            from './components/RoleRoute';
 import Login                from './pages/Login';
 import RegisterClient       from './pages/RegisterClient';
 import RegisterProvider     from './pages/RegisterProvider';
+import Terms               from './pages/Terms';
+import Privacy             from './pages/Privacy';
 
 // Shared
 import Dashboard            from './pages/Dashboard';
@@ -36,6 +38,8 @@ export default function App() {
           <Route path="/register"            element={<Navigate to="/register/client" replace />} />
           <Route path="/register/client"     element={<RegisterClient />} />
           <Route path="/register/provider"   element={<RegisterProvider />} />
+          <Route path="/terms"               element={<Terms />} />
+          <Route path="/privacy"             element={<Privacy />} />
 
           {/* Protected — all logged-in users */}
           <Route path="/dashboard"           element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
