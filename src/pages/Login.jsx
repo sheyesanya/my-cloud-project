@@ -30,7 +30,17 @@ const STEPS = [
 const TESTIMONIALS = [
   { quote:'BrandCasta made it incredibly easy to run a multi-platform campaign across radio and OOH in three cities at once. What used to take weeks of back-and-forth now takes hours.', name:'Chukwuemeka Obi', role:'Head of Brand and Marketing, Annex Bank' },
   { quote:'As a media owner, receiving booking requests directly to my inbox with one-click approve or decline has completely changed how I manage ad sales.', name:'Adaeze Nwosu', role:'Sales Director, Metaletry Lagos' },
-  { quote:'I was able to book podcast ads, billboard space and an influencer campaign all in one brief. The transparency on pricing and delivery proof is unmatched.', name:'Tunde Adegoke', role:'Brand Manager, ReaPay' },
+  { quote:'I was able to book podcast ads, billboard space and an influencer campaign all in one brief. The transparency on pricing and delivery proof is unmatched.', name:'Tunde Adegoke', role:'Brand Manager, RealPay' },
+  { quote:'BrandCasta helped us simplify our nationwide campaign rollout without the usual stress of chasing multiple vendors. From radio to digital billboards, everything was seamless.', name:'Ifeanyi Okonkwo', role:'Marketing Lead, Vetra Energy' },
+  { quote:'What impressed me most was the speed. We launched our campaign in less than 48 hours and had real-time updates throughout the process.', name:'Mariam Bello', role:'Communications Manager, Nova Mobility' },
+  { quote:'Managing outdoor advertising used to involve endless calls and paperwork. BrandCasta centralized everything for us in one dashboard.', name:'Seyi Alade', role:'Operations Director, UrbanNiche Media' },
+  { quote:'The ability to compare pricing, locations and audience reach before booking gave our team a level of confidence we never had before.', name:'Kenechi Ubah', role:'Growth Marketing Manager, SwiftCart' },
+  { quote:'BrandCasta feels like the future of media buying in Africa. Transparent, fast and surprisingly easy to use even for first-time advertisers.', name:'Amina Yusuf', role:'Founder, Glow Beauty Africa' },
+  { quote:'Our agency was able to coordinate influencer campaigns, radio mentions and LED billboard placements for a client from one platform. That efficiency is game-changing.', name:'David Ekanem', role:'Creative Director, BlueHouse Agency' },
+  { quote:'I loved how straightforward the approval system was. We received booking requests, reviewed creatives and confirmed placements without unnecessary delays.', name:'Temitope Martins', role:'Commercial Manager, CityPoint Media' },
+  { quote:'The proof-of-delivery feature gave our clients peace of mind. They could actually verify campaign execution instead of relying on manual reports.', name:'Chioma Eze', role:'Account Director, Peaklite Communications' },
+  { quote:'As a startup with limited marketing resources, BrandCasta gave us access to premium advertising opportunities we normally wouldn’t have been able to coordinate ourselves.', name:'Johnson Idahome', role:'Co-Founder, FastChop NG' },
+  { quote:'We ran simultaneous campaigns across Lagos, Abuja and Port Harcourt with zero operational headaches. BrandCasta made campaign management feel effortless.', name:'Rukayat Lawal', role:'Brand Strategist, Horizon Telecoms' },
 ];
 
 function CountUp({ target, suffix }) {
