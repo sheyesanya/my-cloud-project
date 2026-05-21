@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { LoadingBlock, ErrorBlock, EmptyBlock, Toast, Spinner } from '../components/UI';
 import api from '../services/api';
@@ -10,6 +11,7 @@ export default function AdminApplications() {
   const [toast, setToast]               = useState(null);
   const [acting, setActing]             = useState({});
   const [expanded, setExpanded]         = useState(null);
+  const navigate = useNavigate();
   const [filter, setFilter]             = useState('PENDING_REVIEW');
 
   const showToast = (type, message) => {
@@ -197,6 +199,17 @@ export default function AdminApplications() {
                             <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
                           )}
                           Reject Application
+                        </button>
+                      </div>
+                    )}
+                    {status === 'APPROVED' && (
+                      <div className="flex gap-3 mt-5">
+                        <button
+                          onClick={() => navigate(`/admin/inventory?name=${encodeURIComponent(app.orgName)}`)}
+                          className="btn-primary"
+                          style={{ padding:'10px 20px', fontSize:13 }}
+                        >
+                          📦 Set Up Inventory
                         </button>
                       </div>
                     )}

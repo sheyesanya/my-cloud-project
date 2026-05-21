@@ -10,7 +10,8 @@ const NAV_ADMIN = [
   { to:'/create-booking',label:'Create Campaign'       },
   { to:'/campaigns',    label:'Campaigns'              },
   { to:'/bookings',     label:'Bookings'               },
-  { to:'/applications', label:'Provider Applications'  },
+  { to:'/applications',   label:'Provider Applications' },
+  { to:'/admin/inventory', label:'Inventory Manager'  },
   { to:'/analytics',    label:'Analytics'              },
 ];
 

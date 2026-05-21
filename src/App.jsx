@@ -22,6 +22,7 @@ import Analytics            from './pages/Analytics';
 
 // Admin only
 import AdminApplications    from './pages/AdminApplications';
+import ProviderInventory   from './pages/ProviderInventory';
 
 // Provider only
 import ProviderDashboard    from './pages/ProviderDashboard';
@@ -53,6 +54,8 @@ export default function App() {
           {/* Admin only */}
           <Route path="/create-media"        element={<RoleRoute role="ADMIN"><CreateMedia /></RoleRoute>} />
           <Route path="/applications"        element={<RoleRoute role="ADMIN"><AdminApplications /></RoleRoute>} />
+          <Route path="/admin/inventory"     element={<RoleRoute role="ADMIN"><ProviderInventory /></RoleRoute>} />
+          <Route path="/inventory"           element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderInventory /></RoleRoute>} />
 
           {/* Provider (+ admin can view) */}
           <Route path="/provider"            element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderDashboard /></RoleRoute>} />
