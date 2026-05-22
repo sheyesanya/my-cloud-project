@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../context/SubscriptionContext';
 
 const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 
@@ -34,6 +35,13 @@ const ROLE_META = {
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { logout, user } = useAuth();
+  const subCtx     = useSubscription();
+  const isPremium  = subCtx?.isPremium    ?? false;
+  const tier       = subCtx?.tier         ?? 'FREE';
+  const subscription = subCtx?.subscription ?? null;
+  const subDaysLeft = subscription?.expiresAt
+    ? Math.max(0, Math.ceil((new Date(subscription.expiresAt) - new Date()) / (1000*60*60*24)))
+    : 0;
   const role     = (user?.role || 'CLIENT').toUpperCase();
   const meta     = ROLE_META[role] || ROLE_META.CLIENT;
   const NAV      = role === 'ADMIN' ? NAV_ADMIN : role === 'PROVIDER' ? NAV_PROVIDER : NAV_CLIENT;
