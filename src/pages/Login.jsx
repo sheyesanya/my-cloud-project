@@ -6,12 +6,12 @@ import { Spinner } from '../components/UI';
 const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 
 const FEATURES = [
-  { icon:'📺', title:'Television & Radio',  desc:'Prime-time spots on Channels TV, Cool FM, TVC, Wazobia FM and 60+ stations across Nigeria.' },
-  { icon:'🎙', title:'Podcasts',             desc:'Partner with ISWIS, The Honest Bunch, WithChude and Nigeria\'s fastest-growing podcast creators.' },
-  { icon:'🏙', title:'Out-of-Home',          desc:'Billboards, LED screens, BRT wraps, airport and mall inventory from Lagos to Abuja.' },
-  { icon:'📰', title:'Print & Digital',      desc:'Punch, Guardian, BusinessDay and leading online publishers — display, inserts and sponsored content.' },
-  { icon:'👤', title:'Influencers',          desc:'Macro, mid-tier and micro creators across Instagram, TikTok, YouTube and X.' },
-  { icon:'⚡', title:'One Dashboard',        desc:'Brief, book, approve, pay and track campaign delivery — all in one place.' },
+  { title:'Television & Radio',  desc:'Prime-time spots on Channels TV, Cool FM, TVC, Wazobia FM and 60+ stations across Nigeria.' },
+  { title:'Podcasts',             desc:'Partner with ISWIS, The Honest Bunch, WithChude and Nigeria\'s fastest-growing podcast creators.' },
+  { title:'Out-of-Home',          desc:'Billboards, LED screens, BRT wraps, airport and mall inventory from Lagos to Abuja.' },
+  { title:'Print & Digital',      desc:'Punch, Guardian, BusinessDay and leading online publishers — display, inserts and sponsored content.' },
+  { title:'Influencers',          desc:'Macro, mid-tier and micro creators across Instagram, TikTok, YouTube and X.' },
+  { title:'One Dashboard',        desc:'Brief, book, approve, pay and track campaign delivery — all in one place.' },
 ];
 
 const STATS = [
