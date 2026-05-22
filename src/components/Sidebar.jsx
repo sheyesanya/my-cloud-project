@@ -92,6 +92,28 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
           ))}
         </nav>
 
+        {/* Subscription badge */}
+        {isPremium && (
+          <div style={{ margin:'0 12px 8px', padding:'10px 14px', borderRadius:10, background: tier==='PRO' ? 'rgba(245,158,11,0.08)' : 'rgba(99,102,241,0.08)', border: tier==='PRO' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(99,102,241,0.2)' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
+              <span style={{ fontSize:10, fontWeight:800, color: tier==='PRO' ? '#fcd34d' : '#a5b4fc', textTransform:'uppercase', letterSpacing:'0.08em' }}>{tier}</span>
+              <span style={{ fontSize:9, color:'rgba(255,255,255,0.35)' }}>{subDaysLeft}d left</span>
+            </div>
+            <div style={{ height:3, borderRadius:2, background:'rgba(255,255,255,0.08)', overflow:'hidden' }}>
+              <div style={{ height:'100%', width:`${Math.min(100,(subDaysLeft/(tier==='PRO'?15:30))*100)}%`, background: tier==='PRO' ? '#f59e0b' : 'linear-gradient(90deg,#6366f1,#a855f7)', borderRadius:2, transition:'width 0.3s' }}/>
+            </div>
+          </div>
+        )}
+        {!isPremium && (
+          <Link to="/subscription" style={{ margin:'0 12px 8px', padding:'9px 14px', borderRadius:10, background:'rgba(99,102,241,0.06)', border:'1px solid rgba(99,102,241,0.15)', display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}>
+            <span style={{ fontSize:14 }}>⭐</span>
+            <div>
+              <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc' }}>Upgrade to Premium</p>
+              <p style={{ fontSize:10, color:'rgba(255,255,255,0.3)' }}>₦25,000 / 15 days</p>
+            </div>
+          </Link>
+        )}
+
         {/* Footer */}
         <div style={{ padding:'12px 10px', borderTop:'1px solid var(--border)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)', marginBottom:8 }}>
