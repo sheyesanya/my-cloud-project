@@ -4,16 +4,16 @@ import { Spinner } from './UI';
 
 const PLAN_FEATURES = {
   PREMIUM: [
-    { icon:'✨', label:'AI Campaign Brief Generator' },
     { icon:'📊', label:'Campaign Analytics Dashboard' },
-    { icon:'🤖', label:'AI Campaign Insights' },
     { icon:'📋', label:'Proof of Performance Tracker' },
+    { icon:'🎯', label:'Priority Support' },
+    { icon:'👤', label:'Dedicated Account Manager' },
   ],
   PRO: [
     { icon:'✨', label:'Everything in Premium' },
-    { icon:'⚡', label:'15-day access (half monthly)' },
-    { icon:'🎯', label:'Priority Support' },
-    { icon:'👤', label:'Dedicated Account Manager' },
+    { icon:'🤖', label:'AI Campaign Brief Generator' },
+    { icon:'💡', label:'AI Campaign Insights' },
+    { icon:'⚡', label:'Full monthly access (31 days)' },
   ],
 };
 

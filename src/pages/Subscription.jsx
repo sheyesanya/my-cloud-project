@@ -22,14 +22,14 @@ const PLAN_DETAILS = {
   PREMIUM: {
     name:'Premium', color:'#a5b4fc', bg:'rgba(99,102,241,0.08)', border:'rgba(99,102,241,0.3)',
     amount:25000, period:'15 days', days:15,
-    features:['Everything in Free','AI Campaign Brief Generator','Campaign Analytics Dashboard','AI Campaign Insights','Proof of Performance Tracker','Priority Support','Dedicated Account Manager'],
-    notIncluded:[],
+    features:['Everything in Free','Campaign Analytics Dashboard','Proof of Performance Tracker','Priority Support','Dedicated Account Manager'],
+    notIncluded:['AI Campaign Brief Generator','AI Campaign Insights'],
     tag:'HALF MONTHLY',
   },
   PRO: {
     name:'Pro', color:'#fcd34d', bg:'rgba(245,158,11,0.08)', border:'rgba(245,158,11,0.3)',
     amount:45000, period:'month', days:30,
-    features:['Everything in Premium','Full monthly access','Priority Support','Dedicated Account Manager'],
+    features:['Everything in Premium','AI Campaign Brief Generator','AI Campaign Insights'],
     notIncluded:[],
   },
 };
