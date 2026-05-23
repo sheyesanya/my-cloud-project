@@ -24,6 +24,7 @@ import Analytics            from './pages/Analytics';
 import AdminApplications    from './pages/AdminApplications';
 import ProviderInventory   from './pages/ProviderInventory';
 import BriefGenerator      from './pages/BriefGenerator';
+import SocialMediaFunnel   from './pages/SocialMediaFunnel';
 import Subscription        from './pages/Subscription';
 import PremiumGate         from './components/PremiumGate';
 import { SubscriptionProvider } from './context/SubscriptionContext';
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/provider"            element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderDashboard /></RoleRoute>} />
 
           <Route path="/subscription"        element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
+          <Route path="/social-media"         element={<ProtectedRoute><SocialMediaFunnel /></ProtectedRoute>} />
           <Route path="/brief-generator"     element={<ProtectedRoute><PremiumGate requiredTier="PRO"><BriefGenerator /></PremiumGate></ProtectedRoute>} />
           <Route path="/proof-of-performance" element={<ProtectedRoute><PremiumGate requiredTier="PREMIUM"><ProofOfPerformance /></PremiumGate></ProtectedRoute>} />
           <Route path="*"                    element={<Navigate to="/dashboard" replace />} />
