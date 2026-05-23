@@ -276,7 +276,7 @@ export default function CreateBooking() {
 
             {/* Inventory — shown automatically once media is selected */}
             {sel.mediaId && (
-              <div className="page-card" style={{ padding:20 }}>
+              <div style={{ padding:20, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18, paddingBottom:14, borderBottom:'1px solid var(--border)' }}>
                   <div style={{ width:36, height:36, borderRadius:10, background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700, color:'white', flexShrink:0 }}>
                     {selectedMedia?.name?.[0]}
