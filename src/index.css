@@ -5,6 +5,18 @@
 @tailwind utilities;
 
 /* =========================================================
+CSS VARIABLES — DARK THEME
+========================================================= */
+
+:root {
+  --bg-base:    #0a0a0f;
+  --bg-surface: #111118;
+  --border:     rgba(255,255,255,0.08);
+  --text-muted: rgba(255,255,255,0.38);
+  --text-secondary: rgba(255,255,255,0.55);
+}
+
+/* =========================================================
 BASE
 ========================================================= */
 
@@ -26,15 +38,10 @@ BASE
   body {
 
     background:
-      linear-gradient(
-        180deg,
-        #f8fafc 0%,
-        #eef2ff 35%,
-        #fdf2f8 100%
-      );
+      #0a0a0f;
 
     color:
-      #0f172a;
+      rgba(255,255,255,0.85);
 
     font-family:
       'DM Sans',
@@ -369,22 +376,16 @@ COMPONENTS
   .page-card {
 
     background:
-      rgba(255,255,255,0.74);
-
-    backdrop-filter:
-      blur(18px);
+      var(--bg-surface);
 
     border:
-      1px solid rgba(255,255,255,0.7);
+      1px solid var(--border);
 
     box-shadow:
-      0 12px 40px rgba(15,23,42,0.06);
+      0 8px 32px rgba(0,0,0,0.4);
 
     border-radius:
-      28px;
-
-    overflow:
-      hidden;
+      14px;
   }
 
   /* ========================
