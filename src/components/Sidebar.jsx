@@ -5,27 +5,35 @@ import { useSubscription } from '../context/SubscriptionContext';
 const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 
 const NAV_ADMIN = [
-  { to:'/dashboard',    label:'Dashboard'              },
-  { to:'/media',        label:'Media Inventory'        },
-  { to:'/create-media', label:'Add Media'              },
-  { to:'/create-booking',label:'Create Campaign'       },
-  { to:'/campaigns',    label:'Campaigns'              },
-  { to:'/bookings',     label:'Bookings'               },
-  { to:'/applications',   label:'Provider Applications' },
-  { to:'/admin/inventory', label:'Inventory Manager'  },
-  { to:'/analytics',    label:'Analytics'              },
+  { to:'/dashboard',        label:'Dashboard'             },
+  { to:'/media',            label:'Media Inventory'       },
+  { to:'/create-media',     label:'Add Media'             },
+  { to:'/create-booking',   label:'Create Campaign'       },
+  { to:'/campaigns',        label:'Campaigns'             },
+  { to:'/bookings',         label:'Bookings'              },
+  { to:'/applications',     label:'Provider Applications' },
+  { to:'/admin/inventory',  label:'Inventory Manager'     },
+  { to:'/analytics',        label:'Analytics'             },
+  { to:'/social-media',     label:'Social-Media & Music'  },
+  { to:'/subscription',     label:'Subscriptions'         },
 ];
 
 const NAV_CLIENT = [
-  { to:'/dashboard',     label:'Dashboard'      },
-  { to:'/media',         label:'Media Inventory'},
-  { to:'/create-booking',label:'Create Campaign'},
-  { to:'/campaigns',     label:'My Campaigns'   },
-  { to:'/social-media',  label:'Social-Media & Music Marketing'},
+  { to:'/dashboard',            label:'Dashboard'                    },
+  { to:'/media',                label:'Media Inventory'              },
+  { to:'/create-booking',       label:'Create Campaign'              },
+  { to:'/campaigns',            label:'My Campaigns'                 },
+  { to:'/social-media',         label:'Social-Media & Music Marketing'},
+  { to:'/bookings',             label:'My Bookings'                  },
+  { to:'/brief-generator',      label:'Brief Generator'              },
+  { to:'/proof-of-performance', label:'Proof of Performance'         },
+  { to:'/analytics',            label:'Analytics'                    },
 ];
 
 const NAV_PROVIDER = [
-  { to:'/provider',     label:'My Bookings'    },
+  { to:'/provider',             label:'My Bookings'          },
+  { to:'/inventory',            label:'My Inventory'         },
+  { to:'/proof-of-performance', label:'Proof of Performance' },
 ];
 
 const ROLE_META = {
@@ -36,13 +44,14 @@ const ROLE_META = {
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { logout, user } = useAuth();
-  const subCtx     = useSubscription();
-  const isPremium  = subCtx?.isPremium    ?? false;
-  const tier       = subCtx?.tier         ?? 'FREE';
+  const subCtx      = useSubscription();
+  const isPremium   = subCtx?.isPremium    ?? false;
+  const tier        = subCtx?.tier         ?? 'FREE';
   const subscription = subCtx?.subscription ?? null;
   const subDaysLeft = subscription?.expiresAt
     ? Math.max(0, Math.ceil((new Date(subscription.expiresAt) - new Date()) / (1000*60*60*24)))
     : 0;
+
   const role     = (user?.role || 'CLIENT').toUpperCase();
   const meta     = ROLE_META[role] || ROLE_META.CLIENT;
   const NAV      = role === 'ADMIN' ? NAV_ADMIN : role === 'PROVIDER' ? NAV_PROVIDER : NAV_CLIENT;
@@ -109,7 +118,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               <span style={{ fontSize:9, color:'rgba(255,255,255,0.35)' }}>{subDaysLeft}d left</span>
             </div>
             <div style={{ height:3, borderRadius:2, background:'rgba(255,255,255,0.08)', overflow:'hidden' }}>
-              <div style={{ height:'100%', width:`${Math.min(100,(subDaysLeft/(tier==='PRO'?15:30))*100)}%`, background: tier==='PRO' ? '#f59e0b' : 'linear-gradient(90deg,#6366f1,#a855f7)', borderRadius:2, transition:'width 0.3s' }}/>
+              <div style={{ height:'100%', width:`${Math.min(100,(subDaysLeft/(tier==='PRO'?31:15))*100)}%`, background: tier==='PRO' ? '#f59e0b' : 'linear-gradient(90deg,#6366f1,#a855f7)', borderRadius:2, transition:'width 0.3s' }}/>
             </div>
           </div>
         )}
@@ -151,7 +160,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               <p style={{ fontSize:10, color:'var(--text-muted)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user?.email}</p>
             </div>
           </div>
-          <button onClick={logout} style={{ width:'100%', display:'flex', alignItems:'center', gap:8, padding:'8px 10px', borderRadius:10, fontSize:12, fontWeight:500, background:'rgba(239,68,68,0.08)', color:'#fca5a5', border:'1px solid rgba(239,68,68,0.15)', cursor:'pointer' }}>
+          <button onClick={logout} style={{ width:'100%', display:'flex', alignItems:'center', gap:8, padding:'8px 10px', borderRadius:10, fontSize:12, fontWeight:500, background:'rgba(239,68,68,0.08)', color:'#fca5a5', border:'1px solid rgba(239,68,68,0.15)', cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
             <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             Sign Out
           </button>
