@@ -114,14 +114,22 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         )}
         {!isPremium && (
           <div style={{ margin:'0 12px 8px', display:'flex', flexDirection:'column', gap:6 }}>
-            <Link to="/subscription?plan=PREMIUM" style={{ padding:'9px 12px', borderRadius:10, background:'rgba(99,102,241,0.08)', border:'1px solid rgba(99,102,241,0.2)', display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}>
+            <Link
+              to="/subscription?plan=PREMIUM"
+              onClick={() => setMobileOpen(false)}
+              style={{ padding:'9px 12px', borderRadius:10, background:'rgba(99,102,241,0.08)', border:'1px solid rgba(99,102,241,0.2)', display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}
+            >
               <div style={{ flex:1 }}>
                 <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', marginBottom:1 }}>Premium</p>
                 <p style={{ fontSize:10, color:'rgba(255,255,255,0.3)' }}>₦25,000 / 15 days</p>
               </div>
               <span style={{ fontSize:10, color:'#a5b4fc', fontWeight:700 }}>→</span>
             </Link>
-            <Link to="/subscription?plan=PRO" style={{ padding:'9px 12px', borderRadius:10, background:'rgba(245,158,11,0.07)', border:'1px solid rgba(245,158,11,0.2)', display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}>
+            <Link
+              to="/subscription?plan=PRO"
+              onClick={() => setMobileOpen(false)}
+              style={{ padding:'9px 12px', borderRadius:10, background:'rgba(245,158,11,0.07)', border:'1px solid rgba(245,158,11,0.2)', display:'flex', alignItems:'center', gap:8, textDecoration:'none' }}
+            >
               <div style={{ flex:1 }}>
                 <p style={{ fontSize:11, fontWeight:700, color:'#fcd34d', marginBottom:1 }}>Pro</p>
                 <p style={{ fontSize:10, color:'rgba(255,255,255,0.3)' }}>₦45,000 / 31 days</p>
