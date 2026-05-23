@@ -11,7 +11,16 @@ const INIT_SELECTION = { mediaId:'', inventory_group:'', inventory_option:'', ma
 const CAT_LABELS = {
   ALL:'All', TELEVISION:'TV', RADIO_AUDIO:'Radio', PODCASTS:'Podcasts',
   OUT_OF_HOME:'OOH', PRINT_MEDIA:'Print', INFLUENCERS:'Influencers',
+  SOCIAL_MEDIA:'Social Media', MUSIC_PROMOTION:'Music Promotion',
 };
+
+const CAT_ICONS = {
+  SOCIAL_MEDIA:     '📱',
+  MUSIC_PROMOTION:  '🎵',
+};
+
+const ROUTE_TO_EMAIL = ['SOCIAL_MEDIA','MUSIC_PROMOTION'];
+const SPECIAL_EMAIL  = 'brandcastang@gmail.com';
 
 // Parse inventory — stored as JSON string in DynamoDB
 const parseInventory = (raw) => {
@@ -119,7 +128,15 @@ export default function CreateBooking() {
     setSub(true); setApiErr('');
     try {
       const files = await uploadFiles();
-      await createCampaign({ brand_name: brief.brand_name.trim(), contactEmail: brief.email.trim(), campaignBrief: brief.campaignBrief, promotionFiles: files, items });
+      const hasSpecialCategory = items.some(i => ROUTE_TO_EMAIL.includes(i.category));
+      await createCampaign({
+        brand_name:     brief.brand_name.trim(),
+        contactEmail:   brief.email.trim(),
+        campaignBrief:  brief.campaignBrief,
+        promotionFiles: files,
+        items,
+        ...(hasSpecialCategory ? { routeTo: SPECIAL_EMAIL } : {}),
+      });
       setToast({ type:'success', message:'Campaign launched!' });
       setTimeout(() => navigate('/campaigns'), 1800);
     } catch(e) { setApiErr(e.message); }
@@ -235,7 +252,10 @@ export default function CreateBooking() {
                         border: active ? '1px solid rgba(99,102,241,0.4)' : '1px solid var(--border)',
                       }}>
                       <div>
-                        <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{m.name}</p>
+                        <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                          {CAT_ICONS[m.category] && <span style={{ fontSize:15 }}>{CAT_ICONS[m.category]}</span>}
+                          <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{m.name}</p>
+                        </div>
                         <div style={{ display:'flex', gap:6, marginTop:3 }}>
                           <span style={{ fontSize:10, color:'var(--text-muted)', fontWeight:600, textTransform:'uppercase' }}>{m.category?.replaceAll('_',' ')}</span>
                           <span style={{ fontSize:10, padding:'1px 6px', borderRadius:20, fontWeight:700,
