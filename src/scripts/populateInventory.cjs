@@ -15,186 +15,38 @@ const PROVIDER_INVENTORY = {
 
   'Arise TV': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      OFFPEAK_10S:  { label: '10s Off-Peak',  markets: { NATIONAL: { price: 180000 } } },
-      OFFPEAK_15S:  { label: '15s Off-Peak',  markets: { NATIONAL: { price: 250000 } } },
-      OFFPEAK_30S:  { label: '30s Off-Peak',  markets: { NATIONAL: { price: 450000 } } },
-      OFFPEAK_45S:  { label: '45s Off-Peak',  markets: { NATIONAL: { price: 650000 } } },
-      OFFPEAK_60S:  { label: '60s Off-Peak',  markets: { NATIONAL: { price: 850000 } } },
-      PRIME_10S:    { label: '10s Prime Time', markets: { NATIONAL: { price: 300000 } } },
-      PRIME_15S:    { label: '15s Prime Time', markets: { NATIONAL: { price: 400000 } } },
-      PRIME_30S:    { label: '30s Prime Time', markets: { NATIONAL: { price: 750000 } } },
-      PRIME_45S:    { label: '45s Prime Time', markets: { NATIONAL: { price: 950000 } } },
+      OFFPEAK_10S:  { label: '10s Off-Peak',  markets: { NATIONAL: { price: 180000  } } },
+      OFFPEAK_15S:  { label: '15s Off-Peak',  markets: { NATIONAL: { price: 250000  } } },
+      OFFPEAK_30S:  { label: '30s Off-Peak',  markets: { NATIONAL: { price: 450000  } } },
+      OFFPEAK_45S:  { label: '45s Off-Peak',  markets: { NATIONAL: { price: 650000  } } },
+      OFFPEAK_60S:  { label: '60s Off-Peak',  markets: { NATIONAL: { price: 850000  } } },
+      PRIME_10S:    { label: '10s Prime Time', markets: { NATIONAL: { price: 300000  } } },
+      PRIME_15S:    { label: '15s Prime Time', markets: { NATIONAL: { price: 400000  } } },
+      PRIME_30S:    { label: '30s Prime Time', markets: { NATIONAL: { price: 750000  } } },
+      PRIME_45S:    { label: '45s Prime Time', markets: { NATIONAL: { price: 950000  } } },
       PRIME_60S:    { label: '60s Prime Time', markets: { NATIONAL: { price: 1200000 } } },
     }},
     SPONSORSHIP: { label: 'Sponsorship & Brand Integration', options: {
-      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship', markets: { NATIONAL: { price: 12500000 } } },
-      NEWS_SPONSORSHIP:      { label: 'News Sponsorship',      markets: { NATIONAL: { price: 16500000 } } },
-      LOWER_THIRD:           { label: 'Lower Third / Scroll Ads (weekly)', markets: { NATIONAL: { price: 650000 } } },
-      PRESENTER_MENTION:     { label: 'Presenter Mention',     markets: { NATIONAL: { price: 1250000 } } },
-      BRAND_INTEGRATION:     { label: 'Brand Integration',     markets: { NATIONAL: { price: 6000000 } } },
-      EVENT_COVERAGE:        { label: 'Event Coverage Partnership', markets: { NATIONAL: { price: 9000000 } } },
+      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship',         markets: { NATIONAL: { price: 12500000 } } },
+      NEWS_SPONSORSHIP:      { label: 'News Sponsorship',              markets: { NATIONAL: { price: 16500000 } } },
+      LOWER_THIRD:           { label: 'Lower Third / Scroll (weekly)', markets: { NATIONAL: { price: 650000   } } },
+      PRESENTER_MENTION:     { label: 'Presenter Mention',             markets: { NATIONAL: { price: 1250000  } } },
+      BRAND_INTEGRATION:     { label: 'Brand Integration (per ep)',    markets: { NATIONAL: { price: 5000000  } } },
+    }},
+    BRANDED_CONTENT: { label: 'Branded Content & Productions', options: {
+      BRANDED_DOCUMENTARY:  { label: 'Branded Documentary (30 mins)', markets: { NATIONAL: { price: 25000000 } } },
+      BRANDED_INTERVIEW:    { label: 'Branded Interview Segment',     markets: { NATIONAL: { price: 8000000  } } },
+      PRODUCT_PLACEMENT:    { label: 'Product Placement (per ep)',    markets: { NATIONAL: { price: 3500000  } } },
+      LIVE_EVENT_COVERAGE:  { label: 'Live Event Coverage',           markets: { NATIONAL: { price: 15000000 } } },
+    }},
+    DIGITAL_EXTENSION: { label: 'Digital & Social Extension', options: {
+      WEBSITE_BANNER:      { label: 'Website Banner (monthly)',    markets: { NATIONAL: { price: 500000  } } },
+      SOCIAL_AMPLIFICATION:{ label: 'Social Media Amplification', markets: { NATIONAL: { price: 750000  } } },
+      PODCAST_PROMO:       { label: 'Podcast Cross-Promo',         markets: { NATIONAL: { price: 400000  } } },
     }},
   },
 
-  'Channels Television': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      MORNING_60S:   { label: '60s Morning Belt (6AM–3PM)',   markets: { NATIONAL: { price: 61436 } } },
-      MORNING_30S:   { label: '30s Morning Belt (6AM–3PM)',   markets: { NATIONAL: { price: 38736 } } },
-      MORNING_15S:   { label: '15s Morning Belt (6AM–3PM)',   markets: { NATIONAL: { price: 28009 } } },
-      EVENING_60S:   { label: '60s Evening Belt (3PM–7PM)',   markets: { NATIONAL: { price: 65531 } } },
-      EVENING_30S:   { label: '30s Evening Belt (3PM–7PM)',   markets: { NATIONAL: { price: 41399 } } },
-      PRIME_60S:     { label: '60s Prime Belt (7PM–11PM)',    markets: { NATIONAL: { price: 88030 } } },
-      PRIME_30S:     { label: '30s Prime Belt (7PM–11PM)',    markets: { NATIONAL: { price: 58420 } } },
-      PRIME_15S:     { label: '15s Prime Belt (7PM–11PM)',    markets: { NATIONAL: { price: 38736 } } },
-      LATE_60S:      { label: '60s Late Night (11PM–6AM)',    markets: { NATIONAL: { price: 58420 } } },
-      LATE_30S:      { label: '30s Late Night (11PM–6AM)',    markets: { NATIONAL: { price: 36497 } } },
-    }},
-    SPECIAL_PROGRAMMES: { label: 'Special Programmes', options: {
-      SUNRISE_60S:   { label: 'Sunrise / Business Morning 60s', markets: { NATIONAL: { price: 188972 } } },
-      SUNRISE_30S:   { label: 'Sunrise / Business Morning 30s', markets: { NATIONAL: { price: 134980 } } },
-      POLITICS_TODAY_30S: { label: 'Politics Today 30s',       markets: { NATIONAL: { price: 242965 } } },
-      EIGHT_PM_NEWS_30S:  { label: '8PM News 30s',             markets: { NATIONAL: { price: 202470 } } },
-      NEWS_AT_TEN_60S:    { label: 'News at Ten 60s',          markets: { NATIONAL: { price: 739458 } } },
-      SPECIAL_EVENTS:     { label: 'Special Events News (10PM)', markets: { NATIONAL: { price: 2253000 } } },
-      LIVE_COVERAGE:      { label: 'Live Coverage (min 1 hour)', markets: { NATIONAL: { price: 5000000 } } },
-    }},
-    SPONSORSHIP: { label: 'Programme Features & Sponsorships', options: {
-      SEGMENT_15MINS:  { label: 'Segment Sponsorship 15 mins', markets: { NATIONAL: { price: 1175040 } } },
-      SEGMENT_10MINS:  { label: 'Segment Sponsorship 10 mins', markets: { NATIONAL: { price: 720000 } } },
-      SEGMENT_5MINS:   { label: 'Segment Sponsorship 5 mins',  markets: { NATIONAL: { price: 540000 } } },
-      HEALTH_MATTER:   { label: 'Health Matter Appearance',     markets: { NATIONAL: { price: 850500 } } },
-      BUSINESS_MORNING:{ label: 'Business Morning Appearance',  markets: { NATIONAL: { price: 901200 } } },
-    }},
-  },
 
-  'TVC Communications': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      MORNING_60S: { label: '60s (5AM–4PM)', markets: { NATIONAL: { price: 100000 } } },
-      MORNING_30S: { label: '30s (5AM–4PM)', markets: { NATIONAL: { price: 60000  } } },
-      MORNING_15S: { label: '15s (5AM–4PM)', markets: { NATIONAL: { price: 35000  } } },
-      EVENING_60S: { label: '60s (4PM–7PM)', markets: { NATIONAL: { price: 120000 } } },
-      EVENING_30S: { label: '30s (4PM–7PM)', markets: { NATIONAL: { price: 70000  } } },
-      PRIME_60S:   { label: '60s (7PM–12AM)',markets: { NATIONAL: { price: 150000 } } },
-      PRIME_30S:   { label: '30s (7PM–12AM)',markets: { NATIONAL: { price: 80000  } } },
-      PRIME_15S:   { label: '15s (7PM–12AM)',markets: { NATIONAL: { price: 50000  } } },
-    }},
-    SPECIAL: { label: 'Special Positions & Live Coverage', options: {
-      CORPORATE_NEWS_MENTION: { label: 'Corporate News Mention (10PM)', markets: { NATIONAL: { price: 3100000 } } },
-      GOVERNMENT_NEWS_MENTION:{ label: 'Government News Mention (10PM)',markets: { NATIONAL: { price: 3500000 } } },
-      LIVE_WITHIN_LAGOS:      { label: 'Live Coverage Within Lagos/Abuja',markets: { NATIONAL: { price: 6000000 } } },
-      LIVE_OUTSIDE_LAGOS:     { label: 'Live Coverage Outside Lagos',   markets: { NATIONAL: { price: 6500000 } } },
-      LIVE_WITH_OB_VAN:       { label: 'Live Coverage with OB Van',      markets: { NATIONAL: { price: 7500000 } } },
-      YOUR_VIEW_APPEARANCE:   { label: 'Your View / Journalists Hangout', markets: { NATIONAL: { price: 3750000 } } },
-      BUSINESS_APPEARANCE:    { label: 'Wake Up Nigeria / Business Nigeria',markets: { NATIONAL: { price: 3000000 } } },
-      POLITICS_APPEARANCE:    { label: 'Politics / Government Focus',    markets: { NATIONAL: { price: 4000000 } } },
-      SEGMENT_SPONSORSHIP:    { label: 'Segment Sponsorship (10 mins)',  markets: { NATIONAL: { price: 3500000 } } },
-    }},
-    INDEPENDENT_PROGRAMMES: { label: 'Independent Programmes', options: {
-      TVC_ENTERTAINMENT: { label: 'TVC Entertainment (Independent)', markets: { NATIONAL: { price: 10000000 } } },
-      TVC_NEWS:          { label: 'TVC News (Independent)',          markets: { NATIONAL: { price: 14250000 } } },
-    }},
-  },
-
-  'ONTV': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SIXTY_SECONDS:    { label: '60 Seconds', markets: { NATIONAL: { price: 322500 } } },
-      FORTY_FIVE_SECS:  { label: '45 Seconds', markets: { NATIONAL: { price: 270000 } } },
-      THIRTY_SECONDS:   { label: '30 Seconds', markets: { NATIONAL: { price: 250000 } } },
-      FIFTEEN_SECONDS:  { label: '15 Seconds', markets: { NATIONAL: { price: 200250 } } },
-    }},
-    AIRTIME_SPONSORSHIP: { label: 'Airtime Sponsorship', options: {
-      SIXTY_MINS:   { label: '60 Minutes', markets: { NATIONAL: { price: 3000000 } } },
-      THIRTY_MINS:  { label: '30 Minutes', markets: { NATIONAL: { price: 2000000 } } },
-      FIFTEEN_MINS: { label: '15 Minutes', markets: { NATIONAL: { price: 1000000 } } },
-    }},
-    EVENT_COVERAGE: { label: 'Event Coverage', options: {
-      LAGOS:         { label: 'Event Coverage Lagos',         markets: { LAGOS:    { price: 10000000 } } },
-      OUTSIDE_LAGOS: { label: 'Event Coverage Outside Lagos', markets: { NATIONAL: { price: 15000000 } } },
-    }},
-  },
-
-  'Soundcity TV': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SIXTY_SECONDS:   { label: '60 Seconds', markets: { NATIONAL: { price: 322500 } } },
-      FORTY_FIVE_SECS: { label: '45 Seconds', markets: { NATIONAL: { price: 270000 } } },
-      THIRTY_SECONDS:  { label: '30 Seconds', markets: { NATIONAL: { price: 250000 } } },
-      FIFTEEN_SECONDS: { label: '15 Seconds', markets: { NATIONAL: { price: 200250 } } },
-    }},
-    AIRTIME_SPONSORSHIP: { label: 'Airtime Sponsorship', options: {
-      SIXTY_MINS:   { label: '60 Minutes', markets: { NATIONAL: { price: 3000000 } } },
-      THIRTY_MINS:  { label: '30 Minutes', markets: { NATIONAL: { price: 2000000 } } },
-      FIFTEEN_MINS: { label: '15 Minutes', markets: { NATIONAL: { price: 1000000 } } },
-    }},
-  },
-
-  'Africa Magic Urban': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      OFFPEAK_30S: { label: '30s Off-Peak', markets: { NATIONAL: { price: 220000 } } },
-      OFFPEAK_60S: { label: '60s Off-Peak', markets: { NATIONAL: { price: 420000 } } },
-      PRIME_30S:   { label: '30s Prime Time',markets: { NATIONAL: { price: 420000 } } },
-      PRIME_60S:   { label: '60s Prime Time',markets: { NATIONAL: { price: 750000 } } },
-    }},
-    SPONSORSHIP: { label: 'Sponsorship & Integration', options: {
-      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship', markets: { NATIONAL: { price: 7500000  } } },
-      PRESENTER_MENTION:     { label: 'Presenter Mention',     markets: { NATIONAL: { price: 650000   } } },
-      BRAND_INTEGRATION:     { label: 'Brand Integration',     markets: { NATIONAL: { price: 3750000  } } },
-      EVENT_COVERAGE:        { label: 'Event Coverage',        markets: { NATIONAL: { price: 5000000  } } },
-    }},
-  },
-
-  'Africa Magic Family': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      OFFPEAK_30S: { label: '30s Off-Peak', markets: { NATIONAL: { price: 180000 } } },
-      OFFPEAK_60S: { label: '60s Off-Peak', markets: { NATIONAL: { price: 340000 } } },
-      PRIME_30S:   { label: '30s Prime Time',markets: { NATIONAL: { price: 320000 } } },
-      PRIME_60S:   { label: '60s Prime Time',markets: { NATIONAL: { price: 580000 } } },
-    }},
-    SPONSORSHIP: { label: 'Sponsorship & Integration', options: {
-      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship', markets: { NATIONAL: { price: 5000000 } } },
-      PRESENTER_MENTION:     { label: 'Presenter Mention',     markets: { NATIONAL: { price: 475000  } } },
-      BRAND_INTEGRATION:     { label: 'Brand Integration',     markets: { NATIONAL: { price: 2500000 } } },
-    }},
-  },
-
-  'Spice TV': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SIXTY_SECONDS:   { label: '60 Seconds', markets: { NATIONAL: { price: 129855 } } },
-      FORTY_FIVE_SECS: { label: '45 Seconds', markets: { NATIONAL: { price: 108750 } } },
-      THIRTY_SECONDS:  { label: '30 Seconds', markets: { NATIONAL: { price: 92350  } } },
-      FIFTEEN_SECONDS: { label: '15 Seconds', markets: { NATIONAL: { price: 89650  } } },
-    }},
-  },
-
-  'Trybe TV': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SIXTY_SECONDS:   { label: '60 Seconds', markets: { NATIONAL: { price: 250950 } } },
-      FORTY_FIVE_SECS: { label: '45 Seconds', markets: { NATIONAL: { price: 225450 } } },
-      THIRTY_SECONDS:  { label: '30 Seconds', markets: { NATIONAL: { price: 198500 } } },
-      FIFTEEN_SECONDS: { label: '15 Seconds', markets: { NATIONAL: { price: 145250 } } },
-    }},
-  },
-
-  'Televista': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SIXTY_SECONDS:   { label: '60 Seconds', markets: { NATIONAL: { price: 250950 } } },
-      FORTY_FIVE_SECS: { label: '45 Seconds', markets: { NATIONAL: { price: 225450 } } },
-      THIRTY_SECONDS:  { label: '30 Seconds', markets: { NATIONAL: { price: 198500 } } },
-      FIFTEEN_SECONDS: { label: '15 Seconds', markets: { NATIONAL: { price: 145250 } } },
-    }},
-  },
-
-  'Access24 TV': {
-    COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SIXTY_SECONDS:   { label: '60 Seconds', markets: { NATIONAL: { price: 129855 } } },
-      FORTY_FIVE_SECS: { label: '45 Seconds', markets: { NATIONAL: { price: 108750 } } },
-      THIRTY_SECONDS:  { label: '30 Seconds', markets: { NATIONAL: { price: 92350  } } },
-      FIFTEEN_SECONDS: { label: '15 Seconds', markets: { NATIONAL: { price: 89650  } } },
-    }},
-  },
-
-  // ══════════════════════════════════════════
-  // RADIO
-  // ══════════════════════════════════════════
 
   'Cool FM': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
@@ -291,53 +143,102 @@ const PROVIDER_INVENTORY = {
 
   'Classic FM': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      SUPER_PREMIUM_30S: { label: '30s Super Premium', markets: { LAGOS: { price: 12300 }, ABUJA: { price: 7722 } } },
+      OFFPEAK_15S:  { label: '15s Off-Peak',   markets: { LAGOS: { price: 7380  }, ABUJA: { price: 4633  } } },
+      OFFPEAK_30S:  { label: '30s Off-Peak',   markets: { LAGOS: { price: 12300 }, ABUJA: { price: 7722  } } },
+      OFFPEAK_60S:  { label: '60s Off-Peak',   markets: { LAGOS: { price: 22140 }, ABUJA: { price: 13900 } } },
+      PRIME_15S:    { label: '15s Prime Time', markets: { LAGOS: { price: 18450 }, ABUJA: { price: 11583 } } },
+      PRIME_30S:    { label: '30s Prime Time', markets: { LAGOS: { price: 24600 }, ABUJA: { price: 15444 } } },
+      PRIME_60S:    { label: '60s Prime Time', markets: { LAGOS: { price: 36900 }, ABUJA: { price: 23166 } } },
     }},
     PROGRAMME_SPONSORSHIPS: { label: 'Programme Sponsorships', options: {
       PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship', markets: { LAGOS: { price: 500000 }, ABUJA: { price: 173710 } } },
       NEWS_MENTION:          { label: 'News Mention',          markets: { LAGOS: { price: 100000 }, ABUJA: { price: 40000  } } },
+      MORNING_DRIVE_SPONSOR: { label: 'Morning Drive Sponsorship', markets: { LAGOS: { price: 750000 }, ABUJA: { price: 350000 } } },
+      TRAFFIC_UPDATE_SPONSOR:{ label: 'Traffic Update Sponsorship', markets: { LAGOS: { price: 200000 }, ABUJA: { price: 100000 } } },
     }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production',  markets: { LAGOS: { price: 150000 }, ABUJA: { price: 60000 } } },
+      VOICE_OVER:        { label: 'Voice Over',          markets: { LAGOS: { price: 75000  }, ABUJA: { price: 35000 } } },
       OUTDOOR_BROADCAST: { label: 'Outdoor Broadcast',  markets: { LAGOS: { price: 500000 } } },
+      OAP_HYPE:          { label: 'On-Air Hype',        markets: { LAGOS: { price: 180000 }, ABUJA: { price: 100000 } } },
+    }},
+    DIGITAL: { label: 'Digital & Streaming', options: {
+      ONLINE_STREAM_AD: { label: 'Online Stream Ad (per week)', markets: { LAGOS: { price: 80000 }, ABUJA: { price: 50000 } } },
+      SOCIAL_MENTION:   { label: 'Social Media Mention',        markets: { LAGOS: { price: 60000 }, ABUJA: { price: 40000 } } },
+      WEBSITE_BANNER:   { label: 'Website Banner (monthly)',    markets: { LAGOS: { price: 150000 } } },
     }},
   },
 
   'Naija FM': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
+      OFFPEAK_15S:  { label: '15s Off-Peak',   markets: { LAGOS: { price: 5753  } } },
+      OFFPEAK_30S:  { label: '30s Off-Peak',   markets: { LAGOS: { price: 9588  } } },
+      OFFPEAK_60S:  { label: '60s Off-Peak',   markets: { LAGOS: { price: 17258 } } },
+      PREMIUM_30S:  { label: '30s Premium',    markets: { LAGOS: { price: 11797 } } },
       SUPER_PREMIUM_30S: { label: '30s Super Premium', markets: { LAGOS: { price: 13603 } } },
-      PREMIUM_30S:       { label: '30s Premium',       markets: { LAGOS: { price: 11797 } } },
-      REGULAR_30S:       { label: '30s Regular',       markets: { LAGOS: { price: 9588  } } },
+      PRIME_60S:    { label: '60s Prime Time', markets: { LAGOS: { price: 24486 } } },
     }},
     PROGRAMME_SPONSORSHIPS: { label: 'Programme Sponsorships', options: {
-      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship', markets: { LAGOS: { price: 400000 } } },
-      NEWS_MENTION:          { label: 'News Mention',          markets: { LAGOS: { price: 100000 } } },
+      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship',    markets: { LAGOS: { price: 400000 } } },
+      NEWS_MENTION:          { label: 'News Mention',             markets: { LAGOS: { price: 100000 } } },
+      MORNING_DRIVE_SPONSOR: { label: 'Morning Drive Sponsorship',markets: { LAGOS: { price: 600000 } } },
+      TRAFFIC_UPDATE:        { label: 'Traffic Update Sponsorship',markets: { LAGOS: { price: 180000 } } },
     }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production', markets: { LAGOS: { price: 150000 } } },
+      VOICE_OVER:        { label: 'Voice Over',         markets: { LAGOS: { price: 65000  } } },
       OUTDOOR_BROADCAST: { label: 'Outdoor Broadcast', markets: { LAGOS: { price: 500000 } } },
+      OAP_HYPE:          { label: 'On-Air Hype',       markets: { LAGOS: { price: 160000 } } },
+    }},
+    DIGITAL: { label: 'Digital & Streaming', options: {
+      ONLINE_STREAM_AD: { label: 'Online Stream Ad (per week)', markets: { LAGOS: { price: 70000 } } },
+      SOCIAL_MENTION:   { label: 'Social Media Mention',        markets: { LAGOS: { price: 50000 } } },
+      WEBSITE_BANNER:   { label: 'Website Banner (monthly)',    markets: { LAGOS: { price: 120000 } } },
     }},
   },
 
   'Lagos Talks 91.3 FM': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
+      OFFPEAK_15S:  { label: '15s Off-Peak',   markets: { LAGOS: { price: 4506  } } },
+      OFFPEAK_30S:  { label: '30s Off-Peak',   markets: { LAGOS: { price: 7510  } } },
+      OFFPEAK_60S:  { label: '60s Off-Peak',   markets: { LAGOS: { price: 13518 } } },
+      PREMIUM_30S:  { label: '30s Premium',    markets: { LAGOS: { price: 9570  } } },
       SUPER_PREMIUM_30S: { label: '30s Super Premium', markets: { LAGOS: { price: 10962 } } },
-      PREMIUM_30S:       { label: '30s Premium',       markets: { LAGOS: { price: 9570  } } },
-      REGULAR_30S:       { label: '30s Regular',       markets: { LAGOS: { price: 7510  } } },
+      PRIME_60S:    { label: '60s Prime Time', markets: { LAGOS: { price: 21924 } } },
     }},
     PROGRAMME_SPONSORSHIPS: { label: 'Programme Sponsorships', options: {
-      PROGRAMME_SPONSORSHIP: { label: 'Programme Sponsorship', markets: { LAGOS: { price: 500000 } } },
-      NEWS_MENTION:          { label: 'News Mention',          markets: { LAGOS: { price: 100000 } } },
+      PROGRAMME_SPONSORSHIP:  { label: 'Programme Sponsorship',     markets: { LAGOS: { price: 500000 } } },
+      NEWS_MENTION:           { label: 'News Mention',              markets: { LAGOS: { price: 100000 } } },
+      MORNING_DRIVE_SPONSOR:  { label: 'Morning Drive Sponsorship', markets: { LAGOS: { price: 650000 } } },
+      TRAFFIC_UPDATE:         { label: 'Traffic Update Sponsorship',markets: { LAGOS: { price: 180000 } } },
     }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production', markets: { LAGOS: { price: 150000 } } },
+      VOICE_OVER:        { label: 'Voice Over',         markets: { LAGOS: { price: 65000  } } },
       OUTDOOR_BROADCAST: { label: 'Outdoor Broadcast', markets: { LAGOS: { price: 500000 } } },
+      OAP_HYPE:          { label: 'On-Air Hype',       markets: { LAGOS: { price: 145000 } } },
+    }},
+    DIGITAL: { label: 'Digital & Streaming', options: {
+      ONLINE_STREAM_AD: { label: 'Online Stream Ad (per week)', markets: { LAGOS: { price: 65000 } } },
+      SOCIAL_MENTION:   { label: 'Social Media Mention',        markets: { LAGOS: { price: 45000 } } },
+      WEBSITE_BANNER:   { label: 'Website Banner (monthly)',    markets: { LAGOS: { price: 110000 } } },
     }},
   },
 
   'Soundcity Radio': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      THIRTY_SECONDS: { label: '30 Seconds', markets: { LAGOS: { price: 18200 } } },
+      OFFPEAK_15S:  { label: '15s Off-Peak',    markets: { LAGOS: { price: 9100  }, ABUJA: { price: 7000  } } },
+      OFFPEAK_30S:  { label: '30s Off-Peak',    markets: { LAGOS: { price: 18200 }, ABUJA: { price: 14000 } } },
+      OFFPEAK_60S:  { label: '60s Off-Peak',    markets: { LAGOS: { price: 32760 }, ABUJA: { price: 25200 } } },
+      PRIME_15S:    { label: '15s Prime Time',  markets: { LAGOS: { price: 13650 }, ABUJA: { price: 10500 } } },
+      PRIME_30S:    { label: '30s Prime Time',  markets: { LAGOS: { price: 27300 }, ABUJA: { price: 21000 } } },
+      PRIME_60S:    { label: '60s Prime Time',  markets: { LAGOS: { price: 49140 }, ABUJA: { price: 37800 } } },
+    }},
+    SPONSORSHIPS: { label: 'Programme Sponsorships', options: {
+      SHOW_SPONSOR:    { label: 'Show Sponsorship (monthly)',    markets: { LAGOS: { price: 450000  } } },
+      NEWS_SPONSOR:    { label: 'News Bulletin Sponsorship',     markets: { LAGOS: { price: 280000  } } },
+      TRAFFIC_SPONSOR: { label: 'Traffic Update Sponsorship',    markets: { LAGOS: { price: 180000  } } },
+      MORNING_DRIVE:   { label: 'Morning Drive Sponsorship',     markets: { LAGOS: { price: 650000  } } },
     }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production',  markets: { LAGOS: { price: 70777 }, OTHER: { price: 28000 } } },
@@ -346,11 +247,30 @@ const PROVIDER_INVENTORY = {
       OAP_HYPE:          { label: 'On-Air Hype',        markets: { LAGOS: { price: 134040 } } },
       LIVE_APPEARANCE:   { label: 'Live Appearance',    markets: { LAGOS: { price: 230480 } } },
     }},
+    DIGITAL: { label: 'Digital & Streaming', options: {
+      ONLINE_STREAM_AD: { label: 'Online Stream Ad (per week)',  markets: { LAGOS: { price: 65000  } } },
+      PODCAST_PROMO:    { label: 'Podcast Episode Promo',        markets: { LAGOS: { price: 45000  } } },
+      SOCIAL_MENTION:   { label: 'Social Media Mention',         markets: { LAGOS: { price: 50000  } } },
+      WEBSITE_BANNER:   { label: 'Website Banner (monthly)',     markets: { LAGOS: { price: 120000 } } },
+    }},
   },
 
   'Urban96 FM': {
     COMMERCIAL_SPOTS: { label: 'Commercial Spots', options: {
-      THIRTY_SECONDS: { label: '30 Seconds', markets: { LAGOS: { price: 18200 } } },
+      FIFTEEN_SECONDS: { label: '15 Seconds Off-Peak',  markets: { LAGOS: { price: 12000 } } },
+      THIRTY_SECONDS:  { label: '30 Seconds Off-Peak',  markets: { LAGOS: { price: 18200 } } },
+      SIXTY_SECONDS:   { label: '60 Seconds Off-Peak',  markets: { LAGOS: { price: 32000 } } },
+      PRIME_30S:       { label: '30 Seconds Prime Time',markets: { LAGOS: { price: 27300 } } },
+      PRIME_60S:       { label: '60 Seconds Prime Time',markets: { LAGOS: { price: 48000 } } },
+    }},
+    SPONSORSHIPS: { label: 'Programme Sponsorships', options: {
+      SHOW_SPONSOR:    { label: 'Show Sponsorship (monthly)', markets: { LAGOS: { price: 350000 } } },
+      TRAFFIC_SPONSOR: { label: 'Traffic Update Sponsorship', markets: { LAGOS: { price: 180000 } } },
+      PROMO_MENTION:   { label: 'Promo Mention (per week)',   markets: { LAGOS: { price: 85000  } } },
+    }},
+    DIGITAL: { label: 'Digital & Streaming', options: {
+      ONLINE_STREAM:   { label: 'Online Stream Ad (per week)',  markets: { LAGOS: { price: 65000  } } },
+      SOCIAL_MENTION:  { label: 'Social Media Mention',         markets: { LAGOS: { price: 45000  } } },
     }},
   },
 
@@ -360,10 +280,12 @@ const PROVIDER_INVENTORY = {
 
   'I Said What I Said': {
     AUDIO_ADS: { label: 'Audio Ads', options: {
-      PRE_ROLL:               { label: 'Pre-Roll (15–30s)',       markets: { PER_EPISODE: { price: 900000  } } },
-      MID_ROLL:               { label: 'Mid-Roll (30–60s)',       markets: { PER_EPISODE: { price: 2125000 } } },
+      PRE_ROLL_15S:           { label: 'Pre-Roll (15s)',          markets: { PER_EPISODE: { price: 500000  } } },
+      PRE_ROLL_30S:           { label: 'Pre-Roll (30s)',          markets: { PER_EPISODE: { price: 900000  } } },
+      MID_ROLL_60S:           { label: 'Mid-Roll (60s)',          markets: { PER_EPISODE: { price: 2125000 } } },
       POST_ROLL:              { label: 'Post-Roll',               markets: { PER_EPISODE: { price: 500000  } } },
       FULL_EPISODE_SPONSOR:   { label: 'Full Episode Sponsorship',markets: { PER_EPISODE: { price: 6000000 } } },
+      SERIES_SPONSORSHIP:     { label: 'Series Sponsorship (10 eps)', markets: { PER_CAMPAIGN: { price: 15000000 } } },
     }},
     VIDEO_PODCAST: { label: 'Video Podcast (YouTube)', options: {
       YOUTUBE_MID_ROLL:       { label: 'YouTube Mid-roll Mention',  markets: { PER_VIDEO: { price: 1075000 } } },
@@ -374,6 +296,12 @@ const PROVIDER_INVENTORY = {
     TALENT: { label: 'Talent & Host Inventory', options: {
       HOST_MENTION:           { label: 'Host Mention',             markets: { PER_EPISODE: { price: 800000  } } },
       SOCIAL_CROSS_PROMO:     { label: 'Social Media Cross Promo', markets: { PER_POST:    { price: 1575000 } } },
+    }},
+    DIGITAL_SOCIAL: { label: 'Digital & Social', options: {
+      INSTAGRAM_POST:   { label: 'Instagram Feed Post',   markets: { PER_POST:  { price: 1200000 } } },
+      INSTAGRAM_REEL:   { label: 'Instagram Reel',        markets: { PER_REEL:  { price: 1500000 } } },
+      INSTAGRAM_STORY:  { label: 'Instagram Story',       markets: { PER_STORY: { price: 500000  } } },
+      TIKTOK_VIDEO:     { label: 'TikTok Video',          markets: { PER_VIDEO: { price: 1200000 } } },
     }},
   },
 
@@ -390,28 +318,98 @@ const PROVIDER_INVENTORY = {
   },
 
   // Generic podcast template for all other podcasts
-  'Tea With Tay':              { AUDIO_ADS: { label: 'Audio Ads', options: { PRE_ROLL: { label: 'Pre-Roll', markets: { PER_EPISODE: { price: 300000 } } }, MID_ROLL: { label: 'Mid-Roll', markets: { PER_EPISODE: { price: 900000 } } }, FULL_EPISODE: { label: 'Full Episode Sponsorship', markets: { PER_EPISODE: { price: 1900000 } } } } } },
-  'Menisms':                   { AUDIO_ADS: { label: 'Audio Ads', options: { PRE_ROLL: { label: 'Pre-Roll', markets: { PER_EPISODE: { price: 250000 } } }, MID_ROLL: { label: 'Mid-Roll', markets: { PER_EPISODE: { price: 750000 } } }, FULL_EPISODE: { label: 'Full Episode Sponsorship', markets: { PER_EPISODE: { price: 1500000 } } } } } },
-  'WithChude':                 { AUDIO_ADS: { label: 'Audio Ads', options: { PRE_ROLL: { label: 'Pre-Roll', markets: { PER_EPISODE: { price: 300000 } } }, MID_ROLL: { label: 'Mid-Roll', markets: { PER_EPISODE: { price: 900000 } } }, FULL_EPISODE: { label: 'Full Episode Sponsorship', markets: { PER_EPISODE: { price: 1900000 } } } } } },
-  'Loose Talk Podcast':        { AUDIO_ADS: { label: 'Audio Ads', options: { PRE_ROLL: { label: 'Pre-Roll', markets: { PER_EPISODE: { price: 400000 } } }, MID_ROLL: { label: 'Mid-Roll', markets: { PER_EPISODE: { price: 1200000 } } }, FULL_EPISODE: { label: 'Full Episode Sponsorship', markets: { PER_EPISODE: { price: 3000000 } } } } } },
-  'Bahd and Boujee Podcast':   { AUDIO_ADS: { label: 'Audio Ads', options: { PRE_ROLL: { label: 'Pre-Roll', markets: { PER_EPISODE: { price: 250000 } } }, MID_ROLL: { label: 'Mid-Roll', markets: { PER_EPISODE: { price: 750000 } } }, FULL_EPISODE: { label: 'Full Episode Sponsorship', markets: { PER_EPISODE: { price: 1500000 } } } } } },
-
-  // ══════════════════════════════════════════
-  // OOH
-  // ══════════════════════════════════════════
-
+  'Tea With Tay': {
+    PODCAST_ADS: { label: 'Podcast Advertising', options: {
+      PRE_ROLL_30S:    { label: 'Pre-Roll (30s)',              markets: { PER_EPISODE: { price: 190000  } } },
+      MID_ROLL_60S:    { label: 'Mid-Roll (60s)',              markets: { PER_EPISODE: { price: 380000  } } },
+      POST_ROLL_30S:   { label: 'Post-Roll (30s)',             markets: { PER_EPISODE: { price: 126666  } } },
+      EPISODE_SPONSOR: { label: 'Full Episode Sponsorship',   markets: { PER_EPISODE: { price: 570000  } } },
+      SERIES_SPONSOR:  { label: 'Series Sponsorship (10 eps)',markets: { PER_CAMPAIGN: { price: 1400000 } } },
+    }},
+    SOCIAL_INTEGRATION: { label: 'Social Media Integration', options: {
+      IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 100000 } } },
+      IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 200000 } } },
+      IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 160000 } } },
+    }},
+  },
+  'Menisms': {
+    PODCAST_ADS: { label: 'Podcast Advertising', options: {
+      PRE_ROLL_30S:    { label: 'Pre-Roll (30s)',              markets: { PER_EPISODE: { price: 160000   } } },
+      MID_ROLL_60S:    { label: 'Mid-Roll (60s)',              markets: { PER_EPISODE: { price: 320000   } } },
+      POST_ROLL_30S:   { label: 'Post-Roll (30s)',             markets: { PER_EPISODE: { price: 106666   } } },
+      EPISODE_SPONSOR: { label: 'Full Episode Sponsorship',   markets: { PER_EPISODE: { price: 480000 } } },
+      SERIES_SPONSOR:  { label: 'Series Sponsorship (10 eps)',markets: { PER_CAMPAIGN: { price: 1200000 } } },
+    }},
+    SOCIAL_INTEGRATION: { label: 'Social Media Integration', options: {
+      IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 80000  } } },
+      IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 160000  } } },
+      IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 128000 } } },
+    }},
+  },
+  'WithChude': {
+    PODCAST_ADS: { label: 'Podcast Advertising', options: {
+      PRE_ROLL_30S:    { label: 'Pre-Roll (30s)',              markets: { PER_EPISODE: { price: 290000   } } },
+      MID_ROLL_60S:    { label: 'Mid-Roll (60s)',              markets: { PER_EPISODE: { price: 580000   } } },
+      POST_ROLL_30S:   { label: 'Post-Roll (30s)',             markets: { PER_EPISODE: { price: 193333   } } },
+      EPISODE_SPONSOR: { label: 'Full Episode Sponsorship',   markets: { PER_EPISODE: { price: 870000 } } },
+      SERIES_SPONSOR:  { label: 'Series Sponsorship (10 eps)',markets: { PER_CAMPAIGN: { price: 2200000 } } },
+    }},
+    SOCIAL_INTEGRATION: { label: 'Social Media Integration', options: {
+      IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 150000  } } },
+      IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 300000  } } },
+      IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 240000 } } },
+    }},
+  },
+  'Loose Talk Podcast': {
+    PODCAST_ADS: { label: 'Podcast Advertising', options: {
+      PRE_ROLL_30S:    { label: 'Pre-Roll (30s)',              markets: { PER_EPISODE: { price: 225000   } } },
+      MID_ROLL_60S:    { label: 'Mid-Roll (60s)',              markets: { PER_EPISODE: { price: 450000   } } },
+      POST_ROLL_30S:   { label: 'Post-Roll (30s)',             markets: { PER_EPISODE: { price: 150000   } } },
+      EPISODE_SPONSOR: { label: 'Full Episode Sponsorship',   markets: { PER_EPISODE: { price: 675000 } } },
+      SERIES_SPONSOR:  { label: 'Series Sponsorship (10 eps)',markets: { PER_CAMPAIGN: { price: 1800000 } } },
+    }},
+    SOCIAL_INTEGRATION: { label: 'Social Media Integration', options: {
+      IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 115000  } } },
+      IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 230000  } } },
+      IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 184000 } } },
+    }},
+  },
+  'Bahd and Boujee Podcast': {
+    PODCAST_ADS: { label: 'Podcast Advertising', options: {
+      PRE_ROLL_30S:    { label: 'Pre-Roll (30s)',              markets: { PER_EPISODE: { price: 180000   } } },
+      MID_ROLL_60S:    { label: 'Mid-Roll (60s)',              markets: { PER_EPISODE: { price: 360000   } } },
+      POST_ROLL_30S:   { label: 'Post-Roll (30s)',             markets: { PER_EPISODE: { price: 120000   } } },
+      EPISODE_SPONSOR: { label: 'Full Episode Sponsorship',   markets: { PER_EPISODE: { price: 540000 } } },
+      SERIES_SPONSOR:  { label: 'Series Sponsorship (10 eps)',markets: { PER_CAMPAIGN: { price: 1400000 } } },
+    }},
+    SOCIAL_INTEGRATION: { label: 'Social Media Integration', options: {
+      IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 90000  } } },
+      IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 180000  } } },
+      IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 144000 } } },
+    }},
+  },
   'XL Billboards': {
     STATIC_BILLBOARDS: { label: 'Static Billboards (monthly)', options: {
-      SMALL_SECONDARY:  { label: 'Small Billboard — Secondary Roads',  markets: { LAGOS: { price: 550000  }, ABUJA: { price: 400000 }, PORT_HARCOURT: { price: 350000 } } },
-      MEDIUM_SECONDARY: { label: 'Medium Billboard — Secondary Roads', markets: { LAGOS: { price: 1150000 }, ABUJA: { price: 800000 }, PORT_HARCOURT: { price: 700000 } } },
-      LARGE_SECONDARY:  { label: 'Large Billboard — Secondary Roads',  markets: { LAGOS: { price: 2250000 }, ABUJA: { price: 1500000 } } },
-      SMALL_PRIME:      { label: 'Small Billboard — Prime Highway',    markets: { LAGOS: { price: 1500000 }, ABUJA: { price: 1000000 } } },
-      MEDIUM_PRIME:     { label: 'Medium Billboard — Prime Highway',   markets: { LAGOS: { price: 3500000 }, ABUJA: { price: 2500000 } } },
-      LARGE_PRIME:      { label: 'Large Billboard — Prime Highway',    markets: { LAGOS: { price: 10000000 } } },
+      SMALL_SECONDARY:  { label: 'Small — Secondary Roads',   markets: { LAGOS: { price: 550000  }, ABUJA: { price: 400000 }, PORT_HARCOURT: { price: 350000 } } },
+      MEDIUM_SECONDARY: { label: 'Medium — Secondary Roads',  markets: { LAGOS: { price: 1150000 }, ABUJA: { price: 800000 }, PORT_HARCOURT: { price: 700000 } } },
+      LARGE_SECONDARY:  { label: 'Large — Secondary Roads',   markets: { LAGOS: { price: 2250000 }, ABUJA: { price: 1500000 } } },
+      SMALL_PRIME:      { label: 'Small — Prime Highway',     markets: { LAGOS: { price: 1500000 }, ABUJA: { price: 1000000 } } },
+      MEDIUM_PRIME:     { label: 'Medium — Prime Highway',    markets: { LAGOS: { price: 3500000 }, ABUJA: { price: 2500000 } } },
+      LARGE_PRIME:      { label: 'Large — Prime Highway',     markets: { LAGOS: { price: 10000000 } } },
     }},
     ROOFTOP: { label: 'Rooftop Boards (monthly)', options: {
       ROOFTOP_STANDARD: { label: 'Standard Rooftop', markets: { LAGOS: { price: 2750000  } } },
       ROOFTOP_PREMIUM:  { label: 'Premium Rooftop',  markets: { LAGOS: { price: 12500000 } } },
+    }},
+    DIGITAL_LED: { label: 'Digital LED Boards (monthly)', options: {
+      LED_10S:  { label: '10s Rotation — Prime',    markets: { LAGOS: { price: 2500000 }, ABUJA: { price: 1800000 } } },
+      LED_15S:  { label: '15s Rotation — Prime',    markets: { LAGOS: { price: 3500000 }, ABUJA: { price: 2500000 } } },
+      LED_30S:  { label: '30s Rotation — Prime',    markets: { LAGOS: { price: 7000000 }, ABUJA: { price: 5000000 } } },
+    }},
+    UNIPOLE: { label: 'Unipoles & Gantries (monthly)', options: {
+      UNIPOLE_STANDARD: { label: 'Standard Unipole',     markets: { LAGOS: { price: 4500000 }, ABUJA: { price: 3200000 } } },
+      UNIPOLE_MEGA:     { label: 'Mega Unipole',         markets: { LAGOS: { price: 9000000 } } },
+      EXPRESSWAY_GANTRY:{ label: 'Expressway Gantry',    markets: { LAGOS: { price: 15000000 } } },
     }},
   },
 
@@ -442,12 +440,22 @@ const PROVIDER_INVENTORY = {
       DEPARTURE_HALL:   { label: 'Departure Hall Branding',markets: { MURTALA_MUHAMMED: { price: 12500000 }, ABUJA_NNAMDI: { price: 8000000  } } },
       CONVEYOR_BELT:    { label: 'Conveyor Belt Branding', markets: { NATIONAL: { price: 5000000  } } },
       AIRPORT_GANTRY:   { label: 'Airport Gantry',         markets: { NATIONAL: { price: 30000000 } } },
+      DIGITAL_TOTEM:    { label: 'Digital Totem (per week)',markets: { MURTALA_MUHAMMED: { price: 2500000 }, ABUJA_NNAMDI: { price: 1800000 } } },
     }},
     MALL_RETAIL: { label: 'Mall & Retail Screens (monthly)', options: {
       STANDARD_MALL: { label: 'Standard Mall Screen', markets: { NATIONAL: { price: 1500000 } } },
       PREMIUM_MALL:  { label: 'Premium Mall Screen',  markets: { NATIONAL: { price: 5500000 } } },
       ESCALATOR:     { label: 'Escalator Branding',   markets: { NATIONAL: { price: 4000000 } } },
       FOOD_COURT:    { label: 'Food Court Branding',  markets: { NATIONAL: { price: 3000000 } } },
+    }},
+    STREET_FURNITURE: { label: 'Street Furniture (monthly)', options: {
+      BUS_SHELTER:      { label: 'Bus Shelter Panel',     markets: { LAGOS: { price: 800000  }, ABUJA: { price: 600000 } } },
+      KIOSK_PANEL:      { label: 'Kiosk Panel',           markets: { LAGOS: { price: 550000  }, ABUJA: { price: 400000 } } },
+      PEDESTRIAN_BRIDGE:{ label: 'Pedestrian Bridge',     markets: { LAGOS: { price: 2500000 } } },
+    }},
+    DIGITAL_OOH: { label: 'Digital OOH (monthly)', options: {
+      DIGITAL_STREET:  { label: 'Digital Street Screen (10s loop)',  markets: { LAGOS: { price: 1800000 }, ABUJA: { price: 1200000 } } },
+      PROGRAMMATIC_OOH:{ label: 'Programmatic OOH Activation',       markets: { NATIONAL: { price: 3500000 } } },
     }},
   },
 
@@ -462,14 +470,38 @@ const PROVIDER_INVENTORY = {
       FIFTEEN_SECS:{ label: '15s Rotation', markets: { LAGOS: { price: 2500000 }, ABUJA: { price: 1800000 } } },
       THIRTY_SECS: { label: '30s Rotation', markets: { LAGOS: { price: 5000000 }, ABUJA: { price: 3500000 } } },
     }},
+    UNIPOLE_GANTRY: { label: 'Unipoles & Gantries (monthly)', options: {
+      UNIPOLE_STANDARD:  { label: 'Standard Unipole',   markets: { LAGOS: { price: 4000000 }, ABUJA: { price: 2800000 } } },
+      UNIPOLE_MEGA:      { label: 'Mega Unipole',       markets: { LAGOS: { price: 8500000 } } },
+      BRIDGE_BANNER:     { label: 'Bridge Banner',      markets: { LAGOS: { price: 3500000 }, ABUJA: { price: 2500000 } } },
+      EXPRESSWAY_GANTRY: { label: 'Expressway Gantry',  markets: { LAGOS: { price: 12000000 } } },
+    }},
+    TRANSIT_MEDIA: { label: 'Transit & Street Media (monthly)', options: {
+      BUS_SHELTER:    { label: 'Bus Shelter Panel',  markets: { LAGOS: { price: 650000 }, ABUJA: { price: 500000 } } },
+      TAXI_BRANDING:  { label: 'Taxi Branding',      markets: { LAGOS: { price: 280000 }, ABUJA: { price: 220000 } } },
+      DANFO_BRANDING: { label: 'Danfo Bus Branding', markets: { LAGOS: { price: 250000 } } },
+    }},
   },
 
   'JMT Communications': {
     TRANSIT: { label: 'BRT & Transit Media', options: {
-      FULL_BUS_WRAP:    { label: 'Full Bus Wrap',    markets: { LAGOS: { price: 4000000 } } },
-      HALF_BUS_WRAP:    { label: 'Half Bus Wrap',    markets: { LAGOS: { price: 1900000 } } },
-      INTERIOR_BUS:     { label: 'Interior Branding',markets: { LAGOS: { price: 625000  } } },
+      FULL_BUS_WRAP:    { label: 'Full Bus Wrap (monthly)',    markets: { LAGOS: { price: 4000000 } } },
+      HALF_BUS_WRAP:    { label: 'Half Bus Wrap (monthly)',    markets: { LAGOS: { price: 1900000 } } },
+      INTERIOR_BUS:     { label: 'Interior Branding (monthly)',markets: { LAGOS: { price: 625000  } } },
       BRT_SHELTER:      { label: 'BRT Shelter Branding (monthly)', markets: { LAGOS: { price: 1750000 } } },
+      DANFO_BRANDING:   { label: 'Danfo Bus Branding (monthly)', markets: { LAGOS: { price: 280000 }, ABUJA: { price: 320000 } } },
+    }},
+    AIRPORT_MEDIA: { label: 'Airport Advertising', options: {
+      ARRIVALS_BANNER:  { label: 'Arrivals Hall Banner (monthly)',   markets: { LAGOS: { price: 2800000 }, ABUJA: { price: 2200000 } } },
+      DEPARTURES_BANNER:{ label: 'Departures Hall Banner (monthly)', markets: { LAGOS: { price: 3200000 }, ABUJA: { price: 2500000 } } },
+      BAGGAGE_AREA:     { label: 'Baggage Claim Branding (monthly)', markets: { LAGOS: { price: 1900000 } } },
+      LED_SCREEN:       { label: 'LED Screen (30s loop, per week)',  markets: { LAGOS: { price: 850000 },  ABUJA: { price: 700000 } } },
+    }},
+    MALL_MEDIA: { label: 'Mall & Retail Media', options: {
+      MALL_BANNER:      { label: 'Mall Banner (monthly)',      markets: { LAGOS: { price: 1200000 }, ABUJA: { price: 950000 } } },
+      ELEVATOR_SCREEN:  { label: 'Elevator Screen (monthly)', markets: { LAGOS: { price: 650000 },  ABUJA: { price: 550000 } } },
+      FLOOR_STICKER:    { label: 'Floor Sticker (monthly)',   markets: { LAGOS: { price: 380000 } } },
+      EXPERIENTIAL_ZONE:{ label: 'Experiential Zone (per day)',markets: { LAGOS: { price: 450000 }, ABUJA: { price: 380000 } } },
     }},
   },
 
@@ -526,50 +558,81 @@ const PROVIDER_INVENTORY = {
 
   'Toke Makinwa': {
     SOCIAL_MEDIA: { label: 'Social Media', options: {
-      INSTAGRAM_POST:  { label: 'Instagram Post',  markets: { PER_POST:  { price: 2750000  } } },
-      INSTAGRAM_REEL:  { label: 'Instagram Reel',  markets: { PER_REEL:  { price: 2750000  } } },
-      INSTAGRAM_STORY: { label: 'Instagram Story', markets: { PER_STORY: { price: 1075000  } } },
-      TIKTOK_VIDEO:    { label: 'TikTok Video',    markets: { PER_VIDEO: { price: 2650000  } } },
-      TWITTER_X:       { label: 'Twitter/X Campaign', markets: { PER_POST: { price: 1625000 } } },
+      INSTAGRAM_POST:   { label: 'Instagram Post',     markets: { PER_POST:  { price: 2750000  } } },
+      INSTAGRAM_REEL:   { label: 'Instagram Reel',     markets: { PER_REEL:  { price: 2750000  } } },
+      INSTAGRAM_STORY:  { label: 'Instagram Story',    markets: { PER_STORY: { price: 1075000  } } },
+      INSTAGRAM_SERIES: { label: 'Instagram Series (5 posts)', markets: { PER_CAMPAIGN: { price: 11000000 } } },
+      TIKTOK_VIDEO:     { label: 'TikTok Video',       markets: { PER_VIDEO: { price: 2650000  } } },
+      TWITTER_X:        { label: 'Twitter/X Campaign', markets: { PER_POST:  { price: 1625000  } } },
     }},
     YOUTUBE: { label: 'YouTube & Video', options: {
-      YOUTUBE_INTEGRATION: { label: 'YouTube Integration',    markets: { PER_VIDEO:   { price: 5500000  } } },
-      YOUTUBE_MENTION:     { label: 'YouTube Mid-roll Mention',markets: { PER_VIDEO:  { price: 800000   } } },
+      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',      markets: { PER_VIDEO: { price: 5500000  } } },
+      YOUTUBE_MENTION:      { label: 'YouTube Mid-roll Mention', markets: { PER_VIDEO: { price: 800000   } } },
+      VLOG_FEATURE:         { label: 'Vlog Feature',             markets: { PER_VIDEO: { price: 3500000  } } },
     }},
     BRAND_DEALS: { label: 'Brand Deals', options: {
-      CAMPAIGN_APPEARANCE: { label: 'Campaign Appearance',    markets: { PER_CAMPAIGN: { price: 5000000  } } },
-      EVENT_HOSTING:       { label: 'Event Hosting',          markets: { PER_EVENT:    { price: 2000000  } } },
-      AMBASSADOR_ANNUAL:   { label: 'Brand Ambassador (annual)', markets: { ANNUAL:    { price: 20000000 } } },
+      CAMPAIGN_APPEARANCE:  { label: 'Campaign Appearance',         markets: { PER_CAMPAIGN: { price: 5000000  } } },
+      EVENT_HOSTING:        { label: 'Event Hosting',               markets: { PER_EVENT:    { price: 2000000  } } },
+      AMBASSADOR_QUARTERLY: { label: 'Brand Ambassador (quarterly)',markets: { PER_CAMPAIGN: { price: 8000000  } } },
+      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 20000000 } } },
+    }},
+    PODCAST: { label: 'Podcast (On Air With Toke)', options: {
+      PRE_ROLL:       { label: 'Pre-Roll Mention',       markets: { PER_EPISODE: { price: 600000  } } },
+      MID_ROLL:       { label: 'Mid-Roll Sponsorship',   markets: { PER_EPISODE: { price: 1200000 } } },
+      EPISODE_SPONSOR:{ label: 'Episode Sponsorship',    markets: { PER_EPISODE: { price: 3000000 } } },
     }},
   },
 
   'Mr Macaroni': {
     SOCIAL_MEDIA: { label: 'Social Media', options: {
-      INSTAGRAM_POST:  { label: 'Instagram Post',  markets: { PER_POST:  { price: 2750000 } } },
-      INSTAGRAM_REEL:  { label: 'Instagram Reel',  markets: { PER_REEL:  { price: 2750000 } } },
-      TIKTOK_VIDEO:    { label: 'TikTok Video',    markets: { PER_VIDEO: { price: 2650000 } } },
+      INSTAGRAM_POST:   { label: 'Instagram Post',     markets: { PER_POST:  { price: 2750000  } } },
+      INSTAGRAM_REEL:   { label: 'Instagram Reel',     markets: { PER_REEL:  { price: 2750000  } } },
+      INSTAGRAM_STORY:  { label: 'Instagram Story',    markets: { PER_STORY: { price: 1000000  } } },
+      INSTAGRAM_SERIES: { label: 'Instagram Series (5 posts)', markets: { PER_CAMPAIGN: { price: 10000000 } } },
+      TIKTOK_VIDEO:     { label: 'TikTok Video',       markets: { PER_VIDEO: { price: 2650000  } } },
+      TWITTER_X:        { label: 'Twitter/X Campaign', markets: { PER_POST:  { price: 1500000  } } },
     }},
     VIDEO_CONTENT: { label: 'Video Content', options: {
-      COMEDY_SKIT:         { label: 'Comedy Skit Integration', markets: { PER_SKIT:   { price: 10000000 } } },
-      YOUTUBE_INTEGRATION: { label: 'YouTube Integration',     markets: { PER_VIDEO:  { price: 5500000  } } },
+      COMEDY_SKIT:          { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 10000000 } } },
+      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 5500000  } } },
+      PRODUCT_REVIEW_VIDEO: { label: 'Product Review/Feature',  markets: { PER_VIDEO: { price: 3500000  } } },
     }},
     BRAND_DEALS: { label: 'Brand Deals', options: {
-      CAMPAIGN_APPEARANCE: { label: 'Campaign Appearance', markets: { PER_CAMPAIGN: { price: 5000000  } } },
-      AMBASSADOR_ANNUAL:   { label: 'Brand Ambassador (annual)', markets: { ANNUAL:  { price: 20000000 } } },
+      CAMPAIGN_APPEARANCE:  { label: 'Campaign Appearance',         markets: { PER_CAMPAIGN: { price: 5000000  } } },
+      EVENT_APPEARANCE:     { label: 'Event Appearance',            markets: { PER_EVENT:    { price: 2500000  } } },
+      AMBASSADOR_QUARTERLY: { label: 'Brand Ambassador (quarterly)',markets: { PER_CAMPAIGN: { price: 8000000  } } },
+      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 20000000 } } },
+    }},
+    EXPERIENTIAL: { label: 'Experiential & Live', options: {
+      LIVE_EVENT_HOST:    { label: 'Live Event Hosting',      markets: { PER_EVENT:    { price: 3500000 } } },
+      BRAND_ACTIVATION:   { label: 'Brand Activation Appearance', markets: { PER_EVENT: { price: 2000000 } } },
+      AUTOGRAPH_SESSION:  { label: 'Meet & Greet / Fan Session',  markets: { PER_EVENT: { price: 1500000 } } },
     }},
   },
 
   'Broda Shaggi': {
     SOCIAL_MEDIA: { label: 'Social Media', options: {
-      INSTAGRAM_POST:  { label: 'Instagram Post',  markets: { PER_POST:  { price: 2750000 } } },
-      TIKTOK_VIDEO:    { label: 'TikTok Video',    markets: { PER_VIDEO: { price: 2650000 } } },
+      INSTAGRAM_POST:   { label: 'Instagram Post',     markets: { PER_POST:  { price: 2750000  } } },
+      INSTAGRAM_REEL:   { label: 'Instagram Reel',     markets: { PER_REEL:  { price: 2750000  } } },
+      INSTAGRAM_STORY:  { label: 'Instagram Story',    markets: { PER_STORY: { price: 950000   } } },
+      INSTAGRAM_SERIES: { label: 'Instagram Series (5 posts)', markets: { PER_CAMPAIGN: { price: 10000000 } } },
+      TIKTOK_VIDEO:     { label: 'TikTok Video',       markets: { PER_VIDEO: { price: 2650000  } } },
+      TWITTER_X:        { label: 'Twitter/X Campaign', markets: { PER_POST:  { price: 1400000  } } },
     }},
     VIDEO_CONTENT: { label: 'Video Content', options: {
-      COMEDY_SKIT:         { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 10000000 } } },
-      YOUTUBE_INTEGRATION: { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 5500000  } } },
+      COMEDY_SKIT:          { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 10000000 } } },
+      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 5500000  } } },
+      PRODUCT_REVIEW_VIDEO: { label: 'Product Review/Feature',  markets: { PER_VIDEO: { price: 3200000  } } },
     }},
     BRAND_DEALS: { label: 'Brand Deals', options: {
-      CAMPAIGN_APPEARANCE: { label: 'Campaign Appearance', markets: { PER_CAMPAIGN: { price: 5000000 } } },
+      CAMPAIGN_APPEARANCE:  { label: 'Campaign Appearance',         markets: { PER_CAMPAIGN: { price: 5000000  } } },
+      EVENT_APPEARANCE:     { label: 'Event Appearance',            markets: { PER_EVENT:    { price: 2000000  } } },
+      AMBASSADOR_QUARTERLY: { label: 'Brand Ambassador (quarterly)',markets: { PER_CAMPAIGN: { price: 7500000  } } },
+      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 18000000 } } },
+    }},
+    EXPERIENTIAL: { label: 'Experiential & Live', options: {
+      LIVE_EVENT_HOST:   { label: 'Live Event Hosting',         markets: { PER_EVENT: { price: 3000000 } } },
+      BRAND_ACTIVATION:  { label: 'Brand Activation Appearance',markets: { PER_EVENT: { price: 1800000 } } },
     }},
   },
 };
@@ -623,37 +686,15 @@ const DEFAULT_INVENTORY = {
   },
 };
 
-
-// ── DynamoDB direct via AWS CLI (bypasses API auth)
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-
 async function populateInventory() {
-  console.log('\n🚀 Scanning BrandCastaMedia from DynamoDB directly...\n');
+  console.log(`\n🚀 Fetching all media from: ${API_URL}/media\n`);
 
   let mediaList = [];
   try {
-    const scanParams = JSON.stringify({
-      TableName: 'BrandCastaMedia',
-      ProjectionExpression: 'mediaId, #n, category',
-      ExpressionAttributeNames: { '#n': 'name' }
-    });
-    const paramFile = '/tmp/scan_params.json';
-    fs.writeFileSync(paramFile, scanParams);
-    const raw = execSync(
-      `aws dynamodb scan --cli-input-json file://${paramFile} --region us-east-1 --output json`,
-      { encoding: 'utf8' }
-    );
-    fs.unlinkSync(paramFile);
-    const data = JSON.parse(raw);
-    mediaList = data.Items.map(item => ({
-      mediaId:  item.mediaId.S,
-      name:     item.name.S,
-      category: item.category?.S || '',
-    }));
+    const res = await axios.get(`${API_URL}/media`);
+    mediaList = Array.isArray(res.data) ? res.data : res.data?.media ?? res.data?.data ?? [];
   } catch (e) {
-    console.error('❌ Failed to scan DynamoDB:', e.message);
+    console.error('❌ Failed to fetch media:', e.message);
     process.exit(1);
   }
 
@@ -662,7 +703,11 @@ async function populateInventory() {
   let success = 0, skipped = 0, failed = 0;
 
   for (const m of mediaList) {
-    const { name, category, mediaId } = m;
+    const name     = m.name;
+    const category = m.category;
+    const mediaId  = m.mediaId || m.id || m._id;
+
+    // Use specific inventory if available, else use category default
     const inventory = PROVIDER_INVENTORY[name] || DEFAULT_INVENTORY[category] || {};
 
     if (!Object.keys(inventory).length) {
@@ -672,20 +717,11 @@ async function populateInventory() {
     }
 
     try {
-      const tmpFile = `/tmp/inv_attr.json`;
-      fs.writeFileSync(tmpFile, JSON.stringify({ ':inv': { S: JSON.stringify(inventory) } }));
-      const keyFile = `/tmp/inv_key.json`;
-      fs.writeFileSync(keyFile, JSON.stringify({ mediaId: { S: mediaId } }));
-      execSync(
-        `aws dynamodb update-item --table-name BrandCastaMedia --key file://${keyFile} --update-expression "SET inventory = :inv" --expression-attribute-values file://${tmpFile} --region us-east-1`,
-        { encoding: 'utf8' }
-      );
-      fs.unlinkSync(tmpFile);
-      fs.unlinkSync(keyFile);
+      await axios.patch(`${API_URL}/media/${mediaId}`, { inventory });
       console.log(`  ✅ ${name}`);
       success++;
     } catch (e) {
-      console.error(`  ❌ ${name}: ${e.message?.slice(0, 100)}`);
+      console.error(`  ❌ ${name}: ${e.response?.data?.error || e.message}`);
       failed++;
     }
   }
