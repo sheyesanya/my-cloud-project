@@ -173,7 +173,7 @@ export default function CreateBooking() {
 
         {/* ── STEP 1: BRIEF ── */}
         {step === 1 && (
-          <div className="page-card" style={{ padding:28 }}>
+          <div style={{ padding:28, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
             <h2 style={{ fontFamily:'Manrope,sans-serif', fontSize:18, fontWeight:700, color:'white', marginBottom:6 }}>Campaign Brief</h2>
             <p style={{ fontSize:13, color:'var(--text-muted)', marginBottom:24 }}>Tell us about the brand and campaign goals</p>
             <div className="space-y-5">
@@ -218,7 +218,7 @@ export default function CreateBooking() {
           <div className="space-y-5">
 
             {/* Media picker */}
-            <div className="page-card" style={{ padding:20 }}>
+            <div style={{ padding:20, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
               <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, color:'white', marginBottom:14 }}>Select Media Organisation</p>
 
               {/* Filters */}
@@ -425,7 +425,7 @@ export default function CreateBooking() {
 
             {/* Campaign Cart */}
             {items.length > 0 && (
-              <div className="page-card" style={{ padding:20 }}>
+              <div style={{ padding:20, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
                   <div>
                     <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, color:'white' }}>Campaign Cart</p>
@@ -470,7 +470,7 @@ export default function CreateBooking() {
         {/* ── STEP 3: REVIEW & LAUNCH ── */}
         {step === 3 && (
           <div className="space-y-4">
-            <div className="page-card" style={{ padding:24 }}>
+            <div style={{ padding:24, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
               <h2 style={{ fontFamily:'Manrope,sans-serif', fontSize:18, fontWeight:700, color:'white', marginBottom:16 }}>Review Campaign</h2>
 
               <div style={{ marginBottom:16, padding:'14px 16px', borderRadius:12, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
