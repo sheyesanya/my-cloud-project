@@ -10,7 +10,6 @@ const NAV_ADMIN = [
   { to:'/create-media', label:'Add Media'              },
   { to:'/create-booking',label:'Create Campaign'       },
   { to:'/campaigns',    label:'Campaigns'              },
-  { to:'/social-media',         label:'Social-Media Marketing'},
   { to:'/bookings',     label:'Bookings'               },
   { to:'/applications',   label:'Provider Applications' },
   { to:'/admin/inventory', label:'Inventory Manager'  },
@@ -22,6 +21,7 @@ const NAV_CLIENT = [
   { to:'/media',         label:'Media Inventory'},
   { to:'/create-booking',label:'Create Campaign'},
   { to:'/campaigns',     label:'My Campaigns'   },
+  { to:'/social-media',  label:'Social-Media Marketing'},
 ];
 
 const NAV_PROVIDER = [
