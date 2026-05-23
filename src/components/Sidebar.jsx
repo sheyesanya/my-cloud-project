@@ -21,7 +21,7 @@ const NAV_CLIENT = [
   { to:'/media',         label:'Media Inventory'},
   { to:'/create-booking',label:'Create Campaign'},
   { to:'/campaigns',     label:'My Campaigns'   },
-  { to:'/social-media',  label:'Social-Media Marketing'},
+  { to:'/social-media',  label:'Social-Media & Music Marketing'},
 ];
 
 const NAV_PROVIDER = [
