@@ -1,6 +1,21 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
 import { Link } from 'react-router-dom';
+import { auth } from '../lib/firebase';
+import axios from 'axios';
+
+const API = import.meta.env.VITE_API_URL;
+const MUSIC_EMAIL = 'brandcastang@gmail.com';
+
+const submitMusicBooking = async ({ service, packageName, price, artistName, trackTitle, releaseDate, notes, userEmail }) => {
+  const token = await auth.currentUser?.getIdToken();
+  const headers = token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+  return axios.post(`${API}/music-booking`, {
+    service, packageName, price, artistName, trackTitle, releaseDate, notes,
+    contactEmail: userEmail || auth.currentUser?.email,
+    routeTo: MUSIC_EMAIL,
+  }, { headers });
+};
 
 const TABS = ['Social Media Advertising', 'Music Promotion'];
 
@@ -9,37 +24,37 @@ const PLATFORMS = [
     id: 'meta', name: 'Meta Ads', sub: 'Facebook & Instagram',
     color: '#1877f2', bg: 'rgba(24,119,242,0.08)', border: 'rgba(24,119,242,0.2)',
     formats: ['Feed Image/Video', 'Stories & Reels', 'Carousel', 'Lead Gen Forms', 'Retargeting'],
-    minBudget: '₦100,000', reach: '35M+ Nigerians',
+    minBudget: '₦200,000', reach: '35M+ Nigerians',
   },
   {
     id: 'tiktok', name: 'TikTok Ads', sub: 'Short-form video',
     color: '#ff0050', bg: 'rgba(255,0,80,0.07)', border: 'rgba(255,0,80,0.2)',
     formats: ['In-Feed Video', 'TopView', 'Branded Hashtag', 'Spark Ads', 'Collection Ads'],
-    minBudget: '₦150,000', reach: '12M+ Nigerians',
+    minBudget: '₦300,000', reach: '12M+ Nigerians',
   },
   {
     id: 'google', name: 'Google Ads', sub: 'Search, Display & YouTube',
     color: '#4285f4', bg: 'rgba(66,133,244,0.07)', border: 'rgba(66,133,244,0.2)',
     formats: ['Search Ads', 'Display Network', 'YouTube Pre-roll', 'Performance Max', 'Shopping Ads'],
-    minBudget: '₦200,000', reach: '20M+ daily searches',
+    minBudget: '₦400,000', reach: '20M+ daily searches',
   },
   {
     id: 'x', name: 'X (Twitter) Ads', sub: 'Conversation & trends',
     color: '#e7e7e7', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.12)',
     formats: ['Promoted Posts', 'Trend Takeover', 'Follower Campaigns', 'Video Ads'],
-    minBudget: '₦100,000', reach: '5M+ Nigerian users',
+    minBudget: '₦200,000', reach: '5M+ Nigerian users',
   },
   {
     id: 'linkedin', name: 'LinkedIn Ads', sub: 'B2B & professionals',
     color: '#0a66c2', bg: 'rgba(10,102,194,0.08)', border: 'rgba(10,102,194,0.2)',
     formats: ['Sponsored Content', 'Message Ads', 'Lead Gen Forms', 'Dynamic Ads'],
-    minBudget: '₦300,000', reach: '8M+ professionals',
+    minBudget: '₦600,000', reach: '8M+ professionals',
   },
   {
     id: 'youtube', name: 'YouTube Ads', sub: 'Video advertising',
     color: '#ff0000', bg: 'rgba(255,0,0,0.07)', border: 'rgba(255,0,0,0.2)',
     formats: ['Skippable In-Stream', 'Non-Skippable', 'Bumper Ads', 'Discovery Ads'],
-    minBudget: '₦150,000', reach: '18M+ Nigerian viewers',
+    minBudget: '₦300,000', reach: '18M+ Nigerian viewers',
   },
 ];
 
@@ -77,19 +92,19 @@ const FUNNEL_STAGES = [
 const AD_PACKAGES = [
   {
     name: 'Starter', color: '#a5b4fc', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)',
-    budget: '₦500k – ₦1M/month', platforms: '1–2 platforms',
+    budget: '₦1,000k – ₦2M/month', platforms: '1–2 platforms',
     features: ['Campaign setup & management', 'Ad creative brief', 'Weekly performance report', 'Basic audience targeting'],
     best: 'Small brands launching social ads for the first time',
   },
   {
     name: 'Growth', color: '#5eead4', bg: 'rgba(20,184,166,0.08)', border: 'rgba(20,184,166,0.2)',
-    budget: '₦1M – ₦5M/month', platforms: '2–3 platforms',
+    budget: '₦2M – ₦10M/month', platforms: '2–3 platforms',
     features: ['Full funnel campaign strategy', 'Creative production support', 'A/B testing', 'Bi-weekly strategy call', 'Retargeting setup'],
     best: 'Growing brands scaling paid social', recommended: true,
   },
   {
     name: 'Enterprise', color: '#fcd34d', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)',
-    budget: '₦5M+/month', platforms: 'All platforms',
+    budget: '₦10M+/month', platforms: 'All platforms',
     features: ['Multi-channel funnel architecture', 'Dedicated campaign manager', 'Creative studio access', 'Daily optimisation', 'Custom dashboards & reporting'],
     best: 'Large brands running always-on campaigns',
   },
@@ -112,9 +127,9 @@ const MUSIC_SERVICES = [
       'Follow-up pitching and placement confirmation',
     ],
     packages: [
-      { name: 'Basic', price: '₦150,000', desc: '1 press release · 20 outlets' },
-      { name: 'Standard', price: '₦350,000', desc: '2 press releases · 50 outlets · editorial feature' },
-      { name: 'Premium', price: '₦750,000', desc: '3 press releases · 80+ outlets · interview placement' },
+      { name: 'Basic', price: '₦300,000', desc: '1 press release · 20 outlets' },
+      { name: 'Standard', price: '₦700,000', desc: '2 press releases · 50 outlets · editorial feature' },
+      { name: 'Premium', price: '₦1,500,000', desc: '3 press releases · 80+ outlets · interview placement' },
     ],
   },
   {
@@ -133,9 +148,9 @@ const MUSIC_SERVICES = [
       'Post-appearance content capture and clips',
     ],
     packages: [
-      { name: 'Lagos Circuit', price: '₦500,000', desc: '5 Lagos stations · 2 TV appearances' },
-      { name: 'National Tour', price: '₦1,200,000', desc: '10 stations nationwide · 4 TV shows · 2 podcasts' },
-      { name: 'Full Rollout', price: '₦2,500,000', desc: '20+ stations · 6 TV · 5 podcasts · editorial' },
+      { name: 'Lagos Circuit', price: '₦1,000,000', desc: '5 Lagos stations · 2 TV appearances' },
+      { name: 'National Tour', price: '₦2,400,000', desc: '10 stations nationwide · 4 TV shows · 2 podcasts' },
+      { name: 'Full Rollout', price: '₦5,000,000', desc: '20+ stations · 6 TV · 5 podcasts · editorial' },
     ],
   },
   {
@@ -154,9 +169,9 @@ const MUSIC_SERVICES = [
       'Digital radio: Audiomack, Apple Music editorial pitching',
     ],
     packages: [
-      { name: 'Spark', price: '₦300,000', desc: 'TikTok + Instagram · 2-week push' },
-      { name: 'Amplify', price: '₦750,000', desc: 'All platforms · playlist pitching · 4-week campaign' },
-      { name: 'Chart Push', price: '₦2,000,000', desc: 'Full digital rollout · influencer seeding · chart strategy' },
+      { name: 'Spark', price: '₦600,000', desc: 'TikTok + Instagram · 2-week push' },
+      { name: 'Amplify', price: '₦1,500,000', desc: 'All platforms · playlist pitching · 4-week campaign' },
+      { name: 'Chart Push', price: '₦4,000,000', desc: 'Full digital rollout · influencer seeding · chart strategy' },
     ],
   },
   {
@@ -176,9 +191,9 @@ const MUSIC_SERVICES = [
       'Weekly performance reporting',
     ],
     packages: [
-      { name: 'Single Campaign', price: '₦1,500,000', desc: '4-week single rollout · all channels' },
-      { name: 'EP Campaign',     price: '₦3,500,000', desc: '8-week EP rollout · press + media + digital' },
-      { name: 'Album Campaign',  price: '₦7,500,000', desc: '12-week album rollout · full team · chart strategy' },
+      { name: 'Single Campaign', price: '₦3,000,000', desc: '4-week single rollout · all channels' },
+      { name: 'EP Campaign',     price: '₦7,000,000', desc: '8-week EP rollout · press + media + digital' },
+      { name: 'Album Campaign',  price: '₦15,000,000', desc: '12-week album rollout · full team · chart strategy' },
     ],
   },
 ];
@@ -188,6 +203,42 @@ export default function SocialMediaMarketing() {
   const [activeStage, setActiveStage] = useState(0);
   const [activePlatform, setActivePlat] = useState(null);
   const [activeMusic, setActiveMusic]   = useState('press');
+  const [booking, setBooking]           = useState(null); // { serviceId, packageName, price }
+  const [form, setForm]                 = useState({ artistName:'', trackTitle:'', releaseDate:'', notes:'' });
+  const [submitting, setSubmitting]     = useState(false);
+  const [submitted, setSubmitted]       = useState(false);
+  const [bookingError, setBookingError] = useState('');
+
+  const openBooking = (serviceId, packageName, price) => {
+    setBooking({ serviceId, packageName, price });
+    setForm({ artistName:'', trackTitle:'', releaseDate:'', notes:'' });
+    setSubmitted(false);
+    setBookingError('');
+  };
+
+  const submitBooking = async () => {
+    if (!form.artistName.trim()) { setBookingError('Artist name is required'); return; }
+    setSubmitting(true); setBookingError('');
+    try {
+      await submitMusicBooking({
+        service:     activeService?.name,
+        packageName: booking.packageName,
+        price:       booking.price,
+        artistName:  form.artistName,
+        trackTitle:  form.trackTitle,
+        releaseDate: form.releaseDate,
+        notes:       form.notes,
+        userEmail:   auth.currentUser?.email,
+      });
+      setSubmitted(true);
+    } catch(e) {
+      setBookingError(e.response?.data?.error || 'Booking failed. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const inpStyle = { width:'100%', padding:'9px 12px', borderRadius:8, fontSize:12, outline:'none', background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.12)', color:'white', fontFamily:'Manrope,sans-serif', boxSizing:'border-box' };
 
   const activeService = MUSIC_SERVICES.find(s => s.id === activeMusic);
 
@@ -381,9 +432,9 @@ export default function SocialMediaMarketing() {
                           <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color: activeService.color }}>{pkg.price}</p>
                         </div>
                         <p style={{ fontSize:12, color:'rgba(255,255,255,0.45)', lineHeight:1.5 }}>{pkg.desc}</p>
-                        <Link to="/create-booking" style={{ display:'block', marginTop:10, padding:'8px', borderRadius:8, textAlign:'center', fontWeight:600, fontSize:12, textDecoration:'none', background:`${activeService.color}18`, color:activeService.color, border:`1px solid ${activeService.border}` }}>
+                        <button onClick={() => openBooking(activeService.id, pkg.name, pkg.price)} style={{ display:'block', width:'100%', marginTop:10, padding:'8px', borderRadius:8, textAlign:'center', fontWeight:600, fontSize:12, cursor:'pointer', fontFamily:'Manrope,sans-serif', background:`${activeService.color}18`, color:activeService.color, border:`1px solid ${activeService.border}` }}>
                           Book this →
-                        </Link>
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -416,10 +467,70 @@ export default function SocialMediaMarketing() {
               <p style={{ fontWeight:700, fontSize:14, color:'white', marginBottom:4 }}>Ready to promote your music?</p>
               <p style={{ fontSize:13, color:'var(--text-muted)' }}>Submit a brief and our team will reach out with a custom campaign plan within 24 hours.</p>
             </div>
-            <Link to="/create-booking" style={{ padding:'11px 22px', borderRadius:10, background:'linear-gradient(135deg,#f472b6,#a855f7)', color:'white', fontWeight:700, fontSize:13, textDecoration:'none', whiteSpace:'nowrap' }}>
+            <button onClick={() => openBooking('full-rollout', 'Custom', 'Custom quote')} style={{ padding:'11px 22px', borderRadius:10, background:'linear-gradient(135deg,#f472b6,#a855f7)', color:'white', fontWeight:700, fontSize:13, border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif', whiteSpace:'nowrap' }}>
               Promote an Artist →
-            </Link>
+            </button>
           </div>
+
+          {/* Booking modal */}
+          {booking && (
+            <div style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.7)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}
+              onClick={e => { if (e.target === e.currentTarget) setBooking(null); }}>
+              <div style={{ background:'#0f0f18', border:'1px solid rgba(244,114,182,0.25)', borderRadius:18, padding:28, width:'100%', maxWidth:480 }}>
+                {submitted ? (
+                  <div style={{ textAlign:'center', padding:'20px 0' }}>
+                    <div style={{ fontSize:48, marginBottom:16 }}>🎵</div>
+                    <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:20, color:'white', marginBottom:8 }}>Booking Received!</p>
+                    <p style={{ fontSize:13, color:'rgba(255,255,255,0.55)', lineHeight:1.7, marginBottom:20 }}>
+                      Your music promotion request has been sent to the BrandCasta team. We'll reach out within 24 hours to confirm and get started.
+                    </p>
+                    <button onClick={() => setBooking(null)} style={{ padding:'10px 24px', borderRadius:10, background:'linear-gradient(135deg,#f472b6,#a855f7)', color:'white', fontWeight:700, fontSize:13, border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
+                      Done
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20 }}>
+                      <div>
+                        <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:17, color:'white', marginBottom:4 }}>Book: {booking.packageName}</p>
+                        <p style={{ fontSize:13, color:'#f472b6', fontWeight:700 }}>{booking.price}</p>
+                      </div>
+                      <button onClick={() => setBooking(null)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:20, padding:4 }}>✕</button>
+                    </div>
+
+                    <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:16 }}>
+                      <div>
+                        <label style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.08em', display:'block', marginBottom:5 }}>Artist / Act Name *</label>
+                        <input style={inpStyle} placeholder="e.g. Burna Boy, Asake, Tems" value={form.artistName} onChange={e => setForm(f => ({ ...f, artistName: e.target.value }))}/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.08em', display:'block', marginBottom:5 }}>Track / Project Title</label>
+                        <input style={inpStyle} placeholder="e.g. Love & Light (single)" value={form.trackTitle} onChange={e => setForm(f => ({ ...f, trackTitle: e.target.value }))}/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.08em', display:'block', marginBottom:5 }}>Release / Start Date</label>
+                        <input type="date" style={inpStyle} value={form.releaseDate} onChange={e => setForm(f => ({ ...f, releaseDate: e.target.value }))}/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.08em', display:'block', marginBottom:5 }}>Additional Notes</label>
+                        <textarea rows={3} style={{ ...inpStyle, resize:'none' }} placeholder="Genre, target audience, streaming links, social handles, campaign goals..." value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}/>
+                      </div>
+                    </div>
+
+                    {bookingError && <p style={{ color:'#fca5a5', fontSize:12, marginBottom:10 }}>{bookingError}</p>}
+
+                    <button onClick={submitBooking} disabled={submitting}
+                      style={{ width:'100%', padding:'12px', borderRadius:10, background:'linear-gradient(135deg,#f472b6,#a855f7)', color:'white', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+                      {submitting ? 'Submitting…' : 'Submit Booking →'}
+                    </button>
+                    <p style={{ fontSize:11, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:10 }}>
+                      Booking sent to the BrandCasta music team. We'll confirm within 24 hours.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </Layout>
