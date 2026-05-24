@@ -9,11 +9,12 @@ CSS VARIABLES — DARK THEME
 ========================================================= */
 
 :root {
-  --bg-base:    #0a0a0f;
-  --bg-surface: #111118;
-  --border:     rgba(255,255,255,0.08);
-  --text-muted: rgba(255,255,255,0.38);
+  --bg-base:        #0a0a0f;
+  --bg-surface:     #111118;
+  --border:         rgba(255,255,255,0.08);
+  --text-muted:     rgba(255,255,255,0.38);
   --text-secondary: rgba(255,255,255,0.55);
+  --accent-light:   #a5b4fc;
 }
 
 /* =========================================================
@@ -27,52 +28,25 @@ BASE
   }
 
   html {
-
-    -webkit-font-smoothing:
-      antialiased;
-
-    scroll-behavior:
-      smooth;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
   }
 
   body {
-
-    background:
-      #0a0a0f;
-
-    color:
-      rgba(255,255,255,0.85);
-
-    font-family:
-      'DM Sans',
-      sans-serif;
-
-    min-height:
-      100vh;
+    background: #0a0a0f;
+    color: rgba(255,255,255,0.85);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-
-    font-family:
-      'Fraunces',
-      serif;
-
-    letter-spacing:
-      -0.04em;
-
-    line-height:
-      1.1;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fraunces', serif;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
   }
 
   button {
-
-    -webkit-tap-highlight-color:
-      transparent;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -102,76 +76,33 @@ COMPONENTS
       cursor-pointer
       select-none;
 
-    color:
-      rgba(255,255,255,0.72);
-
-    position:
-      relative;
+    color: rgba(255,255,255,0.72);
+    position: relative;
   }
 
   .sidebar-link:hover {
-
-    color:
-      white;
-
-    background:
-      rgba(255,255,255,0.08);
-
-    transform:
-      translateX(2px);
+    color: white;
+    background: rgba(255,255,255,0.08);
+    transform: translateX(2px);
   }
 
   .sidebar-link.active {
-
-    color:
-      white;
-
-    background:
-      linear-gradient(
-        135deg,
-        rgba(124,58,237,0.35),
-        rgba(236,72,153,0.22)
-      );
-
-    border:
-      1px solid rgba(255,255,255,0.08);
-
-    box-shadow:
-      0 10px 25px rgba(124,58,237,0.16);
+    color: white;
+    background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(236,72,153,0.22));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 25px rgba(124,58,237,0.16);
   }
 
   .sidebar-link.active::before {
-
     content: '';
-
-    position:
-      absolute;
-
-    left:
-      -12px;
-
-    top:
-      50%;
-
-    transform:
-      translateY(-50%);
-
-    width:
-      4px;
-
-    height:
-      60%;
-
-    border-radius:
-      999px;
-
-    background:
-      linear-gradient(
-        180deg,
-        #7c3aed,
-        #ec4899,
-        #06b6d4
-      );
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #7c3aed, #ec4899, #06b6d4);
   }
 
   /* ========================
@@ -189,30 +120,27 @@ COMPONENTS
       text-white
       text-sm
       font-semibold
-      rounded-2xl
+      rounded-xl
       transition-all
       duration-200;
 
-    background:
-      linear-gradient(
-        135deg,
-        #7c3aed 0%,
-        #ec4899 55%,
-        #06b6d4 100%
-      );
-
-    box-shadow:
-      0 12px 30px rgba(124,58,237,0.24);
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+    font-family: 'Manrope', sans-serif;
+    border: none;
+    cursor: pointer;
   }
 
   .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(99,102,241,0.45);
+    opacity: 0.95;
+  }
 
-    transform:
-      translateY(-1px)
-      scale(1.01);
-
-    opacity:
-      0.96;
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
   }
 
   .btn-secondary {
@@ -225,33 +153,22 @@ COMPONENTS
       py-3
       text-sm
       font-medium
-      rounded-2xl
+      rounded-xl
       transition-all
       duration-200;
 
-    background:
-      rgba(255,255,255,0.72);
-
-    backdrop-filter:
-      blur(14px);
-
-    border:
-      1px solid rgba(255,255,255,0.6);
-
-    color:
-      #334155;
-
-    box-shadow:
-      0 8px 24px rgba(15,23,42,0.05);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.75);
+    font-family: 'Manrope', sans-serif;
+    cursor: pointer;
   }
 
   .btn-secondary:hover {
-
-    transform:
-      translateY(-1px);
-
-    background:
-      rgba(255,255,255,0.92);
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.18);
+    color: white;
   }
 
   .btn-success {
@@ -268,14 +185,9 @@ COMPONENTS
       transition-all
       duration-150;
 
-    background:
-      rgba(16,185,129,0.12);
-
-    color:
-      #059669;
-
-    border:
-      1px solid rgba(16,185,129,0.22);
+    background: rgba(16,185,129,0.12);
+    color: #059669;
+    border: 1px solid rgba(16,185,129,0.22);
   }
 
   .btn-danger {
@@ -292,14 +204,9 @@ COMPONENTS
       transition-all
       duration-150;
 
-    background:
-      rgba(239,68,68,0.12);
-
-    color:
-      #dc2626;
-
-    border:
-      1px solid rgba(239,68,68,0.18);
+    background: rgba(239,68,68,0.12);
+    color: #dc2626;
+    border: 1px solid rgba(239,68,68,0.18);
   }
 
   /* ========================
@@ -312,43 +219,24 @@ COMPONENTS
       w-full
       px-4
       py-3
-      rounded-2xl
+      rounded-xl
       text-sm
       transition-all
       duration-200;
 
-    background:
-      rgba(255,255,255,0.8);
-
-    border:
-      1px solid rgba(255,255,255,0.7);
-
-    color:
-      #0f172a;
-
-    backdrop-filter:
-      blur(14px);
-
-    box-shadow:
-      0 8px 20px rgba(15,23,42,0.04);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
   }
 
   .form-input::placeholder {
-
-    color:
-      #94a3b8;
+    color: rgba(255,255,255,0.3);
   }
 
   .form-input:focus {
-
-    outline:
-      none;
-
-    border:
-      1px solid rgba(124,58,237,0.4);
-
-    box-shadow:
-      0 0 0 4px rgba(124,58,237,0.08);
+    outline: none;
+    border: 1px solid rgba(99,102,241,0.4);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
   }
 
   .form-label {
@@ -359,14 +247,9 @@ COMPONENTS
       uppercase
       tracking-wider;
 
-    font-size:
-      10px;
-
-    font-weight:
-      800;
-
-    color:
-      #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.4);
   }
 
   /* ========================
@@ -374,18 +257,10 @@ COMPONENTS
   ======================== */
 
   .page-card {
-
-    background:
-      var(--bg-surface);
-
-    border:
-      1px solid var(--border);
-
-    box-shadow:
-      0 8px 32px rgba(0,0,0,0.4);
-
-    border-radius:
-      14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border-radius: 14px;
   }
 
   /* ========================
@@ -407,30 +282,18 @@ COMPONENTS
   }
 
   .badge-pending {
-
-    background:
-      rgba(245,158,11,0.12);
-
-    color:
-      #d97706;
+    background: rgba(245,158,11,0.12);
+    color: #d97706;
   }
 
   .badge-approved {
-
-    background:
-      rgba(16,185,129,0.12);
-
-    color:
-      #059669;
+    background: rgba(16,185,129,0.12);
+    color: #059669;
   }
 
   .badge-rejected {
-
-    background:
-      rgba(239,68,68,0.12);
-
-    color:
-      #dc2626;
+    background: rgba(239,68,68,0.12);
+    color: #dc2626;
   }
 }
 
@@ -439,14 +302,7 @@ LAYOUT
 ========================================================= */
 
 .sidebar-bg {
-
-  background:
-    linear-gradient(
-      180deg,
-      #0f172a 0%,
-      #111827 30%,
-      #1e1b4b 100%
-    );
+  background: linear-gradient(180deg, #0f172a 0%, #111827 30%, #1e1b4b 100%);
 }
 
 /* =========================================================
@@ -454,32 +310,12 @@ ANIMATIONS
 ========================================================= */
 
 @keyframes fadeSlideIn {
-
-  from {
-
-    opacity:
-      0;
-
-    transform:
-      translateY(8px);
-  }
-
-  to {
-
-    opacity:
-      1;
-
-    transform:
-      translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .page-enter {
-
-  animation:
-    fadeSlideIn
-    0.25s
-    cubic-bezier(0.22,1,0.36,1);
+  animation: fadeSlideIn 0.25s cubic-bezier(0.22,1,0.36,1);
 }
 
 /* =========================================================
@@ -487,66 +323,36 @@ TABLES
 ========================================================= */
 
 .data-table {
-
-  width:
-    100%;
-
-  font-size:
-    0.84rem;
+  width: 100%;
+  font-size: 0.84rem;
 }
 
 .data-table thead tr {
-
-  border-bottom:
-    1px solid rgba(226,232,240,0.7);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .data-table thead th {
-
-  padding:
-    0.85rem 1.1rem;
-
-  text-align:
-    left;
-
-  font-size:
-    0.65rem;
-
-  font-weight:
-    800;
-
-  color:
-    #94a3b8;
-
-  text-transform:
-    uppercase;
-
-  letter-spacing:
-    0.08em;
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .data-table tbody tr {
-
-  border-bottom:
-    1px solid rgba(241,245,249,0.9);
-
-  transition:
-    all 0.15s;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.15s;
 }
 
 .data-table tbody tr:hover {
-
-  background:
-    rgba(255,255,255,0.62);
+  background: rgba(255,255,255,0.03);
 }
 
 .data-table tbody td {
-
-  padding:
-    0.95rem 1.1rem;
-
-  color:
-    #334155;
+  padding: 0.95rem 1.1rem;
+  color: rgba(255,255,255,0.75);
 }
 
 /* =========================================================
@@ -554,32 +360,27 @@ SCROLLBAR
 ========================================================= */
 
 ::-webkit-scrollbar {
-
-  width:
-    6px;
-
-  height:
-    6px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-
-  background:
-    transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-
-  background:
-    linear-gradient(
-      180deg,
-      #7c3aed,
-      #ec4899
-    );
-
-  border-radius:
-    999px;
+  background: linear-gradient(180deg, #6366f1, #a855f7);
+  border-radius: 999px;
 }
+
+/* =========================================================
+UTILITIES
+========================================================= */
+
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-5 > * + * { margin-top: 1.25rem; }
 
 /* =========================================================
 RESPONSIVE
@@ -588,38 +389,19 @@ RESPONSIVE
 @media (max-width: 768px) {
 
   .page-card {
-
-    border-radius:
-      22px;
+    border-radius: 12px;
   }
 
   .sidebar-link {
-
-    padding-top:
-      14px;
-
-    padding-bottom:
-      14px;
+    padding-top: 14px;
+    padding-bottom: 14px;
   }
 
   .data-table {
-
-    display:
-      block;
-
-    overflow-x:
-      auto;
+    display: block;
+    overflow-x: auto;
   }
 
-  h1 {
-
-    font-size:
-      1.8rem !important;
-  }
-
-  h2 {
-
-    font-size:
-      1.4rem !important;
-  }
+  h1 { font-size: 1.8rem !important; }
+  h2 { font-size: 1.4rem !important; }
 }
