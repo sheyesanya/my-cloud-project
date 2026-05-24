@@ -52,7 +52,7 @@ export default function Subscription() {
   // Handle callback from Paystack
   useEffect(() => {
     const ref  = params.get('reference') || params.get('trxref');
-    const tier = params.get('tier');
+    const tier = params.get('tier') || params.get('plan') || selectedPlan;
     if (ref && tier) verifyPayment(ref, tier);
   }, []);
 
