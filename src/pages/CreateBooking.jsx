@@ -15,11 +15,17 @@ const CAT_LABELS = {
 };
 
 const CAT_ICONS = {
-  SOCIAL_MEDIA:     '📱',
-  MUSIC_PROMOTION:  '🎵',
+  SOCIAL_MEDIA:     '',
+  MUSIC_PROMOTION:  '',
 };
 
 const ROUTE_TO_EMAIL = ['SOCIAL_MEDIA','MUSIC_PROMOTION'];
+
+const DISPLAY_NAMES = {
+  'BrandCasta Social Media':      'BrandCasta Social-Media Marketing',
+  'BrandCasta Music Promotion':   'BrandCasta Music Promotion',
+};
+const displayName = (name) => DISPLAY_NAMES[name] || name;
 const SPECIAL_EMAIL  = 'brandcastang@gmail.com';
 
 // Parse inventory — stored as JSON string in DynamoDB
@@ -246,7 +252,7 @@ export default function CreateBooking() {
                   const inv = parseInventory(m.inventory);
                   const hasInv = Object.keys(inv).length > 0;
                   return (
-                    <button key={id} type="button" onClick={() => { setS('mediaId', id); setErrors({}); }}
+                    <button key={id} type="button" onClick={() => { if (String(sel.mediaId) === String(id)) { setSel(INIT_SELECTION); setErrors({}); } else { setS('mediaId', id); setErrors({}); } }}
                       style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 14px', borderRadius:10, textAlign:'left', cursor:'pointer', transition:'all 0.15s',
                         background: active ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.03)',
                         border: active ? '1px solid rgba(99,102,241,0.4)' : '1px solid var(--border)',
@@ -254,7 +260,7 @@ export default function CreateBooking() {
                       <div>
                         <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                           {CAT_ICONS[m.category] && <span style={{ fontSize:15 }}>{CAT_ICONS[m.category]}</span>}
-                          <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{m.name}</p>
+                          <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{displayName(m.name)}</p>
                         </div>
                         <div style={{ display:'flex', gap:6, marginTop:3 }}>
                           <span style={{ fontSize:10, color:'var(--text-muted)', fontWeight:600, textTransform:'uppercase' }}>{m.category?.replaceAll('_',' ')}</span>
@@ -282,7 +288,7 @@ export default function CreateBooking() {
                     {selectedMedia?.name?.[0]}
                   </div>
                   <div>
-                    <p style={{ fontWeight:700, color:'white', fontSize:14 }}>{selectedMedia?.name}</p>
+                    <p style={{ fontWeight:700, color:'white', fontSize:14 }}>{displayName(selectedMedia?.name)}</p>
                     <p style={{ fontSize:11, color:'var(--text-muted)' }}>{selectedMedia?.category?.replaceAll('_',' ')}</p>
                   </div>
                 </div>
@@ -437,7 +443,7 @@ export default function CreateBooking() {
                   {items.map((item, idx) => (
                     <div key={idx} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
                       <div>
-                        <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{item.mediaName}</p>
+                        <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{displayName(item.mediaName)}</p>
                         <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>
                           {item.optionLabel} · {item.market?.replaceAll('_',' ')}
                           {item.runs > 1 && <span style={{ marginLeft:6, padding:'2px 7px', borderRadius:20, background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:10, fontWeight:700 }}>×{item.runs}</span>}
@@ -487,7 +493,7 @@ export default function CreateBooking() {
                 {items.map((item, idx) => (
                   <div key={idx} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 14px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
                     <div>
-                      <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{item.mediaName}</p>
+                      <p style={{ fontWeight:600, fontSize:13, color:'white' }}>{displayName(item.mediaName)}</p>
                       <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>
                         {item.groupLabel} · {item.optionLabel} · {item.market?.replaceAll('_',' ')} · {item.date}
                         {item.runs > 1 && <span style={{ marginLeft:6, padding:'2px 7px', borderRadius:20, background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:10, fontWeight:700 }}>×{item.runs} runs</span>}
