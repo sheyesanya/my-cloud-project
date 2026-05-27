@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Layout from '../components/Layout';
 import { Spinner, Toast } from '../components/UI';
 import { useAuth } from '../context/AuthContext';
 import { auth } from '../lib/firebase';
@@ -121,36 +122,12 @@ export default function ProviderDashboard() {
   ];
 
   const filtered = filter==='ALL' ? bookings : bookings.filter(b=>b.status===filter);
-  const initials = user?.name ? user.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase() : user?.email?.[0]?.toUpperCase()||'P';
-
   return (
-    <div style={{ minHeight:'100vh', background:'#07070e', fontFamily:'Manrope,sans-serif', color:'white' }}>
+    <Layout title="My Bookings" subtitle="Manage booking requests, approve and upload delivery proofs"
+      actions={<button onClick={fetchBookings} className="btn-secondary" style={{ fontSize:12 }}>↻ Refresh</button>}
+    >
       {toast && <Toast type={toast.type} message={toast.message} onClose={()=>setToast(null)}/>}
-
-      {/* ── TOP NAV ── */}
-      <nav style={{ background:'rgba(10,10,18,0.95)', backdropFilter:'blur(16px)', borderBottom:'1px solid rgba(255,255,255,0.06)', padding:'0 28px', height:60, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <img src="https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png" alt="BrandCasta" style={{ width:28, height:28, objectFit:'contain' }}/>
-          <span style={{ fontWeight:800, fontSize:15, letterSpacing:'-0.3px' }}>BrandCasta</span>
-          <span style={{ padding:'2px 8px', borderRadius:6, background:'rgba(20,184,166,0.12)', border:'1px solid rgba(20,184,166,0.2)', color:'#5eead4', fontSize:10, fontWeight:700, marginLeft:4 }}>PROVIDER</span>
-        </div>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <Link to="/inventory" style={{ padding:'7px 14px', borderRadius:9, background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.7)', fontSize:12, fontWeight:600, textDecoration:'none' }}>
-            Manage Inventory
-          </Link>
-          <Link to="/proof-of-performance" style={{ padding:'7px 14px', borderRadius:9, background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.7)', fontSize:12, fontWeight:600, textDecoration:'none' }}>
-            Proof of Performance
-          </Link>
-          <button onClick={fetchBookings} style={{ padding:'7px 12px', borderRadius:9, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.5)', fontSize:12, cursor:'pointer', fontFamily:'Manrope,sans-serif' }}>
-            ↻
-          </button>
-          <div style={{ width:32, height:32, borderRadius:10, background:'linear-gradient(135deg,#14b8a6,#06b6d4)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700 }}>
-            {initials}
-          </div>
-        </div>
-      </nav>
-
-      <div style={{ maxWidth:1100, margin:'0 auto', padding:'28px 24px' }}>
+      <div>
 
         {/* ── HEADER ── */}
         <div style={{ marginBottom:28 }}>
@@ -411,6 +388,6 @@ export default function ProviderDashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
