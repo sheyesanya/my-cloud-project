@@ -46,8 +46,8 @@ export default function ProviderDashboard() {
       const headers = await authHeader();
       const res = await axios.get(`${API}/bookings`, { headers });
       const all  = Array.isArray(res.data) ? res.data : res.data?.bookings ?? [];
-      const mine = all.filter(b => b.providerEmail===user?.email || b.mediaContactEmail===user?.email);
-      setBookings(mine.sort((a,b) => {
+      // Backend already filters by provider — no client-side filter needed
+      setBookings(all.sort((a,b) => {
         // Pending first, then by date desc
         const aPending = a.status==='PENDING_PROVIDER_CONFIRMATION' ? 0 : 1;
         const bPending = b.status==='PENDING_PROVIDER_CONFIRMATION' ? 0 : 1;
