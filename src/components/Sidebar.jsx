@@ -36,6 +36,8 @@ const NAV_PROVIDER = [
   { to:'/proof-of-performance', label:'Proof of Performance' },
 ];
 
+// Providers don't see subscription upgrade cards
+
 const ROLE_META = {
   ADMIN:    { label:'Admin',          color:'#fcd34d' },
   CLIENT:   { label:'Brand',          color:'#a5b4fc' },
@@ -111,7 +113,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         </nav>
 
         {/* Subscription badge */}
-        {isPremium && (
+        {isPremium && role !== 'PROVIDER' && (
           <div style={{ margin:'0 12px 8px', padding:'10px 14px', borderRadius:10, background: tier==='PRO' ? 'rgba(245,158,11,0.08)' : 'rgba(99,102,241,0.08)', border: tier==='PRO' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(99,102,241,0.2)' }}>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
               <span style={{ fontSize:10, fontWeight:800, color: tier==='PRO' ? '#fcd34d' : '#a5b4fc', textTransform:'uppercase', letterSpacing:'0.08em' }}>{tier}</span>
@@ -122,7 +124,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
             </div>
           </div>
         )}
-        {!isPremium && (
+        {!isPremium && role !== 'PROVIDER' && (
           <div style={{ margin:'0 12px 8px', display:'flex', flexDirection:'column', gap:6 }}>
             <Link
               to="/subscription?plan=PREMIUM"
