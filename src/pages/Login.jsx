@@ -248,9 +248,8 @@ export default function Login() {
               </div>
             )}
 
-            {/* Google button — hidden for provider */}
-            {!isProvider && (
-              <button onClick={() => handle(loginWithGoogle)} disabled={loading}
+            {/* Google button */}
+            <button onClick={() => handle(loginWithGoogle)} disabled={loading}
                 style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:9, padding:'12px', borderRadius:10, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'white', fontWeight:600, fontSize:14, cursor:'pointer', marginBottom:14, fontFamily:'Manrope,sans-serif' }}>
                 <svg width="16" height="16" viewBox="0 0 48 48">
                   <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.651 32.657 29.24 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
@@ -258,18 +257,15 @@ export default function Login() {
                   <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
                   <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
                 </svg>
-                Continue with Google
+                {isProvider ? 'Sign in as Provider with Google' : 'Continue with Google'}
               </button>
-            )}
 
-            {/* OR divider — hidden for provider */}
-            {!isProvider && (
-              <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
+            {/* OR divider */}
+            <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
                 <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.07)' }}/>
                 <span style={{ fontSize:10, color:'rgba(255,255,255,0.25)', fontWeight:700, letterSpacing:'0.1em' }}>OR</span>
                 <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.07)' }}/>
               </div>
-            )}
 
             {/* Form */}
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
