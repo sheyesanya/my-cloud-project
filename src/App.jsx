@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider }     from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute       from './components/ProtectedRoute';
 import RoleRoute            from './components/RoleRoute';
 
@@ -27,6 +27,14 @@ import BriefGenerator      from './pages/BriefGenerator';
 import SocialMediaFunnel   from './pages/SocialMediaFunnel';
 import Subscription        from './pages/Subscription';
 import PremiumGate         from './components/PremiumGate';
+
+// Proof of Performance is free for providers, premium-gated for clients
+function ProofOfPerformanceGated() {
+  const { user } = useAuth();
+  const role = (user?.role || 'CLIENT').toUpperCase();
+  if (role === 'PROVIDER' || role === 'ADMIN') return <ProofOfPerformance />;
+  return <PremiumGate requiredTier="PREMIUM"><ProofOfPerformance /></PremiumGate>;
+}
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import ProofOfPerformance  from './pages/ProofOfPerformance';
 
@@ -70,7 +78,7 @@ export default function App() {
           <Route path="/subscription"        element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
           <Route path="/social-media"         element={<ProtectedRoute><SocialMediaFunnel /></ProtectedRoute>} />
           <Route path="/brief-generator"     element={<ProtectedRoute><PremiumGate requiredTier="PRO"><BriefGenerator /></PremiumGate></ProtectedRoute>} />
-          <Route path="/proof-of-performance" element={<ProtectedRoute><PremiumGate requiredTier="PREMIUM"><ProofOfPerformance /></PremiumGate></ProtectedRoute>} />
+          <Route path="/proof-of-performance" element={<ProtectedRoute><ProofOfPerformanceGated /></ProtectedRoute>} />
           <Route path="*"                    element={<Navigate to="/dashboard" replace />} />
         </Routes>
         </SubscriptionProvider>
