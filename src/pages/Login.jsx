@@ -249,8 +249,36 @@ export default function Login() {
               </div>
             )}
 
+
+
+
+            {/* T&C checkbox — shown above Google button on signup */}
+            {mode === 'signup' && (
+              <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'4px 0 10px' }}>
+                <div onClick={() => setAgreed(a => !a)}
+                  style={{ width:18, height:18, borderRadius:5, flexShrink:0, marginTop:2, cursor:'pointer',
+                    border: agreedToTerms ? 'none' : '1px solid rgba(255,255,255,0.25)',
+                    background: agreedToTerms ? 'linear-gradient(135deg,#6366f1,#a855f7)' : 'rgba(255,255,255,0.05)',
+                    display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}>
+                  {agreedToTerms && <svg width="10" height="10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>}
+                </div>
+                <p style={{ fontSize:12, color:'rgba(255,255,255,0.55)', lineHeight:1.6, cursor:'pointer' }} onClick={() => setAgreed(a => !a)}>
+                  I agree to BrandCasta's{' '}
+                  <a href="/terms" target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{ color:'#a5b4fc', textDecoration:'underline', fontWeight:600 }}>Terms & Conditions</a>
+                  {' '}and{' '}
+                  <a href="/privacy" target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{ color:'#a5b4fc', textDecoration:'underline', fontWeight:600 }}>Privacy Policy</a>
+                </p>
+              </div>
+            )}
+
             {/* Google button */}
-            <button onClick={() => handle(loginWithGoogle)} disabled={loading}
+            <button onClick={() => {
+                if (mode === 'signup' && !agreedToTerms) {
+                  setError('Please agree to the Terms & Conditions before continuing with Google.');
+                  return;
+                }
+                handle(loginWithGoogle);
+              }} disabled={loading}
                 style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:9, padding:'12px', borderRadius:10, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'white', fontWeight:600, fontSize:14, cursor:'pointer', marginBottom:14, fontFamily:'Manrope,sans-serif' }}>
                 <svg width="16" height="16" viewBox="0 0 48 48">
                   <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.651 32.657 29.24 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
@@ -279,35 +307,6 @@ export default function Login() {
                   }
                 }}
                 style={inp}/>
-
-              {/* T&C checkbox — only on sign up */}
-              {mode === 'signup' && (
-                <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 0 4px' }}>
-                  <div
-                    onClick={() => setAgreed(a => !a)}
-                    style={{ width:18, height:18, borderRadius:5, flexShrink:0, marginTop:1, cursor:'pointer', border: agreedToTerms ? 'none' : '1px solid rgba(255,255,255,0.25)', background: agreedToTerms ? 'linear-gradient(135deg,#6366f1,#a855f7)' : 'rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}>
-                    {agreedToTerms && (
-                      <svg width="10" height="10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                        <path d="M20 6L9 17l-5-5"/>
-                      </svg>
-                    )}
-                  </div>
-                  <p style={{ fontSize:12, color:'rgba(255,255,255,0.55)', lineHeight:1.6, cursor:'pointer' }} onClick={() => setAgreed(a => !a)}>
-                    I agree to BrandCasta's{' '}
-                    <a href="/terms" target="_blank" rel="noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      style={{ color:'#a5b4fc', textDecoration:'underline', fontWeight:600 }}>
-                      Terms & Conditions
-                    </a>
-                    {' '}and{' '}
-                    <a href="/privacy" target="_blank" rel="noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      style={{ color:'#a5b4fc', textDecoration:'underline', fontWeight:600 }}>
-                      Privacy Policy
-                    </a>
-                  </p>
-                </div>
-              )}
               <button
                 onClick={() => {
                   if ((mode === 'signup') && !agreedToTerms) {
