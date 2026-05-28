@@ -123,7 +123,6 @@ const METRICS = {
 
   // PODCASTS
   'I Said What I Said':         { reach:'500K+ listeners', platforms:['YouTube','Spotify','Apple Podcasts','TikTok'], impressions:'2M+/month'  },
-  'Off-Air With Toolz & Gbemi': { reach:'400K+ listeners', platforms:['YouTube','Spotify','Apple Podcasts','TikTok'], impressions:'1.7M+/month'  },
   'The Honest Bunch Podcast':   { reach:'800K+ listeners', platforms:['YouTube','Spotify','TikTok'],      impressions:'3M+/month'   },
   'Tea With Tay':               { reach:'300K+ listeners', platforms:['YouTube','Spotify','Instagram'],   impressions:'1M+/month'   },
   'Menisms':                    { reach:'250K+ listeners', platforms:['YouTube','Spotify'],               impressions:'800K+/month' },
@@ -244,6 +243,8 @@ const METRICS = {
 const CAT_LABELS = {
   ALL:'All', TELEVISION:'TV', RADIO_AUDIO:'Radio', PODCASTS:'Podcasts',
   OUT_OF_HOME:'OOH', PRINT_MEDIA:'Print', INFLUENCERS:'Influencers',
+  SOCIAL_MEDIA:'Social Media', MUSIC_PROMOTION:'Music Promotion',
+  LIVE_STREAMING:'Live Streaming Ads',
 };
 
 const PLATFORM_COLORS = {
