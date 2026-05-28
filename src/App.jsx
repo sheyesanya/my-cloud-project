@@ -11,7 +11,8 @@ import Terms               from './pages/Terms';
 import Privacy             from './pages/Privacy';
 
 // Shared
-import Dashboard            from './pages/Dashboard';
+import Dashboard           from './pages/Dashboard';
+import AdminDashboard      from './pages/AdminDashboard';
 import Media                from './pages/Media';
 import Bookings             from './pages/Bookings';
 import CreateBooking        from './pages/CreateBooking';
