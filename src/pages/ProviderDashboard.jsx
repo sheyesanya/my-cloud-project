@@ -140,7 +140,7 @@ export default function ProviderDashboard() {
         </div>
 
         {/* ── STAT CARDS ── */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:10, marginBottom:28 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10, marginBottom:28 }}>
           {[
             { label:'Needs Response', value:pending,   color:'#fcd34d', bg:'rgba(245,158,11,0.08)', border:'rgba(245,158,11,0.18)', urgent:pending>0 },
             { label:'Live Campaigns', value:active,    color:'#5eead4', bg:'rgba(20,184,166,0.07)', border:'rgba(20,184,166,0.15)' },
@@ -158,7 +158,7 @@ export default function ProviderDashboard() {
         </div>
 
         {/* ── MAIN LAYOUT ── */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 300px', gap:20, alignItems:'start' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'minmax(0,1fr)', gap:20, alignItems:'start' }}>
 
           {/* LEFT — Bookings */}
           <div>
@@ -233,7 +233,7 @@ export default function ProviderDashboard() {
                       <div style={{ padding:'0 20px 20px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
 
                         {/* Details */}
-                        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, margin:'16px 0' }}>
+                        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:8, margin:'16px 0' }}>
                           {[
                             ['Campaign Value', fmt(booking.finalPrice)],
                             ['Your Payout',    fmt(booking.mediaPayout)],

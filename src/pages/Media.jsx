@@ -448,6 +448,12 @@ export default function Media() {
                         {deleting[m.mediaId ?? m.id ?? m._id] ? '…' : '✕ Delete'}
                       </button>
                     )}
+                    {!isAdmin && user?.role !== 'PROVIDER' && (
+                      <a href="/register/provider"
+                        style={{ padding:'3px 9px', borderRadius:20, fontSize:10, fontWeight:700, cursor:'pointer', background:'rgba(99,102,241,0.08)', border:'1px solid rgba(99,102,241,0.2)', color:'#a5b4fc', fontFamily:'Manrope,sans-serif', textDecoration:'none' }}>
+                        Claim Listing
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

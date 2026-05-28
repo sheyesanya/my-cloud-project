@@ -139,7 +139,7 @@ export default function Subscription() {
       )}
 
       {/* Plan comparison */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, marginBottom:28 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:14, marginBottom:28 }}>
         {Object.entries(PLAN_DETAILS).map(([key, plan]) => {
           const isCurrentPlan = subscription?.tier === key && isPremium;
           const isSelected    = selectedPlan === key;
@@ -216,7 +216,7 @@ export default function Subscription() {
       {/* FAQ */}
       <div style={{ padding:'22px', borderRadius:14, background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)' }}>
         <p style={{ fontSize:13, fontWeight:700, color:'white', marginBottom:16 }}>Frequently Asked Questions</p>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:16 }}>
           {[
             ['What is the Pro plan?', 'Pro gives you the same features as Premium but on a 15-day billing cycle — ideal if you prefer shorter commitments or want to pay every half-month.'],
             ['Can I cancel anytime?', 'Yes. You can cancel at any time from this page. You will keep access until the end of your current paid period — no partial refunds.'],

@@ -102,7 +102,7 @@ export default function AdminDashboard() {
       {activeTab === 'overview' && (
         <div className="space-y-5">
           {/* KPI grid */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))', gap:12 }}>
             {[
               { label:'Total GMV',          value:fmt(totalRevenue),    color:'#a5b4fc', sub:`${bookings.length} bookings total`     },
               { label:'Platform Commission',value:fmt(totalCommission), color:'#fcd34d', sub:'15% of all bookings'                   },
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Secondary stats */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:10 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))', gap:10 }}>
             {[
               { label:'Needs Action',      value:pendingAction,     color:'#fcd34d' },
               { label:'Active Campaigns',  value:activeBookings,    color:'#5eead4' },
@@ -136,7 +136,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Two columns */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))', gap:16 }}>
 
             {/* Recent bookings */}
             <div style={{ padding:'18px 20px', borderRadius:13, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
@@ -186,7 +186,7 @@ export default function AdminDashboard() {
       {/* ── BOOKINGS TAB ── */}
       {activeTab === 'bookings' && (
         <div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:18 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))', gap:10, marginBottom:18 }}>
             {[
               ['Total GMV',    fmt(totalRevenue),    '#a5b4fc'],
               ['Commission',   fmt(totalCommission), '#fcd34d'],
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
       {/* ── PROVIDERS TAB ── */}
       {activeTab === 'providers' && (
         <div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:18 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))', gap:10, marginBottom:18 }}>
             {[
               ['Total Applications', providers.length,      '#a5b4fc'],
               ['Pending Review',     pendingApps,           '#fcd34d'],
@@ -288,7 +288,7 @@ export default function AdminDashboard() {
       {/* ── SUBSCRIPTIONS TAB ── */}
       {activeTab === 'subscriptions' && (
         <div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:18 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))', gap:10, marginBottom:18 }}>
             {[
               ['Active Subscribers', activeSubs,    '#a5b4fc'],
               ['MRR',    fmt(subRevenue), '#86efac'],
