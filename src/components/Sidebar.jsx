@@ -5,7 +5,7 @@ import { useSubscription } from '../context/SubscriptionContext';
 const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 
 const NAV_ADMIN = [
-  { to:'/dashboard',        label:'Dashboard'             },
+  { to:'/dashboard',        label:'Admin Dashboard'       },
   { to:'/media',            label:'Media Inventory'       },
   { to:'/create-media',     label:'Add Media'             },
   { to:'/create-booking',   label:'Create Campaign'       },

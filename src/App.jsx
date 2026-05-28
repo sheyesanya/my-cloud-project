@@ -28,6 +28,14 @@ import SocialMediaFunnel   from './pages/SocialMediaFunnel';
 import Subscription        from './pages/Subscription';
 import PremiumGate         from './components/PremiumGate';
 
+// Role-based dashboard — admin gets AdminDashboard, everyone else gets Dashboard
+function AdminOrClientDashboard() {
+  const { user } = useAuth();
+  const role = (user?.role || 'CLIENT').toUpperCase();
+  if (role === 'ADMIN') return <AdminDashboard />;
+  return <Dashboard />;
+}
+
 // Proof of Performance is free for providers, premium-gated for clients
 function ProofOfPerformanceGated() {
   const { user } = useAuth();
@@ -58,7 +66,7 @@ export default function App() {
           <Route path="/privacy"             element={<Privacy />} />
 
           {/* Protected — all logged-in users */}
-          <Route path="/dashboard"           element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard"           element={<ProtectedRoute><AdminOrClientDashboard /></ProtectedRoute>} />
           <Route path="/media"               element={<ProtectedRoute><Media /></ProtectedRoute>} />
           <Route path="/bookings"            element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
           <Route path="/campaigns"           element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
