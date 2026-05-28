@@ -22,6 +22,18 @@ const CAT_ICONS = {
   MUSIC_PROMOTION:  '',
 };
 
+const VOLUME_DISCOUNT = (runs) => {
+  if (runs >= 20) return 0.25;
+  if (runs >= 10) return 0.15;
+  if (runs >= 5)  return 0.10;
+  if (runs >= 3)  return 0.05;
+  return 0;
+};
+const discountLabel = (runs) => {
+  const d = VOLUME_DISCOUNT(runs);
+  return d > 0 ? `${d*100}% volume discount` : null;
+};
+
 const ROUTE_TO_EMAIL = ['SOCIAL_MEDIA','MUSIC_PROMOTION'];
 
 const DISPLAY_NAMES = {
