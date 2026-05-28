@@ -11,8 +11,7 @@ import Terms               from './pages/Terms';
 import Privacy             from './pages/Privacy';
 
 // Shared
-import Dashboard           from './pages/Dashboard';
-import AdminDashboard      from './pages/AdminDashboard';
+import Dashboard            from './pages/Dashboard';
 import Media                from './pages/Media';
 import Bookings             from './pages/Bookings';
 import CreateBooking        from './pages/CreateBooking';
@@ -28,6 +27,22 @@ import BriefGenerator      from './pages/BriefGenerator';
 import SocialMediaFunnel   from './pages/SocialMediaFunnel';
 import Subscription        from './pages/Subscription';
 import PremiumGate         from './components/PremiumGate';
+
+// Admin sees admin dashboard subscriptions tab instead of upgrade page
+function AdminOrSubscription() {
+  const { user } = useAuth();
+  const role = (user?.role || 'CLIENT').toUpperCase();
+  if (role === 'ADMIN') return <AdminDashboard />;
+  return <Subscription />;
+}
+
+// Admin bypasses premium gates
+function AdminOrPremiumGate({ requiredTier, children }) {
+  const { user } = useAuth();
+  const role = (user?.role || 'CLIENT').toUpperCase();
+  if (role === 'ADMIN') return children;
+  return <PremiumGate requiredTier={requiredTier}>{children}</PremiumGate>;
+}
 
 // Role-based dashboard — admin gets AdminDashboard, everyone else gets Dashboard
 function AdminOrClientDashboard() {
@@ -73,7 +88,7 @@ export default function App() {
           <Route path="/campaigns"           element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
           <Route path="/campaigns/:campaignId" element={<ProtectedRoute><CampaignDetails /></ProtectedRoute>} />
           <Route path="/create-booking"      element={<ProtectedRoute><CreateBooking /></ProtectedRoute>} />
-          <Route path="/analytics"           element={<ProtectedRoute><PremiumGate requiredTier="PREMIUM"><Analytics /></PremiumGate></ProtectedRoute>} />
+          <Route path="/analytics"           element={<ProtectedRoute><AdminOrPremiumGate requiredTier="PREMIUM"><Analytics /></AdminOrPremiumGate></ProtectedRoute>} />
 
           {/* Admin only */}
           <Route path="/create-media"        element={<RoleRoute role="ADMIN"><CreateMedia /></RoleRoute>} />
@@ -84,9 +99,9 @@ export default function App() {
           {/* Provider (+ admin can view) */}
           <Route path="/provider"            element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderDashboard /></RoleRoute>} />
 
-          <Route path="/subscription"        element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
+          <Route path="/subscription"        element={<ProtectedRoute><AdminOrSubscription /></ProtectedRoute>} />
           <Route path="/social-media"         element={<ProtectedRoute><SocialMediaFunnel /></ProtectedRoute>} />
-          <Route path="/brief-generator"     element={<ProtectedRoute><PremiumGate requiredTier="PRO"><BriefGenerator /></PremiumGate></ProtectedRoute>} />
+          <Route path="/brief-generator"     element={<ProtectedRoute><AdminOrPremiumGate requiredTier="PRO"><BriefGenerator /></AdminOrPremiumGate></ProtectedRoute>} />
           <Route path="/proof-of-performance" element={<ProtectedRoute><ProofOfPerformanceGated /></ProtectedRoute>} />
           <Route path="*"                    element={<Navigate to="/dashboard" replace />} />
         </Routes>
