@@ -21,7 +21,25 @@ export function AuthProvider({ children }) {
       if (firebaseUser) {
         const token         = await firebaseUser.getIdToken();
         const idTokenResult = await firebaseUser.getIdTokenResult();
-        const role          = idTokenResult.claims?.role ?? 'CLIENT';
+        let role = idTokenResult.claims?.role ?? 'CLIENT';
+
+        // If role is CLIENT, check if they have an approved provider application
+        // This handles providers who signed up AFTER being approved
+        if (role === 'CLIENT') {
+          try {
+            const token = idTokenResult.token;
+            const checkRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/check-provider`, {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            });
+            const checkData = await checkRes.json();
+            if (checkData.role === 'PROVIDER') {
+              // Force token refresh to get new claim
+              const refreshed = await fbUser.getIdTokenResult(true);
+              role = refreshed.claims?.role ?? 'PROVIDER';
+            }
+          } catch(e) { console.log('Provider check (non-fatal):', e.message); }
+        }
         setUser({
           uid:   firebaseUser.uid,
           email: firebaseUser.email,
