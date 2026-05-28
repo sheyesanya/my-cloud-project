@@ -16,7 +16,7 @@ const FEATURES = [
 
 const STATS = [
   { value:184, suffix:'+', label:'Media Providers'  },
-  { value:6,   suffix:'',  label:'Media Categories' },
+  { value:9,   suffix:'',  label:'Media Categories' },
   { value:36,  suffix:'+', label:'Cities Covered'   },
 ];
 
