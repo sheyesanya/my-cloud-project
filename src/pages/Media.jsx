@@ -2,6 +2,15 @@ import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { LoadingBlock, ErrorBlock, EmptyBlock, Toast } from '../components/UI';
 import { getMedia } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { auth } from '../lib/firebase';
+import axios from 'axios';
+
+const API = import.meta.env.VITE_API_URL;
+const authHeader = async () => {
+  const token = await auth.currentUser?.getIdToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 const GRAD = [
   'linear-gradient(135deg,#6366f1,#a855f7)',
@@ -262,6 +271,9 @@ export default function Media() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
   const [toast, setToast]     = useState(null);
+  const [deleting, setDeleting] = useState({});
+  const { user } = useAuth();
+  const isAdmin = (user?.role || '').toUpperCase() === 'ADMIN';
   const [search, setSearch]   = useState('');
   const [catFilter, setCat]   = useState('ALL');
 
@@ -272,6 +284,21 @@ export default function Media() {
       setMedia(Array.isArray(res) ? res : res.media ?? res.data ?? []);
     } catch (e) { setError(e.message); }
     finally     { setLoading(false); }
+  };
+
+  const deleteMedia = async (mediaId, name) => {
+    if (!window.confirm(`Delete "${name}" from media inventory? This cannot be undone.`)) return;
+    setDeleting(d => ({ ...d, [mediaId]: true }));
+    try {
+      const headers = await authHeader();
+      await axios.delete(`${API}/media/${mediaId}`, { headers });
+      setMedia(prev => prev.filter(m => (m.mediaId ?? m.id ?? m._id) !== mediaId));
+      setToast({ type:'success', message:`${name} deleted` });
+      setTimeout(() => setToast(null), 3000);
+    } catch(e) {
+      setToast({ type:'error', message: e.response?.data?.error || e.message });
+      setTimeout(() => setToast(null), 3000);
+    } finally { setDeleting(d => { const n={...d}; delete n[mediaId]; return n; }); }
   };
 
   useEffect(() => { fetchMedia(); }, []);
@@ -408,9 +435,19 @@ export default function Media() {
                 {/* Footer */}
                 <div style={{ paddingTop:10, borderTop:'1px solid rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                   <p style={{ fontSize:10, color:'var(--text-muted)' }}>Via BrandCasta only</p>
-                  <div style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 9px', borderRadius:20, background:'rgba(99,102,241,0.1)', border:'1px solid rgba(99,102,241,0.2)' }}>
-                    <div style={{ width:5, height:5, borderRadius:'50%', background:'#86efac' }}/>
-                    <p style={{ fontSize:10, fontWeight:700, color:'#a5b4fc' }}>Available</p>
+                  <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 9px', borderRadius:20, background:'rgba(99,102,241,0.1)', border:'1px solid rgba(99,102,241,0.2)' }}>
+                      <div style={{ width:5, height:5, borderRadius:'50%', background:'#86efac' }}/>
+                      <p style={{ fontSize:10, fontWeight:700, color:'#a5b4fc' }}>Available</p>
+                    </div>
+                    {isAdmin && (
+                      <button
+                        onClick={() => deleteMedia(m.mediaId ?? m.id ?? m._id, m.name)}
+                        disabled={deleting[m.mediaId ?? m.id ?? m._id]}
+                        style={{ padding:'3px 9px', borderRadius:20, fontSize:10, fontWeight:700, cursor:'pointer', background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', color:'#fca5a5', fontFamily:'Manrope,sans-serif' }}>
+                        {deleting[m.mediaId ?? m.id ?? m._id] ? '…' : '✕ Delete'}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
