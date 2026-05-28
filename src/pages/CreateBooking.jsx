@@ -12,7 +12,10 @@ const CAT_LABELS = {
   ALL:'All', TELEVISION:'TV', RADIO_AUDIO:'Radio', PODCASTS:'Podcasts',
   OUT_OF_HOME:'OOH', PRINT_MEDIA:'Print', INFLUENCERS:'Influencers',
   SOCIAL_MEDIA:'Social Media', MUSIC_PROMOTION:'Music Promotion',
+  LIVE_STREAMING:'Live Streaming Ads',
 };
+
+
 
 const CAT_ICONS = {
   SOCIAL_MEDIA:     '',
