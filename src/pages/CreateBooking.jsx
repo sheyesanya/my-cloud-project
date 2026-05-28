@@ -75,7 +75,8 @@ export default function CreateBooking() {
   const availableMarkets = selectedOption ? Object.keys(selectedOption.markets || {}) : [];
   const unitPrice        = selectedOption?.markets?.[sel.market]?.price ?? 0;
   const runs             = Math.max(1, Number(sel.runs) || 1);
-  const finalPrice       = unitPrice * runs;
+  const discount         = VOLUME_DISCOUNT(runs);
+  const finalPrice       = Math.round(unitPrice * runs * (1 - discount));
   const campaignTotal    = items.reduce((s, i) => s + (i.price || 0), 0);
 
   const filteredMedia = media.filter(m => {
@@ -112,7 +113,7 @@ export default function CreateBooking() {
       optionLabel:     selectedOption?.label || sel.inventory_option,
       market:          sel.market,
       date:            sel.date,
-      runs, price: finalPrice, unitPrice,
+      runs, price: finalPrice, unitPrice, discount,
     }]);
 
     setToast({ type:'success', message: runs > 1 ? `Added ×${runs} runs` : 'Added to campaign' });
@@ -225,6 +226,17 @@ export default function CreateBooking() {
         {/* ── STEP 2: BUILD CAMPAIGN ── */}
         {step === 2 && (
           <div className="space-y-5">
+
+            {/* Step 2 explainer */}
+            <div style={{ padding:'12px 16px', borderRadius:12, background:'rgba(99,102,241,0.07)', border:'1px solid rgba(99,102,241,0.15)', display:'flex', alignItems:'center', gap:10 }}>
+              <span style={{ fontSize:18 }}>🛒</span>
+              <div>
+                <p style={{ fontWeight:700, fontSize:13, color:'white', marginBottom:2 }}>Build your campaign</p>
+                <p style={{ fontSize:12, color:'var(--text-muted)', lineHeight:1.5 }}>
+                  Select a media organisation, choose your inventory and click <strong style={{ color:'#a5b4fc' }}>+ Add to Campaign</strong>. You can add as many providers as you want before launching.
+                </p>
+              </div>
+            </div>
 
             {/* Media picker */}
             <div style={{ padding:20, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
@@ -414,12 +426,27 @@ export default function CreateBooking() {
                     {/* Price preview */}
                     {sel.market && unitPrice > 0 && (
                       <div style={{ padding:'14px 18px', borderRadius:12, background:'rgba(99,102,241,0.1)', border:'1px solid rgba(99,102,241,0.2)' }}>
-                        <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:4 }}>
-                          {runs > 1 ? `₦${Number(unitPrice).toLocaleString()} × ${runs} runs` : 'Placement Cost'}
-                        </p>
+                        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
+                          <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em' }}>
+                            {runs > 1 ? `₦${Number(unitPrice).toLocaleString()} × ${runs} runs` : 'Placement Cost'}
+                          </p>
+                          {discountLabel(runs) && (
+                            <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, background:'rgba(34,197,94,0.15)', color:'#86efac', border:'1px solid rgba(34,197,94,0.25)' }}>
+                              {discountLabel(runs)}
+                            </span>
+                          )}
+                        </div>
+                        {discount > 0 && (
+                          <p style={{ fontSize:11, color:'var(--text-muted)', textDecoration:'line-through', marginBottom:2 }}>
+                            ₦{Number(unitPrice * runs).toLocaleString()} original
+                          </p>
+                        )}
                         <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:28, color:'#a5b4fc' }}>
                           ₦{Number(finalPrice).toLocaleString()}
                         </p>
+                        {runs >= 3 && runs < 5 && <p style={{ fontSize:10, color:'#fcd34d', marginTop:4 }}>Add {5-runs} more run{5-runs>1?'s':''} for 10% off</p>}
+                        {runs >= 5 && runs < 10 && <p style={{ fontSize:10, color:'#fcd34d', marginTop:4 }}>Add {10-runs} more run{10-runs>1?'s':''} for 15% off</p>}
+                        {runs >= 10 && runs < 20 && <p style={{ fontSize:10, color:'#fcd34d', marginTop:4 }}>Add {20-runs} more run{20-runs>1?'s':''} for 25% off</p>}
                       </div>
                     )}
 
@@ -437,10 +464,18 @@ export default function CreateBooking() {
               <div style={{ padding:20, borderRadius:14, background:'var(--bg-surface)', border:'1px solid var(--border)' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
                   <div>
-                    <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, color:'white' }}>Campaign Cart</p>
-                    <p style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>{items.length} item{items.length!==1?'s':''}</p>
+                    <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, color:'white' }}>
+                      Campaign Cart
+                      <span style={{ marginLeft:8, padding:'2px 8px', borderRadius:20, background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:11, fontWeight:700 }}>
+                        {items.length} item{items.length!==1?'s':''}
+                      </span>
+                    </p>
+                    <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>Select more providers above to add to this campaign</p>
                   </div>
-                  <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:20, color:'#a5b4fc' }}>₦{campaignTotal.toLocaleString()}</p>
+                  <div style={{ textAlign:'right' }}>
+                    <p style={{ fontSize:10, color:'var(--text-muted)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em' }}>Total</p>
+                    <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:22, color:'#a5b4fc' }}>₦{campaignTotal.toLocaleString()}</p>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   {items.map((item, idx) => (
@@ -453,9 +488,12 @@ export default function CreateBooking() {
                         </p>
                       </div>
                       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                        <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, color: item.price>0?'#a5b4fc':'#fcd34d' }}>
-                          {item.price>0?`₦${Number(item.price).toLocaleString()}`:'On request'}
-                        </p>
+                        <div style={{ textAlign:'right' }}>
+                          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, color: item.price>0?'#a5b4fc':'#fcd34d' }}>
+                            {item.price>0?`₦${Number(item.price).toLocaleString()}`:'On request'}
+                          </p>
+                          {item.discount > 0 && <p style={{ fontSize:9, color:'#86efac', fontWeight:700 }}>{(item.discount*100).toFixed(0)}% off</p>}
+                        </div>
                         <button type="button" onClick={() => setItems(p => p.filter((_,i)=>i!==idx))}
                           style={{ padding:'3px 8px', borderRadius:6, fontSize:11, background:'rgba(239,68,68,0.1)', color:'#fca5a5', border:'1px solid rgba(239,68,68,0.2)', cursor:'pointer' }}>✕</button>
                       </div>
