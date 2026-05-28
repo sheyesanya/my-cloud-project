@@ -40,6 +40,17 @@ export default function AdminApplications() {
     finally { setActing(a => { const n = { ...a }; delete n[applicationId]; return n; }); }
   };
 
+  const deleteProvider = async (applicationId, orgName) => {
+    if (!window.confirm(`Permanently delete "${orgName}"? This will remove their account, media listing and revoke their provider access.`)) return;
+    setActing(a => ({ ...a, [applicationId]: 'DELETE' }));
+    try {
+      await api.delete(`/providers/${applicationId}`);
+      setApplications(apps => apps.filter(a => a.applicationId !== applicationId));
+      showToast('success', `${orgName} has been removed`);
+    } catch(e) { showToast('error', e.message); }
+    finally { setActing(a => { const n = { ...a }; delete n[applicationId]; return n; }); }
+  };
+
   const fmtDate = (d) => {
     if (!d) return '—';
     try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
@@ -210,6 +221,32 @@ export default function AdminApplications() {
                           style={{ padding:'10px 20px', fontSize:13 }}
                         >
                           📦 Set Up Inventory
+                        </button>
+                        <button
+                          onClick={() => deleteProvider(aid, app.orgName)}
+                          disabled={!!acting[aid]}
+                          className="btn-danger"
+                          style={{ padding:'10px 20px', fontSize:13 }}
+                        >
+                          {acting[aid] === 'DELETE' ? <Spinner size={13}/> : (
+                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                          )}
+                          Delete Provider
+                        </button>
+                      </div>
+                    )}
+                    {status === 'REJECTED' && (
+                      <div className="flex gap-3 mt-5">
+                        <button
+                          onClick={() => deleteProvider(aid, app.orgName)}
+                          disabled={!!acting[aid]}
+                          className="btn-danger"
+                          style={{ padding:'10px 20px', fontSize:13 }}
+                        >
+                          {acting[aid] === 'DELETE' ? <Spinner size={13}/> : (
+                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                          )}
+                          Delete Application
                         </button>
                       </div>
                     )}
