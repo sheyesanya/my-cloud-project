@@ -65,6 +65,7 @@ export default function Login() {
   const [password, setPassword]        = useState('');
   const [loading, setLoading]          = useState(false);
   const [error, setError]              = useState('');
+  const [agreedToTerms, setAgreed]     = useState(false);
   const [activeTestimonial, setActive] = useState(0);
   const [menuOpen, setMenuOpen]        = useState(false);
 
@@ -271,10 +272,50 @@ export default function Login() {
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               <input type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} style={inp}/>
               <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handle(() => mode === 'login' || isProvider ? login(email, password) : signup(email, password))}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    if (mode === 'signup' && !agreedToTerms) { setError('Please agree to the Terms & Conditions.'); return; }
+                    handle(() => mode === 'login' || isProvider ? login(email, password) : signup(email, password));
+                  }
+                }}
                 style={inp}/>
+
+              {/* T&C checkbox — only on sign up */}
+              {mode === 'signup' && (
+                <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 0 4px' }}>
+                  <div
+                    onClick={() => setAgreed(a => !a)}
+                    style={{ width:18, height:18, borderRadius:5, flexShrink:0, marginTop:1, cursor:'pointer', border: agreedToTerms ? 'none' : '1px solid rgba(255,255,255,0.25)', background: agreedToTerms ? 'linear-gradient(135deg,#6366f1,#a855f7)' : 'rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}>
+                    {agreedToTerms && (
+                      <svg width="10" height="10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    )}
+                  </div>
+                  <p style={{ fontSize:12, color:'rgba(255,255,255,0.55)', lineHeight:1.6, cursor:'pointer' }} onClick={() => setAgreed(a => !a)}>
+                    I agree to BrandCasta's{' '}
+                    <a href="/terms" target="_blank" rel="noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{ color:'#a5b4fc', textDecoration:'underline', fontWeight:600 }}>
+                      Terms & Conditions
+                    </a>
+                    {' '}and{' '}
+                    <a href="/privacy" target="_blank" rel="noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{ color:'#a5b4fc', textDecoration:'underline', fontWeight:600 }}>
+                      Privacy Policy
+                    </a>
+                  </p>
+                </div>
+              )}
               <button
-                onClick={() => handle(() => mode === 'login' || isProvider ? login(email, password) : signup(email, password))}
+                onClick={() => {
+                  if ((mode === 'signup') && !agreedToTerms) {
+                    setError('Please agree to the Terms & Conditions to create an account.');
+                    return;
+                  }
+                  handle(() => mode === 'login' || isProvider ? login(email, password) : signup(email, password));
+                }}
                 disabled={loading}
                 style={{ width:'100%', padding:'13px', borderRadius:10, border:'none', cursor:'pointer', fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', gap:8, color:'white',
                   background: isProvider ? 'linear-gradient(135deg,#14b8a6,#06b6d4)' : 'linear-gradient(135deg,#6366f1,#a855f7)',
