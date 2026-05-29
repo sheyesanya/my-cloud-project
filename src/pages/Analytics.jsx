@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import PageTitle from '../components/PageTitle';
 import Layout from '../components/Layout';
 import { Spinner } from '../components/UI';
 import { getBookings, getCampaigns } from '../services/api';
@@ -96,7 +97,8 @@ export default function Analytics() {
   const STATUS_LABELS = { COMPLETED:'Completed', PAID:'Active', IN_PROGRESS:'In Progress', PENDING_DELIVERY_REVIEW:'Review', PENDING_PROVIDER_CONFIRMATION:'Pending', PAYMENT_PENDING:'Awaiting Payment', REJECTED:'Rejected' };
   const STATUS_COLORS = { COMPLETED:'#86efac', PAID:'#86efac', IN_PROGRESS:'#86efac', PENDING_DELIVERY_REVIEW:'#fcd34d', PENDING_PROVIDER_CONFIRMATION:'rgba(255,255,255,0.4)', PAYMENT_PENDING:'#fcd34d', REJECTED:'#fca5a5' };
 
-  if (loading) return <Layout title="Analytics"><div style={{ color:'var(--text-muted)', padding:40 }}><Spinner size={16}/></div></Layout>;
+  if (loading) return <Layout title="Analytics">
+      <PageTitle title="Analytics" description="Track campaign performance, spend by category and top providers."/><div style={{ color:'var(--text-muted)', padding:40 }}><Spinner size={16}/></div></Layout>;
 
   return (
     <Layout title="Campaign Analytics" subtitle="Performance overview across all your campaigns">

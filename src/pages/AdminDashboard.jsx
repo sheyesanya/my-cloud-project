@@ -32,6 +32,8 @@ export default function AdminDashboard() {
   const [subscriptions, setSubs]        = useState([]);
   const [loading, setLoading]           = useState(true);
   const [activeTab, setActiveTab]       = useState('overview');
+  const [payouts, setPayouts]           = useState([]);
+  const [releasing, setReleasing]       = useState({});
   const [toast, setToast]               = useState(null);
   const [showBookingModal, setShowBM]   = useState(false);
   const [bForm, setBForm]               = useState({ brand_name:'', contactEmail:'', mediaId:'', inventory_group:'', inventory_option:'', market:'', date:'', runs:1, campaignBrief:'' });
@@ -104,6 +106,12 @@ export default function AdminDashboard() {
         const sRes = await axios.get(`${API}/subscription/all`, { headers });
         setSubs(Array.isArray(sRes.data) ? sRes.data : sRes.data?.subscriptions ?? []);
       } catch { setSubs([]); }
+
+      // Load payouts
+      try {
+        const pRes = await axios.get(`${API}/admin/payouts`, { headers });
+        setPayouts(Array.isArray(pRes.data) ? pRes.data : []);
+      } catch { setPayouts([]); }
     } catch(e) { console.error(e); }
     finally { setLoading(false); }
   };
@@ -124,12 +132,26 @@ export default function AdminDashboard() {
   const recentBookings = [...bookings].sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt)).slice(0,8);
   const pendingProviders = providers.filter(p => p.status==='PENDING').slice(0,5);
 
+  const releasePayout = async (bookingId, providerName) => {
+    if (!window.confirm(`Release payout for ${providerName}?`)) return;
+    setReleasing(r => ({ ...r, [bookingId]: true }));
+    try {
+      const headers = await authHeader();
+      headers['Content-Type'] = 'application/json';
+      await axios.post(`${API}/admin/payouts/release`, { bookingId }, { headers });
+      showToast('success', `Payout released for ${providerName}`);
+      await loadAll();
+    } catch(e) { showToast('error', e.response?.data?.error || e.message); }
+    finally { setReleasing(r => { const n={...r}; delete n[bookingId]; return n; }); }
+  };
+
   const TABS = [
     { key:'overview',      label:'Overview'          },
     { key:'bookings',      label:`Bookings (${bookings.length})`  },
     { key:'providers',     label:`Providers (${providers.length})` },
     { key:'subscriptions', label:`Subscriptions (${activeSubs})`  },
     { key:'media',         label:`Media (${media.length})`        },
+    { key:'payouts',       label:`Payouts (${payouts.length})`    },
   ];
 
   if (loading) return <Layout title="Admin Dashboard">
@@ -545,6 +567,77 @@ export default function AdminDashboard() {
           </table>
         </div>
       )}
+      {/* ── PAYOUTS TAB ── */}
+      {activeTab === 'payouts' && (
+        <div>
+          {/* Summary */}
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))', gap:10, marginBottom:18 }}>
+            {[
+              ['Total Providers',   payouts.length,                                                                           '#a5b4fc'],
+              ['Total Payouts',     fmt(payouts.reduce((s,p)=>s+p.totalPayout,0)),                                            '#86efac'],
+              ['Pending Release',   fmt(payouts.reduce((s,p)=>s+p.pendingPayout,0)),                                          '#fcd34d'],
+              ['Released',          fmt(payouts.reduce((s,p)=>s+p.releasedPayout,0)),                                         '#86efac'],
+            ].map(([l,v,c]) => (
+              <div key={l} style={{ padding:'12px 16px', borderRadius:11, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
+                <p style={{ fontSize:9, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:5 }}>{l}</p>
+                <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:20, color:c }}>{v}</p>
+              </div>
+            ))}
+          </div>
+
+          {payouts.length === 0 ? (
+            <div style={{ padding:40, textAlign:'center', color:'var(--text-muted)', fontSize:13 }}>No completed campaigns yet.</div>
+          ) : payouts.map((provider, pi) => (
+            <div key={pi} style={{ marginBottom:16, borderRadius:13, background:'var(--bg-surface)', border:'1px solid var(--border)', overflow:'hidden' }}>
+              {/* Provider header */}
+              <div style={{ padding:'14px 20px', background:'rgba(255,255,255,0.02)', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                <div>
+                  <p style={{ fontWeight:700, fontSize:14, color:'white' }}>{provider.providerName}</p>
+                  <p style={{ fontSize:11, color:'var(--text-muted)' }}>{provider.providerEmail}</p>
+                </div>
+                <div style={{ textAlign:'right' }}>
+                  <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'#86efac' }}>{fmt(provider.totalPayout)}</p>
+                  <p style={{ fontSize:11, color:'var(--text-muted)' }}>
+                    <span style={{ color:'#fcd34d' }}>{fmt(provider.pendingPayout)} pending</span>
+                    {provider.releasedPayout > 0 && <span style={{ color:'#86efac', marginLeft:8 }}>{fmt(provider.releasedPayout)} released</span>}
+                  </p>
+                </div>
+              </div>
+
+              {/* Bookings */}
+              {provider.bookings.map(b => (
+                <div key={b.bookingId} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 20px', borderBottom:'1px solid rgba(255,255,255,0.04)' }}>
+                  <div>
+                    <p style={{ fontSize:13, fontWeight:600, color:'white' }}>{b.brandName || b.contactEmail}</p>
+                    <p style={{ fontSize:11, color:'var(--text-muted)' }}>{b.target} · {fmtDate(b.date)} · {b.bookingId?.slice(0,8).toUpperCase()}</p>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                    <div style={{ textAlign:'right' }}>
+                      <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color:'#86efac' }}>{fmt(b.mediaPayout)}</p>
+                      <span style={{ fontSize:9, fontWeight:700, padding:'2px 7px', borderRadius:20,
+                        background: b.payoutStatus==='RELEASED' ? 'rgba(34,197,94,0.1)' : 'rgba(245,158,11,0.1)',
+                        color:      b.payoutStatus==='RELEASED' ? '#86efac' : '#fcd34d',
+                      }}>{b.payoutStatus==='RELEASED' ? '✓ Released' : 'Pending'}</span>
+                    </div>
+                    {b.payoutStatus !== 'RELEASED' && (
+                      <button onClick={() => releasePayout(b.bookingId, provider.providerName)}
+                        disabled={!!releasing[b.bookingId]}
+                        style={{ padding:'7px 14px', borderRadius:8, fontSize:12, fontWeight:700, cursor:'pointer', fontFamily:'Manrope,sans-serif', border:'none',
+                          background:'linear-gradient(135deg,#22c55e,#16a34a)', color:'white', display:'flex', alignItems:'center', gap:5 }}>
+                        {releasing[b.bookingId] ? <><Spinner size={11}/>…</> : '💸 Release'}
+                      </button>
+                    )}
+                    {b.payoutStatus === 'RELEASED' && (
+                      <p style={{ fontSize:11, color:'var(--text-muted)' }}>{fmtDate(b.payoutReleasedAt)}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
     </Layout>
   );
 }
