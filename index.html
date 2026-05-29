@@ -1,67 +1,89 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-
   <head>
-
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://res.cloudinary.com/dehap9dpe/image/upload/v1779213802/Brandcasta_Black_Logo_ptl7ax.png"
-    />
+    <!-- ── Primary SEO ── -->
+    <title>BrandCasta — Nigeria's Media Campaign Platform</title>
+    <meta name="description" content="Book TV, radio, billboard, podcast and influencer campaigns across Nigeria. 184+ verified media providers. One platform to discover, book and manage your media campaigns." />
+    <meta name="keywords" content="media buying Nigeria, advertising Nigeria, TV advertising Lagos, radio advertising Nigeria, billboard advertising Lagos, influencer marketing Nigeria, campaign management, BrandCasta" />
+    <meta name="author" content="BrandCasta / Modulus Media" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://app.brandcasta.co" />
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <!-- ── Open Graph (Facebook, WhatsApp, LinkedIn) ── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://app.brandcasta.co" />
+    <meta property="og:title"       content="BrandCasta — Nigeria's Media Campaign Platform" />
+    <meta property="og:description" content="Book TV, radio, billboard, podcast and influencer campaigns across Nigeria. 184+ verified media providers." />
+    <meta property="og:image"       content="https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale"      content="en_NG" />
+    <meta property="og:site_name"   content="BrandCasta" />
 
-    <title>
-      BrandCasta — Campaign Ops Platform
-    </title>
+    <!-- ── Twitter / X Card ── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@brandcasta" />
+    <meta name="twitter:title"       content="BrandCasta — Nigeria's Media Campaign Platform" />
+    <meta name="twitter:description" content="Book TV, radio, billboard, podcast and influencer campaigns across Nigeria. 184+ verified media providers." />
+    <meta name="twitter:image"       content="https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png" />
 
-    <meta
-      name="description"
-      content="BrandCasta is a media campaign operations platform for managing advertising inventory, campaign execution, and media workflows."
-    />
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png" />
+    <link rel="apple-touch-icon"     href="https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png" />
 
-    <meta
-      property="og:title"
-      content="BrandCasta"
-    />
+    <!-- ── Theme colour (browser chrome on mobile) ── -->
+    <meta name="theme-color" content="#0a0a0f" />
 
-    <meta
-      property="og:description"
-      content="Campaign Operations Platform"
-    />
+    <!-- ── Structured Data (Google Rich Results) ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "BrandCasta",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Nigeria's media campaign operations platform. Book TV, radio, billboard, podcast and influencer campaigns across Nigeria.",
+      "url": "https://app.brandcasta.co",
+      "logo": "https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Modulus Media",
+        "url": "https://brandcasta.co"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free Plan",
+          "price": "0",
+          "priceCurrency": "NGN"
+        },
+        {
+          "@type": "Offer",
+          "name": "Premium Plan",
+          "price": "25000",
+          "priceCurrency": "NGN"
+        },
+        {
+          "@type": "Offer",
+          "name": "Pro Plan",
+          "price": "45000",
+          "priceCurrency": "NGN"
+        }
+      ],
+      "areaServed": "NG",
+      "availableLanguage": "English"
+    }
+    </script>
 
-    <meta
-      property="og:image"
-      content="https://res.cloudinary.com/dehap9dpe/image/upload/v1778828641/og-image_vbig0e.png"
-    />
-
-    <meta
-      property="og:type"
-      content="website"
-    />
-
+    <!-- ── Fonts ── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
-
   <body>
-
     <div id="root"></div>
-
-    <script
-      type="module"
-      src="/src/main.jsx"
-    ></script>
-
-    <script
-      src="https://widget.cloudinary.com/v2.0/global/all.js"
-      type="text/javascript"
-    ></script>
-
+    <script type="module" src="/src/main.jsx"></script>
   </body>
-
 </html>
