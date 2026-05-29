@@ -1,408 +1,160 @@
 import { useState } from 'react';
+import PageTitle from '../components/PageTitle';
 import Layout from '../components/Layout';
 import { Spinner } from '../components/UI';
+import { useAuth } from '../context/AuthContext';
+import { auth } from '../lib/firebase';
+import axios from 'axios';
 
-const OBJECTIVES = ['Brand Awareness','Product Launch','Sales Drive','Event Promotion','App Downloads','Lead Generation','Rebranding','Market Entry'];
-const CATEGORIES = ['Television','Radio','Podcasts','Out-of-Home','Print & Digital','Influencers'];
-const BUDGETS    = ['Under ₦500k','₦500k – ₦2M','₦2M – ₦5M','₦5M – ₦10M','₦10M – ₦25M','₦25M+'];
-const DURATIONS  = ['1 week','2 weeks','1 month','6 weeks','2 months','3 months','6 months'];
-const REGIONS    = ['Lagos','Abuja','Port Harcourt','Kano','Enugu','Ibadan','Nationwide'];
+const API = import.meta.env.VITE_API_URL;
+const authHeader = async () => {
+  const token = await auth.currentUser?.getIdToken();
+  return token ? { Authorization:`Bearer ${token}`, 'Content-Type':'application/json' } : { 'Content-Type':'application/json' };
+};
+
+const OBJECTIVES = ['Brand Awareness','Product Launch','Sales Conversion','Lead Generation','Event Promotion','Brand Recall'];
+const MEDIA_OPTIONS = ['TV','Radio','OOH Billboards','Podcasts','Influencers','Social Media','Print','Live Streaming'];
+const AUDIENCES = ['Youth (18–25)','Young Adults (26–35)','Adults (36–50)','Mass Market','Urban Professional','Students','Parents'];
 
 export default function BriefGenerator() {
-  const [step, setStep]       = useState(1);
-  const [form, setForm]       = useState({ brandName:'', industry:'', product:'', objective:'', targetAudience:'', budget:'', duration:'', regions:[], channels:[], extraContext:'' });
-  const [loading, setLoading] = useState(false);
-  const [brief, setBrief]     = useState(null);
-  const [error, setError]     = useState('');
-  const [copied, setCopied]   = useState(false);
+  const { user } = useAuth();
+  const [form, setForm] = useState({ brandName:'', objective:'Brand Awareness', audience:'', budget:'', duration:'', media:[], notes:'' });
+  const [generating, setGenerating] = useState(false);
+  const [brief, setBrief] = useState('');
+  const [error, setError] = useState('');
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-  const toggle = (k, v) => setForm(f => ({ ...f, [k]: f[k].includes(v) ? f[k].filter(x => x !== v) : [...f[k], v] }));
+  const setF = (k,v) => setForm(f=>({...f,[k]:v}));
+  const toggleMedia = (m) => setForm(f=>({ ...f, media: f.media.includes(m) ? f.media.filter(x=>x!==m) : [...f.media,m] }));
 
   const generate = async () => {
-    setLoading(true); setError(''); setBrief(null);
+    if(!form.brandName.trim()){ setError('Brand name is required'); return; }
+    setGenerating(true); setError(''); setBrief('');
     try {
-      const prompt = `You are BrandCasta's senior media strategist in Nigeria. Generate a comprehensive, professional campaign brief for the following brand.
+      const headers = await authHeader();
+      const prompt = `You are a Nigerian media campaign strategist. Generate a professional, detailed campaign brief for the following:
 
-BRAND DETAILS:
-- Brand Name: ${form.brandName}
-- Industry: ${form.industry}
-- Product/Service: ${form.product}
-- Campaign Objective: ${form.objective}
-- Target Audience: ${form.targetAudience}
-- Budget Range: ${form.budget}
-- Campaign Duration: ${form.duration}
-- Target Regions: ${form.regions.join(', ') || 'Nationwide'}
-- Preferred Media Channels: ${form.channels.join(', ') || 'All channels'}
-- Additional Context: ${form.extraContext || 'None'}
+Brand: ${form.brandName}
+Objective: ${form.objective}
+Target Audience: ${form.audience||'General Nigerian market'}
+Budget: ${form.budget||'To be determined'}
+Campaign Duration: ${form.duration||'4 weeks'}
+Preferred Media Channels: ${form.media.length?form.media.join(', '):'All channels'}
+Additional Notes: ${form.notes||'None'}
 
-Generate a detailed campaign brief with these exact sections, using this JSON structure:
-{
-  "executiveSummary": "2-3 sentence overview of the campaign strategy",
-  "campaignObjectives": ["objective 1", "objective 2", "objective 3"],
-  "targetAudience": {
-    "primary": "Primary audience description",
-    "secondary": "Secondary audience description",
-    "psychographics": "Psychographic profile",
-    "mediaConsumption": "How they consume media"
-  },
-  "mediaStrategy": [
-    {
-      "channel": "channel name",
-      "rationale": "why this channel",
-      "allocation": "% of budget",
-      "formats": ["format 1", "format 2"],
-      "recommendedProviders": ["provider 1", "provider 2"]
-    }
-  ],
-  "budgetBreakdown": [
-    { "line": "line item", "allocation": "₦ amount or %", "notes": "notes" }
-  ],
-  "timeline": [
-    { "phase": "Phase name", "weeks": "Week 1-2", "activities": ["activity 1", "activity 2"] }
-  ],
-  "creativeDirection": {
-    "keyMessage": "The single most important message",
-    "tone": "Tone and style guidance",
-    "callToAction": "Primary CTA",
-    "creativeRequirements": ["req 1", "req 2", "req 3"]
-  },
-  "kpis": [
-    { "metric": "KPI name", "target": "target value", "measurement": "how to measure" }
-  ],
-  "risks": [
-    { "risk": "risk description", "mitigation": "mitigation strategy" }
-  ]
-}
+Write a comprehensive campaign brief including: Executive Summary, Campaign Objectives, Target Audience Analysis, Recommended Media Mix with rationale, Creative Direction suggestions, KPIs and Success Metrics, and Budget Allocation guidance. Format it professionally.`;
 
-Respond with ONLY valid JSON. No markdown, no explanation, no backticks. Make recommendations specific to Nigerian media market. Reference real Nigerian media providers where applicable (Channels TV, Cool FM, Punch, etc.).`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
+      const res = await axios.post('https://api.anthropic.com/v1/messages', {
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role:'user', content: prompt }],
       });
-      const data = await response.json();
-      const text = data.content?.map(c => c.text || '').join('').trim();
-      const clean = text.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(clean);
-      setBrief(parsed);
-      setStep(3);
-    } catch(e) { setError('Failed to generate brief. Please try again.'); console.error(e); }
-    finally { setLoading(false); }
+      const text = res.data?.content?.find(c=>c.type==='text')?.text||'';
+      setBrief(text);
+    } catch(e){ setError('Could not generate brief. Please try again.'); }
+    finally{ setGenerating(false); }
   };
 
-  const copy = () => {
-    if (!brief) return;
-    const text = `CAMPAIGN BRIEF — ${form.brandName.toUpperCase()}
-Generated by BrandCasta
-
-EXECUTIVE SUMMARY
-${brief.executiveSummary}
-
-OBJECTIVES
-${brief.campaignObjectives?.map((o,i) => `${i+1}. ${o}`).join('\n')}
-
-TARGET AUDIENCE
-Primary: ${brief.targetAudience?.primary}
-Secondary: ${brief.targetAudience?.secondary}
-Psychographics: ${brief.targetAudience?.psychographics}
-Media Consumption: ${brief.targetAudience?.mediaConsumption}
-
-MEDIA STRATEGY
-${brief.mediaStrategy?.map(m => `• ${m.channel} (${m.allocation})\n  ${m.rationale}\n  Formats: ${m.formats?.join(', ')}\n  Providers: ${m.recommendedProviders?.join(', ')}`).join('\n\n')}
-
-BUDGET BREAKDOWN
-${brief.budgetBreakdown?.map(b => `• ${b.line}: ${b.allocation} — ${b.notes}`).join('\n')}
-
-TIMELINE
-${brief.timeline?.map(t => `${t.phase} (${t.weeks})\n${t.activities?.map(a => `  • ${a}`).join('\n')}`).join('\n\n')}
-
-CREATIVE DIRECTION
-Key Message: ${brief.creativeDirection?.keyMessage}
-Tone: ${brief.creativeDirection?.tone}
-CTA: ${brief.creativeDirection?.callToAction}
-
-KPIs
-${brief.kpis?.map(k => `• ${k.metric}: ${k.target} (${k.measurement})`).join('\n')}`;
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
-  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, fontSize:13, outline:'none', background:'rgba(255,255,255,0.05)', border:'1px solid var(--border)', color:'white', fontFamily:'Manrope,sans-serif', boxSizing:'border-box' };
-  const pill = (active) => ({ padding:'7px 14px', borderRadius:20, fontSize:12, fontWeight:600, cursor:'pointer', transition:'all 0.15s', border:'none', background: active ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)', color: active ? '#a5b4fc' : 'rgba(255,255,255,0.5)', outline: active ? '1px solid rgba(99,102,241,0.4)' : '1px solid rgba(255,255,255,0.08)' });
+  const inp = { width:'100%', padding:'8px 11px', borderRadius:8, fontSize:12, outline:'none', background:'rgba(255,255,255,0.04)', border:'0.5px solid var(--border)', color:'white', fontFamily:'Inter,sans-serif' };
 
   return (
-    <Layout title="AI Brief Generator" subtitle="Generate a professional campaign brief powered by Claude AI">
+    <>
+      <PageTitle title="AI Brief Generator" description="Generate a professional campaign brief with AI."/>
+      <Layout title="AI Brief Generator" subtitle="Generate professional campaign briefs powered by AI">
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:18, alignItems:'start' }}>
 
-      {/* Progress */}
-      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:28 }}>
-        {['Brand Details','Strategy Inputs','Your Brief'].map((label, i) => {
-          const s = i + 1; const active = step === s; const done = step > s;
-          return (
-            <div key={s} style={{ display:'flex', alignItems:'center', flex: i < 2 ? 1 : 'none' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
-                <div style={{ width:26, height:26, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700,
-                  background: done ? 'linear-gradient(135deg,#6366f1,#a855f7)' : active ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.04)',
-                  border: active ? '1px solid rgba(99,102,241,0.4)' : done ? 'none' : '1px solid var(--border)',
-                  color: done || active ? 'white' : 'var(--text-muted)',
-                }}>{done ? '✓' : s}</div>
-                <span style={{ fontSize:12, fontWeight:600, color: active ? 'white' : done ? '#a5b4fc' : 'var(--text-muted)', whiteSpace:'nowrap' }}>{label}</span>
-              </div>
-              {i < 2 && <div style={{ flex:1, height:1, background: done ? 'rgba(99,102,241,0.4)' : 'var(--border)', margin:'0 10px' }}/>}
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="max-w-2xl">
-
-        {/* STEP 1 */}
-        {step === 1 && (
-          <div className="page-card" style={{ padding:28 }}>
-            <p style={{ fontWeight:700, fontSize:16, color:'white', marginBottom:4 }}>Tell us about the brand</p>
-            <p style={{ fontSize:13, color:'var(--text-muted)', marginBottom:24 }}>The more detail you provide, the better the brief.</p>
+          {/* Form */}
+          <div className="page-card" style={{ padding:'18px 20px' }}>
+            <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:600, fontSize:13, color:'white', marginBottom:16 }}>Campaign Details</p>
             <div className="space-y-4">
               <div>
                 <label className="form-label">Brand Name *</label>
-                <input style={inp} placeholder="e.g. Indomie Nigeria" value={form.brandName} onChange={e => set('brandName', e.target.value)}/>
+                <input style={inp} placeholder="e.g. Indomie Nigeria" value={form.brandName} onChange={e=>setF('brandName',e.target.value)}/>
               </div>
               <div>
-                <label className="form-label">Industry / Sector *</label>
-                <input style={inp} placeholder="e.g. FMCG, Fintech, Telecoms, Real Estate" value={form.industry} onChange={e => set('industry', e.target.value)}/>
+                <label className="form-label">Campaign Objective</label>
+                <select value={form.objective} onChange={e=>setF('objective',e.target.value)}
+                  style={{ ...inp, background:'#0d0d18' }}>
+                  {OBJECTIVES.map(o=><option key={o} value={o}>{o}</option>)}
+                </select>
               </div>
               <div>
-                <label className="form-label">Product or Service being advertised *</label>
-                <input style={inp} placeholder="e.g. Indomie Stir-Fry variant launch" value={form.product} onChange={e => set('product', e.target.value)}/>
-              </div>
-              <div>
-                <label className="form-label">Target Audience *</label>
-                <textarea rows={3} style={{ ...inp, resize:'vertical' }} placeholder="e.g. Urban Nigerian youth aged 18-35, middle income, active on social media, frequent noodle consumers" value={form.targetAudience} onChange={e => set('targetAudience', e.target.value)}/>
-              </div>
-              <div>
-                <label className="form-label">Additional Context</label>
-                <textarea rows={3} style={{ ...inp, resize:'vertical' }} placeholder="Any specific requirements, past campaign insights, competitor context, seasonal factors, cultural moments to leverage..." value={form.extraContext} onChange={e => set('extraContext', e.target.value)}/>
-              </div>
-            </div>
-            <div className="flex justify-end mt-6">
-              <button onClick={() => { if (!form.brandName||!form.industry||!form.product||!form.targetAudience) return; setStep(2); }} className="btn-primary" style={{ padding:'10px 24px' }}>
-                Next →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 2 */}
-        {step === 2 && (
-          <div className="page-card" style={{ padding:28 }}>
-            <p style={{ fontWeight:700, fontSize:16, color:'white', marginBottom:4 }}>Campaign strategy inputs</p>
-            <p style={{ fontSize:13, color:'var(--text-muted)', marginBottom:24 }}>Help us understand your campaign parameters.</p>
-            <div className="space-y-5">
-
-              <div>
-                <label className="form-label">Campaign Objective *</label>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                  {OBJECTIVES.map(o => <button key={o} onClick={() => set('objective', o)} style={pill(form.objective===o)}>{o}</button>)}
-                </div>
-              </div>
-
-              <div>
-                <label className="form-label">Budget Range *</label>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                  {BUDGETS.map(b => <button key={b} onClick={() => set('budget', b)} style={pill(form.budget===b)}>{b}</button>)}
-                </div>
-              </div>
-
-              <div>
-                <label className="form-label">Campaign Duration</label>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                  {DURATIONS.map(d => <button key={d} onClick={() => set('duration', d)} style={pill(form.duration===d)}>{d}</button>)}
-                </div>
-              </div>
-
-              <div>
-                <label className="form-label">Target Regions (select all that apply)</label>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                  {REGIONS.map(r => <button key={r} onClick={() => toggle('regions', r)} style={pill(form.regions.includes(r))}>{r}</button>)}
-                </div>
-              </div>
-
-              <div>
-                <label className="form-label">Preferred Media Channels (select all that apply)</label>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                  {CATEGORIES.map(c => <button key={c} onClick={() => toggle('channels', c)} style={pill(form.channels.includes(c))}>{c}</button>)}
-                </div>
-              </div>
-            </div>
-
-            {error && <p style={{ color:'#fca5a5', fontSize:12, marginTop:12 }}>{error}</p>}
-
-            <div className="flex gap-3 mt-6">
-              <button onClick={() => setStep(1)} className="btn-secondary" style={{ padding:'10px 20px' }}>← Back</button>
-              <button onClick={() => { if (!form.objective||!form.budget) return; generate(); }} disabled={loading} className="btn-primary" style={{ flex:1, justifyContent:'center', padding:'10px' }}>
-                {loading ? <><Spinner size={14}/> Generating brief…</> : '✨ Generate Campaign Brief'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3 — BRIEF OUTPUT */}
-        {step === 3 && brief && (
-          <div className="space-y-4">
-
-            {/* Header */}
-            <div style={{ padding:'20px 24px', borderRadius:14, background:'linear-gradient(135deg,rgba(99,102,241,0.12),rgba(168,85,247,0.08))', border:'1px solid rgba(99,102,241,0.25)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div>
-                <p style={{ fontWeight:800, fontSize:17, color:'white', letterSpacing:'-0.3px' }}>Campaign Brief — {form.brandName}</p>
-                <p style={{ fontSize:12, color:'var(--text-muted)', marginTop:3 }}>Generated by BrandCasta AI · {new Date().toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'})}</p>
-              </div>
-              <div style={{ display:'flex', gap:8 }}>
-                <button onClick={copy} className="btn-secondary" style={{ fontSize:12, padding:'7px 14px' }}>
-                  {copied ? '✓ Copied' : '📋 Copy'}
-                </button>
-                <button onClick={() => { setBrief(null); setStep(1); setForm({ brandName:'', industry:'', product:'', objective:'', targetAudience:'', budget:'', duration:'', regions:[], channels:[], extraContext:'' }); }} className="btn-secondary" style={{ fontSize:12, padding:'7px 14px' }}>New Brief</button>
-              </div>
-            </div>
-
-            {/* Executive Summary */}
-            <div className="page-card" style={{ padding:22 }}>
-              <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:10 }}>Executive Summary</p>
-              <p style={{ fontSize:14, color:'rgba(255,255,255,0.8)', lineHeight:1.8 }}>{brief.executiveSummary}</p>
-            </div>
-
-            {/* Objectives + Audience */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
-              <div className="page-card" style={{ padding:22 }}>
-                <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>Campaign Objectives</p>
-                {brief.campaignObjectives?.map((o, i) => (
-                  <div key={i} style={{ display:'flex', gap:10, marginBottom:8 }}>
-                    <span style={{ width:20, height:20, borderRadius:'50%', background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:10, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1 }}>{i+1}</span>
-                    <p style={{ fontSize:13, color:'rgba(255,255,255,0.75)', lineHeight:1.6 }}>{o}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="page-card" style={{ padding:22 }}>
-                <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>Target Audience</p>
-                {[['Primary', brief.targetAudience?.primary],['Secondary', brief.targetAudience?.secondary],['Psychographics', brief.targetAudience?.psychographics],['Media Habits', brief.targetAudience?.mediaConsumption]].map(([l,v]) => v && (
-                  <div key={l} style={{ marginBottom:10 }}>
-                    <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em' }}>{l}</p>
-                    <p style={{ fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.6, marginTop:3 }}>{v}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Media Strategy */}
-            <div className="page-card" style={{ padding:22 }}>
-              <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:14 }}>Media Strategy</p>
-              <div className="space-y-3">
-                {brief.mediaStrategy?.map((m, i) => (
-                  <div key={i} style={{ padding:'14px 16px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
-                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
-                      <p style={{ fontWeight:700, fontSize:14, color:'white' }}>{m.channel}</p>
-                      <span style={{ padding:'3px 10px', borderRadius:20, background:'rgba(99,102,241,0.15)', color:'#a5b4fc', fontSize:11, fontWeight:700 }}>{m.allocation}</span>
-                    </div>
-                    <p style={{ fontSize:13, color:'rgba(255,255,255,0.6)', marginBottom:8, lineHeight:1.6 }}>{m.rationale}</p>
-                    <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                      {m.formats?.map(f => <span key={f} style={{ padding:'2px 8px', borderRadius:6, background:'rgba(255,255,255,0.05)', color:'rgba(255,255,255,0.5)', fontSize:11 }}>{f}</span>)}
-                    </div>
-                    {m.recommendedProviders?.length > 0 && (
-                      <div style={{ marginTop:8 }}>
-                        <p style={{ fontSize:10, color:'var(--text-muted)', fontWeight:600, marginBottom:4 }}>RECOMMENDED PROVIDERS</p>
-                        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                          {m.recommendedProviders.map(p => <span key={p} style={{ padding:'2px 8px', borderRadius:6, background:'rgba(20,184,166,0.08)', border:'1px solid rgba(20,184,166,0.15)', color:'#5eead4', fontSize:11 }}>{p}</span>)}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Budget + Timeline */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
-              <div className="page-card" style={{ padding:22 }}>
-                <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>Budget Breakdown</p>
-                {brief.budgetBreakdown?.map((b, i) => (
-                  <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', padding:'8px 0', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
-                    <div>
-                      <p style={{ fontSize:13, color:'white', fontWeight:600 }}>{b.line}</p>
-                      {b.notes && <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>{b.notes}</p>}
-                    </div>
-                    <span style={{ fontSize:13, fontWeight:700, color:'#a5b4fc', flexShrink:0, marginLeft:8 }}>{b.allocation}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="page-card" style={{ padding:22 }}>
-                <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>Campaign Timeline</p>
-                {brief.timeline?.map((t, i) => (
-                  <div key={i} style={{ marginBottom:12 }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
-                      <span style={{ padding:'2px 8px', borderRadius:6, background:'rgba(99,102,241,0.12)', color:'#a5b4fc', fontSize:10, fontWeight:700 }}>{t.weeks}</span>
-                      <p style={{ fontSize:13, fontWeight:600, color:'white' }}>{t.phase}</p>
-                    </div>
-                    {t.activities?.map(a => <p key={a} style={{ fontSize:12, color:'rgba(255,255,255,0.5)', paddingLeft:8, marginBottom:2 }}>• {a}</p>)}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Creative Direction */}
-            <div className="page-card" style={{ padding:22 }}>
-              <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:14 }}>Creative Direction</p>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12, marginBottom:14 }}>
-                {[['Key Message', brief.creativeDirection?.keyMessage],['Tone & Style', brief.creativeDirection?.tone],['Call to Action', brief.creativeDirection?.callToAction]].map(([l,v]) => (
-                  <div key={l} style={{ padding:'12px 14px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
-                    <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:6 }}>{l}</p>
-                    <p style={{ fontSize:13, color:'rgba(255,255,255,0.8)', lineHeight:1.6 }}>{v}</p>
-                  </div>
-                ))}
-              </div>
-              <div>
-                <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>Creative Requirements</p>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                  {brief.creativeDirection?.creativeRequirements?.map(r => (
-                    <span key={r} style={{ padding:'4px 10px', borderRadius:8, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:12 }}>{r}</span>
+                <label className="form-label">Target Audience</label>
+                <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
+                  {AUDIENCES.map(a=>(
+                    <button key={a} type="button" onClick={()=>setF('audience',a)}
+                      style={{ padding:'4px 10px', borderRadius:20, fontSize:10, fontWeight:500, cursor:'pointer', border:'none', fontFamily:'Inter,sans-serif',
+                        background:form.audience===a?'var(--accent-soft)':'rgba(255,255,255,0.04)',
+                        color:form.audience===a?'var(--accent-light)':'var(--text-muted)',
+                        outline:form.audience===a?'0.5px solid var(--accent-border)':'0.5px solid var(--border)',
+                      }}>{a}</button>
                   ))}
                 </div>
               </div>
-            </div>
-
-            {/* KPIs + Risks */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
-              <div className="page-card" style={{ padding:22 }}>
-                <p style={{ fontSize:11, fontWeight:700, color:'#a5b4fc', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>KPIs & Success Metrics</p>
-                {brief.kpis?.map((k, i) => (
-                  <div key={i} style={{ padding:'10px 12px', borderRadius:9, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)', marginBottom:8 }}>
-                    <p style={{ fontWeight:700, fontSize:13, color:'white' }}>{k.metric}</p>
-                    <p style={{ fontSize:12, color:'#a5b4fc', fontWeight:600, marginTop:2 }}>Target: {k.target}</p>
-                    <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>{k.measurement}</p>
-                  </div>
-                ))}
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                <div>
+                  <label className="form-label">Budget Range</label>
+                  <input style={inp} placeholder="e.g. ₦5M–₦10M" value={form.budget} onChange={e=>setF('budget',e.target.value)}/>
+                </div>
+                <div>
+                  <label className="form-label">Duration</label>
+                  <input style={inp} placeholder="e.g. 4 weeks" value={form.duration} onChange={e=>setF('duration',e.target.value)}/>
+                </div>
               </div>
-              <div className="page-card" style={{ padding:22 }}>
-                <p style={{ fontSize:11, fontWeight:700, color:'#fca5a5', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>Risk & Mitigation</p>
-                {brief.risks?.map((r, i) => (
-                  <div key={i} style={{ padding:'10px 12px', borderRadius:9, background:'rgba(239,68,68,0.04)', border:'1px solid rgba(239,68,68,0.1)', marginBottom:8 }}>
-                    <p style={{ fontWeight:600, fontSize:13, color:'rgba(255,255,255,0.8)' }}>{r.risk}</p>
-                    <p style={{ fontSize:12, color:'rgba(255,255,255,0.45)', marginTop:4, lineHeight:1.5 }}>↳ {r.mitigation}</p>
-                  </div>
-                ))}
+              <div>
+                <label className="form-label">Preferred Media</label>
+                <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
+                  {MEDIA_OPTIONS.map(m=>(
+                    <button key={m} type="button" onClick={()=>toggleMedia(m)}
+                      style={{ padding:'4px 10px', borderRadius:20, fontSize:10, fontWeight:500, cursor:'pointer', border:'none', fontFamily:'Inter,sans-serif',
+                        background:form.media.includes(m)?'var(--accent-soft)':'rgba(255,255,255,0.04)',
+                        color:form.media.includes(m)?'var(--accent-light)':'var(--text-muted)',
+                        outline:form.media.includes(m)?'0.5px solid var(--accent-border)':'0.5px solid var(--border)',
+                      }}>{m}</button>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
-              <button onClick={copy} className="btn-secondary" style={{ fontSize:13 }}>{copied ? '✓ Copied to clipboard' : '📋 Copy Full Brief'}</button>
-              <button onClick={() => { setStep(2); setBrief(null); }} className="btn-primary" style={{ fontSize:13, padding:'10px 20px' }}>✨ Regenerate</button>
+              <div>
+                <label className="form-label">Additional Notes</label>
+                <textarea rows={2} style={{ ...inp, resize:'vertical' }} placeholder="Any specific requirements, tone, constraints…"
+                  value={form.notes} onChange={e=>setF('notes',e.target.value)}/>
+              </div>
+              {error && <p style={{ color:'#fca5a5', fontSize:11 }}>{error}</p>}
+              <button onClick={generate} disabled={generating} className="btn-primary" style={{ width:'100%', justifyContent:'center', padding:'10px', fontSize:13 }}>
+                {generating ? <><Spinner size={13}/>Generating brief…</> : '✧ Generate Campaign Brief'}
+              </button>
             </div>
           </div>
-        )}
-      </div>
-    </Layout>
+
+          {/* Output */}
+          <div>
+            {!brief && !generating && (
+              <div style={{ padding:'32px', borderRadius:10, background:'var(--bg-card)', border:'0.5px dashed rgba(99,102,241,0.25)', textAlign:'center' }}>
+                <p style={{ fontSize:24, marginBottom:12 }}>✧</p>
+                <p style={{ fontWeight:500, color:'white', fontSize:13, marginBottom:6 }}>Your brief will appear here</p>
+                <p style={{ fontSize:12, color:'var(--text-muted)', lineHeight:1.6 }}>Fill in the campaign details and click Generate to create a professional brief using AI.</p>
+              </div>
+            )}
+            {generating && (
+              <div style={{ padding:'32px', borderRadius:10, background:'var(--bg-card)', border:'0.5px solid var(--accent-border)', textAlign:'center' }}>
+                <Spinner size={20}/>
+                <p style={{ fontSize:12, color:'var(--text-muted)', marginTop:12 }}>Crafting your campaign brief…</p>
+              </div>
+            )}
+            {brief && (
+              <div className="page-card" style={{ padding:'18px 20px' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+                  <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:600, fontSize:13, color:'white' }}>Generated Brief</p>
+                  <button onClick={()=>navigator.clipboard?.writeText(brief).then(()=>alert('Copied!'))}
+                    className="btn-secondary" style={{ fontSize:11, padding:'5px 12px' }}>Copy</button>
+                </div>
+                <div style={{ fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.9, whiteSpace:'pre-wrap', maxHeight:480, overflowY:'auto' }}>
+                  {brief}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Layout>
+    </>
   );
 }

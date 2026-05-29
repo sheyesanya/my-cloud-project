@@ -1,153 +1,135 @@
 import { useEffect, useState } from 'react';
+import PageTitle from '../components/PageTitle';
 import Layout from '../components/Layout';
-import { LoadingBlock, ErrorBlock, EmptyBlock, StatusBadge, Toast, Spinner } from '../components/UI';
-import { getBookings, updateBooking } from '../services/api';
+import { Spinner, Toast } from '../components/UI';
+import { getBookings } from '../services/api';
+import { Link } from 'react-router-dom';
 
-const FILTERS = ['ALL','PENDING','APPROVED','REJECTED'];
-const FILTER_COLORS = { ALL:'#a5b4fc', PENDING:'#fcd34d', APPROVED:'#86efac', REJECTED:'#fca5a5' };
+const fmt     = (n) => `₦${Number(n||0).toLocaleString('en-NG')}`;
+const fmtDate = (d) => { try{ return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}); }catch{ return d||'—'; }};
+
+const STATUS = {
+  PENDING_PROVIDER_CONFIRMATION: { label:'Awaiting Provider', color:'#fcd34d', bg:'rgba(245,158,11,0.1)' },
+  PAYMENT_PENDING:               { label:'Invoice Sent',      color:'#a5b4fc', bg:'rgba(99,102,241,0.1)' },
+  PAID:                          { label:'Live',              color:'#5eead4', bg:'rgba(20,184,166,0.1)' },
+  IN_PROGRESS:                   { label:'In Progress',       color:'#d8b4fe', bg:'rgba(168,85,247,0.1)' },
+  PENDING_DELIVERY_REVIEW:       { label:'Proof Review',      color:'#fcd34d', bg:'rgba(245,158,11,0.1)' },
+  COMPLETED:                     { label:'Completed',         color:'#86efac', bg:'rgba(34,197,94,0.1)'  },
+  REJECTED:                      { label:'Declined',          color:'#fca5a5', bg:'rgba(239,68,68,0.1)'  },
+};
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState('');
-  const [acting, setActing]     = useState({});
   const [toast, setToast]       = useState(null);
   const [filter, setFilter]     = useState('ALL');
+  const [search, setSearch]     = useState('');
 
-  const fetchBookings = async () => {
-    setLoading(true); setError('');
-    try {
-      const res = await getBookings();
-      setBookings(Array.isArray(res) ? res : res.bookings ?? res.data ?? []);
-    } catch (e) { setError(e.message); }
-    finally     { setLoading(false); }
-  };
+  useEffect(() => {
+    getBookings()
+      .then(r => setBookings(Array.isArray(r)?r:r.bookings??r.data??[]))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
-  useEffect(() => { fetchBookings(); }, []);
+  const FILTERS = [
+    { key:'ALL',                           label:'All',             count: bookings.length },
+    { key:'PENDING_PROVIDER_CONFIRMATION', label:'Awaiting',        count: bookings.filter(b=>b.status==='PENDING_PROVIDER_CONFIRMATION').length },
+    { key:'PAID',                          label:'Live',            count: bookings.filter(b=>b.status==='PAID').length },
+    { key:'PENDING_DELIVERY_REVIEW',       label:'Proof Review',    count: bookings.filter(b=>b.status==='PENDING_DELIVERY_REVIEW').length },
+    { key:'COMPLETED',                     label:'Completed',       count: bookings.filter(b=>b.status==='COMPLETED').length },
+    { key:'REJECTED',                      label:'Declined',        count: bookings.filter(b=>b.status==='REJECTED').length },
+  ];
 
-  const act = async (id, status) => {
-    setActing((a) => ({ ...a, [id]: status }));
-    try {
-      await updateBooking(id, { status });
-      setBookings((b) => b.map((bk) => (bk.id ?? bk._id ?? bk.bookingId) === id ? { ...bk, status } : bk));
-      setToast({ type:'success', message:`Booking ${status.toLowerCase()} successfully.` });
-    } catch (e) { setToast({ type:'error', message: e.message }); }
-    finally {
-      setActing((a) => { const n={...a}; delete n[id]; return n; });
-      setTimeout(() => setToast(null), 3500);
-    }
-  };
+  const filtered = bookings.filter(b => {
+    const matchFilter = filter==='ALL'||b.status===filter;
+    const matchSearch = !search||b.target?.toLowerCase().includes(search.toLowerCase())||b.brandName?.toLowerCase().includes(search.toLowerCase());
+    return matchFilter&&matchSearch;
+  });
 
-  const fmtDate = (d) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
-    catch { return d; }
-  };
-
-  const filtered = filter === 'ALL' ? bookings : bookings.filter((b) => (b.status ?? '').toUpperCase() === filter);
+  const totalSpend    = bookings.reduce((s,b)=>s+(b.finalPrice||0),0);
+  const activeCount   = bookings.filter(b=>['PAID','IN_PROGRESS'].includes(b.status)).length;
+  const completedCount= bookings.filter(b=>b.status==='COMPLETED').length;
+  const pendingCount  = bookings.filter(b=>b.status==='PENDING_PROVIDER_CONFIRMATION').length;
 
   return (
-    <Layout
-      title="Bookings"
-      subtitle="Review and manage all booking requests"
-      actions={
-        <button onClick={fetchBookings} className="btn-secondary" style={{ fontSize:12 }}>
-          <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
-          Refresh
-        </button>
-      }
-    >
-      {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)}/>}
-
-      {/* Filter chips */}
-      <div className="flex gap-2 flex-wrap mb-5">
-        {FILTERS.map((f) => {
-          const count  = f === 'ALL' ? bookings.length : bookings.filter((b) => (b.status ?? '').toUpperCase() === f).length;
-          const active = filter === f;
-          return (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              style={{
-                padding:'6px 14px', borderRadius:20, fontSize:11, fontWeight:700, cursor:'pointer', transition:'all 0.15s',
-                background: active ? `${FILTER_COLORS[f]}18` : 'rgba(255,255,255,0.04)',
-                color:       active ? FILTER_COLORS[f] : 'var(--text-muted)',
-                border:      active ? `1px solid ${FILTER_COLORS[f]}40` : '1px solid var(--border)',
-              }}
-            >
-              {f} <span style={{ opacity:0.6, marginLeft:4, fontFamily:'var(--font-mono)' }}>{count}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="page-card">
-        <div style={{ padding:'14px 20px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
-          <div style={{ width:3, height:18, borderRadius:2, background:'linear-gradient(180deg,#6366f1,#a855f7)' }}/>
-          <div>
-            <p style={{ fontSize:13, fontWeight:600, color:'white' }}>
-              {filter === 'ALL' ? 'All Bookings' : `${filter.charAt(0)+filter.slice(1).toLowerCase()} Bookings`}
-            </p>
-            <p style={{ fontSize:11, color:'var(--text-muted)' }}>{filtered.length} record{filtered.length !== 1 ? 's' : ''}</p>
+    <>
+      <PageTitle title="My Bookings" description="All your media booking records and statuses."/>
+      <Layout title="My Bookings" subtitle="All booking records and statuses"
+        actions={
+          <div style={{ display:'flex', gap:8 }}>
+            <Link to="/create-booking" className="btn-primary" style={{ fontSize:12, padding:'7px 14px', textDecoration:'none' }}>+ New Campaign</Link>
           </div>
+        }
+      >
+        {toast && <Toast type={toast.type} message={toast.message} onClose={()=>setToast(null)}/>}
+
+        {/* Stats */}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))', gap:10, marginBottom:18 }}>
+          {[
+            { label:'Total Spend',   value:fmt(totalSpend),  color:'#a5b4fc' },
+            { label:'Active',        value:activeCount,       color:'#5eead4' },
+            { label:'Completed',     value:completedCount,   color:'#86efac' },
+            { label:'Needs Action',  value:pendingCount,     color:'#fcd34d' },
+          ].map(s=>(
+            <div key={s.label} className="stat-card">
+              <div className="stat-label">{s.label}</div>
+              <div className="stat-value" style={{ color:s.color, fontSize:20 }}>{s.value}</div>
+            </div>
+          ))}
         </div>
 
-        {loading && <LoadingBlock message="Loading bookings…"/>}
-        {error   && <ErrorBlock message={error} onRetry={fetchBookings}/>}
-        {!loading && !error && filtered.length === 0 && <EmptyBlock message={filter === 'ALL' ? 'No bookings found.' : `No ${filter.toLowerCase()} bookings.`}/>}
+        {/* Filters + Search */}
+        <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
+          {FILTERS.map(f=>(
+            <button key={f.key} onClick={()=>setFilter(f.key)}
+              style={{ padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:500, cursor:'pointer', border:'none', fontFamily:'Inter,sans-serif',
+                background:filter===f.key?'var(--accent-soft)':'rgba(255,255,255,0.04)',
+                color:filter===f.key?'var(--accent-light)':'var(--text-muted)',
+                outline:filter===f.key?'0.5px solid var(--accent-border)':'0.5px solid var(--border)',
+              }}>
+              {f.label}{f.count>0&&<span style={{ marginLeft:4, opacity:0.65 }}>({f.count})</span>}
+            </button>
+          ))}
+        </div>
+        <input type="text" placeholder="Search by brand or media…" value={search} onChange={e=>setSearch(e.target.value)}
+          style={{ width:'100%', maxWidth:360, padding:'7px 12px', borderRadius:8, fontSize:12, outline:'none', background:'rgba(255,255,255,0.04)', border:'0.5px solid var(--border)', color:'white', marginBottom:14, fontFamily:'Inter,sans-serif' }}/>
 
-        {!loading && !error && filtered.length > 0 && (
-          <div className="overflow-x-auto">
+        {loading && <div style={{ display:'flex', gap:10, color:'var(--text-muted)', padding:'20px 0' }}><Spinner size={14}/>Loading…</div>}
+
+        {!loading && filtered.length===0 && (
+          <div style={{ textAlign:'center', padding:'48px 0', color:'var(--text-muted)', fontSize:13 }}>
+            No bookings found. <Link to="/create-booking" style={{ color:'var(--accent-light)', textDecoration:'none' }}>Create your first campaign →</Link>
+          </div>
+        )}
+
+        {/* Table */}
+        {!loading && filtered.length>0 && (
+          <div style={{ overflowX:'auto' }}>
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Brand</th>
-                  <th>Media</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Final Price</th>
-                  <th>Actions</th>
+                  {['Brand','Media','Option','Market','Date','Runs','Value','Status'].map(h=>(
+                    <th key={h}>{h}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((b, i) => {
-                  const id        = b.id ?? b._id ?? b.bookingId ?? i;
-                  const status    = (b.status ?? 'PENDING').toUpperCase();
-                  const isPending = status === 'PENDING' || status === 'PENDING_PROVIDER_CONFIRMATION';
-                  const isActing  = acting[id];
+                {filtered.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(b=>{
+                  const s = STATUS[b.status]||{label:b.status,color:'var(--text-muted)',bg:'rgba(255,255,255,0.05)'};
                   return (
-                    <tr key={id}>
-                      <td style={{ color:'var(--text-muted)', fontFamily:'var(--font-mono)', fontSize:11, width:36 }}>{i+1}</td>
+                    <tr key={b.bookingId}>
+                      <td style={{ color:'white', fontWeight:500 }}>{b.brandName||b.contactEmail||'—'}</td>
+                      <td>{b.target||'—'}</td>
+                      <td>{(b.inventoryOption||'—').replaceAll('_',' ')}</td>
+                      <td>{(b.market||'—').replaceAll('_',' ')}</td>
+                      <td style={{ whiteSpace:'nowrap' }}>{fmtDate(b.date)}</td>
+                      <td>{b.runs||1}</td>
+                      <td style={{ color:'var(--accent-light)', fontWeight:500, whiteSpace:'nowrap' }}>{fmt(b.finalPrice)}</td>
                       <td>
-                        <p style={{ fontWeight:600, color:'white', fontSize:13 }}>{b.brand_name ?? b.brandName ?? b.brand ?? '—'}</p>
-                        {(b.email ?? b.brand_email ?? b.contactEmail) && (
-                          <p style={{ fontSize:11, color:'var(--text-muted)', marginTop:2 }}>{b.email ?? b.brand_email ?? b.contactEmail}</p>
-                        )}
-                      </td>
-                      <td style={{ color:'var(--text-secondary)', fontWeight:500 }}>{b.media_name ?? b.mediaName ?? b.target ?? '—'}</td>
-                      <td style={{ fontSize:12, color:'var(--text-muted)', whiteSpace:'nowrap' }}>{fmtDate(b.date ?? b.booking_date ?? b.bookingDate)}</td>
-                      <td><StatusBadge status={status}/></td>
-                      <td style={{ fontFamily:'var(--font-mono)', fontSize:13, fontWeight:700, color:'#86efac' }}>
-                        {b.final_price != null || b.finalPrice != null || b.price != null
-                          ? `₦${Number(b.final_price ?? b.finalPrice ?? b.price).toLocaleString()}`
-                          : '—'}
-                      </td>
-                      <td>
-                        {isPending ? (
-                          <div className="flex items-center gap-2">
-                            <button className="btn-success" disabled={!!isActing} onClick={() => act(id,'APPROVED')}>
-                              {isActing === 'APPROVED' ? <Spinner size={11}/> : <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>}
-                              Approve
-                            </button>
-                            <button className="btn-danger" disabled={!!isActing} onClick={() => act(id,'REJECTED')}>
-                              {isActing === 'REJECTED' ? <Spinner size={11}/> : <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>}
-                              Reject
-                            </button>
-                          </div>
-                        ) : (
-                          <span style={{ fontSize:12, color:'var(--text-muted)', fontStyle:'italic' }}>—</span>
-                        )}
+                        <span style={{ padding:'2px 8px', borderRadius:20, fontSize:10, fontWeight:600, background:s.bg, color:s.color, whiteSpace:'nowrap' }}>
+                          {s.label}
+                        </span>
                       </td>
                     </tr>
                   );
@@ -156,7 +138,7 @@ export default function Bookings() {
             </table>
           </div>
         )}
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 }

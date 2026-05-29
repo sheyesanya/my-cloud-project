@@ -1,129 +1,134 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 import Layout from '../components/Layout';
-import { Spinner, LoadingBlock, ErrorBlock, EmptyBlock } from '../components/UI';
+import { Spinner } from '../components/UI';
 import { getCampaigns } from '../services/api';
 
-const STATUS_COLORS = {
-  PENDING:                      { bg:'rgba(245,158,11,0.1)',  text:'#fcd34d', border:'rgba(245,158,11,0.2)' },
-  PENDING_PROVIDER_CONFIRMATION:{ bg:'rgba(245,158,11,0.1)',  text:'#fcd34d', border:'rgba(245,158,11,0.2)' },
-  APPROVED:                     { bg:'rgba(99,102,241,0.12)', text:'#a5b4fc', border:'rgba(99,102,241,0.2)' },
-  PAID:                         { bg:'rgba(20,184,166,0.1)',  text:'#5eead4', border:'rgba(20,184,166,0.2)' },
-  IN_PROGRESS:                  { bg:'rgba(168,85,247,0.12)', text:'#d8b4fe', border:'rgba(168,85,247,0.2)' },
-  COMPLETED:                    { bg:'rgba(34,197,94,0.1)',   text:'#86efac', border:'rgba(34,197,94,0.2)'  },
-  REJECTED:                     { bg:'rgba(239,68,68,0.1)',   text:'#fca5a5', border:'rgba(239,68,68,0.2)'  },
-};
+const fmt     = (n) => `₦${Number(n||0).toLocaleString('en-NG')}`;
+const fmtDate = (d) => { try{ return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}); }catch{ return d||'—'; }};
 
-const FILTERS = ['ALL','PENDING','APPROVED','PAID','IN_PROGRESS','COMPLETED','REJECTED'];
+const STATUS = {
+  PENDING_PROVIDER_CONFIRMATION: { label:'Awaiting Provider', color:'#fcd34d', bg:'rgba(245,158,11,0.1)' },
+  PAYMENT_PENDING:               { label:'Invoice Sent',      color:'#a5b4fc', bg:'rgba(99,102,241,0.1)' },
+  PAID:                          { label:'Live',              color:'#5eead4', bg:'rgba(20,184,166,0.1)' },
+  IN_PROGRESS:                   { label:'In Progress',       color:'#d8b4fe', bg:'rgba(168,85,247,0.1)' },
+  PENDING_DELIVERY_REVIEW:       { label:'Proof Review',      color:'#fcd34d', bg:'rgba(245,158,11,0.1)' },
+  COMPLETED:                     { label:'Completed',         color:'#86efac', bg:'rgba(34,197,94,0.1)'  },
+  REJECTED:                      { label:'Declined',          color:'#fca5a5', bg:'rgba(239,68,68,0.1)'  },
+};
 
 export default function Campaigns() {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState('');
   const [filter, setFilter]       = useState('ALL');
+  const [search, setSearch]       = useState('');
 
   useEffect(() => {
     getCampaigns()
-      .then((res) => setCampaigns(Array.isArray(res) ? res : res.campaigns ?? res.data ?? []))
-      .catch((e) => setError(e.message))
+      .then(r => setCampaigns(Array.isArray(r)?r:r.campaigns??r.data??[]))
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = filter === 'ALL' ? campaigns : campaigns.filter((c) => (c.status ?? '').toUpperCase() === filter);
-  const totalSpend = campaigns.reduce((s, c) => s + (c.totalPrice || 0), 0);
-  const active     = campaigns.filter((c) => ['APPROVED','PAID','IN_PROGRESS'].includes((c.status || '').toUpperCase())).length;
-  const completed  = campaigns.filter((c) => (c.status || '').toUpperCase() === 'COMPLETED').length;
-  const pending    = campaigns.filter((c) => (c.status || '').toUpperCase().includes('PENDING')).length;
+  const totalSpend  = campaigns.reduce((s,c)=>s+(c.totalPrice||0),0);
+  const active      = campaigns.filter(c=>['APPROVED','PAID','IN_PROGRESS'].includes((c.status||'').toUpperCase())).length;
+  const completed   = campaigns.filter(c=>(c.status||'').toUpperCase()==='COMPLETED').length;
+  const pending     = campaigns.filter(c=>(c.status||'').toUpperCase().includes('PENDING')).length;
+
+  const FILTERS = [
+    { key:'ALL',       label:'All',        count:campaigns.length },
+    { key:'PENDING',   label:'Pending',    count:pending          },
+    { key:'PAID',      label:'Live',       count:active           },
+    { key:'COMPLETED', label:'Completed',  count:completed        },
+    { key:'REJECTED',  label:'Declined',   count:campaigns.filter(c=>(c.status||'').toUpperCase()==='REJECTED').length },
+  ];
+
+  const filtered = campaigns.filter(c => {
+    const matchFilter = filter==='ALL'||(c.status||'').toUpperCase().includes(filter);
+    const matchSearch = !search||c.brandName?.toLowerCase().includes(search.toLowerCase());
+    return matchFilter&&matchSearch;
+  });
 
   return (
-    <Layout title="Campaigns" subtitle="Monitor and manage all campaigns">
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        {[
-          { label:'Total',    value: campaigns.length, color:'rgba(99,102,241,0.12)',  text:'#a5b4fc' },
-          { label:'Active',   value: active,            color:'rgba(168,85,247,0.12)', text:'#d8b4fe' },
-          { label:'Pending',  value: pending,           color:'rgba(245,158,11,0.1)',  text:'#fcd34d' },
-          { label:'Completed',value: completed,         color:'rgba(34,197,94,0.1)',   text:'#86efac' },
-        ].map((s) => (
-          <div key={s.label} style={{ background: s.color, border: '1px solid rgba(255,255,255,0.07)', borderRadius: 'var(--radius-lg)', padding: '16px 18px' }}>
-            <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:8 }}>{s.label}</p>
-            <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:26, color: s.text, letterSpacing:'-0.5px' }}>{s.value}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Spend */}
-      <div style={{ borderRadius:'var(--radius-lg)', padding:'20px 24px', background:'linear-gradient(135deg,rgba(99,102,241,0.18),rgba(168,85,247,0.1))', border:'1px solid rgba(99,102,241,0.2)', marginBottom:20, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
-        <div>
-          <p style={{ fontSize:11, color:'rgba(165,180,252,0.6)', textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:700, marginBottom:4 }}>Total Campaign Spend</p>
-          <p style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:30, color:'white', letterSpacing:'-0.8px', lineHeight:1 }}>₦{Number(totalSpend).toLocaleString()}</p>
+    <>
+      <PageTitle title="My Campaigns" description="Monitor and manage all your media campaigns."/>
+      <Layout title="My Campaigns" subtitle="Monitor and manage all campaigns"
+        actions={<Link to="/create-booking" className="btn-primary" style={{ fontSize:12, padding:'7px 14px', textDecoration:'none' }}>+ New Campaign</Link>}
+      >
+        {/* Stats */}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))', gap:10, marginBottom:18 }}>
+          {[
+            { label:'Total Spend', value:fmt(totalSpend), color:'#a5b4fc' },
+            { label:'Active',      value:active,           color:'#5eead4' },
+            { label:'Completed',   value:completed,        color:'#86efac' },
+            { label:'Pending',     value:pending,          color:'#fcd34d' },
+          ].map(s=>(
+            <div key={s.label} className="stat-card">
+              <div className="stat-label">{s.label}</div>
+              <div className="stat-value" style={{ color:s.color, fontSize:20 }}>{s.value}</div>
+            </div>
+          ))}
         </div>
-        <p style={{ fontSize:12, color:'var(--text-muted)' }}>{campaigns.length} campaign{campaigns.length !== 1 ? 's' : ''} total</p>
-      </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-5">
-        {FILTERS.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            style={{
-              padding:'6px 14px', borderRadius:20, fontSize:11, fontWeight:700, cursor:'pointer', transition:'all 0.15s',
-              background: filter === f ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
-              color:       filter === f ? '#a5b4fc' : 'var(--text-muted)',
-              border:      filter === f ? '1px solid rgba(99,102,241,0.35)' : '1px solid var(--border)',
-            }}
-          >
-            {f.replaceAll('_', ' ')}
-          </button>
-        ))}
-      </div>
+        {/* Filters */}
+        <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
+          {FILTERS.map(f=>(
+            <button key={f.key} onClick={()=>setFilter(f.key)}
+              style={{ padding:'4px 12px', borderRadius:20, fontSize:11, fontWeight:500, cursor:'pointer', border:'none', fontFamily:'Inter,sans-serif',
+                background:filter===f.key?'var(--accent-soft)':'rgba(255,255,255,0.04)',
+                color:filter===f.key?'var(--accent-light)':'var(--text-muted)',
+                outline:filter===f.key?'0.5px solid var(--accent-border)':'0.5px solid var(--border)',
+              }}>
+              {f.label}{f.count>0&&<span style={{ marginLeft:4, opacity:0.65 }}>({f.count})</span>}
+            </button>
+          ))}
+        </div>
+        <input type="text" placeholder="Search campaigns…" value={search} onChange={e=>setSearch(e.target.value)}
+          style={{ width:'100%', maxWidth:360, padding:'7px 12px', borderRadius:8, fontSize:12, outline:'none', background:'rgba(255,255,255,0.04)', border:'0.5px solid var(--border)', color:'white', marginBottom:14, fontFamily:'Inter,sans-serif' }}/>
 
-      {/* List */}
-      {loading && <LoadingBlock message="Loading campaigns…"/>}
-      {error   && <ErrorBlock message={error}/>}
+        {loading && <div style={{ display:'flex', gap:10, color:'var(--text-muted)', padding:'20px 0' }}><Spinner size={14}/>Loading…</div>}
 
-      {!loading && !error && (
-        <div className="space-y-3">
-          {filtered.length === 0
-            ? <EmptyBlock message={filter === 'ALL' ? 'No campaigns yet.' : `No ${filter.replaceAll('_',' ').toLowerCase()} campaigns.`}/>
-            : filtered.map((c) => {
-                const status = (c.status || 'PENDING').toUpperCase();
-                const col    = STATUS_COLORS[status] || STATUS_COLORS.PENDING;
-                return (
-                  <div
-                    key={c.campaignId}
-                    onClick={() => navigate(`/campaigns/${c.campaignId}`)}
-                    style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:'var(--radius-lg)', padding:'18px 22px', cursor:'pointer', transition:'all 0.15s' }}
-                    onMouseEnter={(e) => e.currentTarget.style.background='rgba(255,255,255,0.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background='var(--bg-card)'}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:17, color:'white', letterSpacing:'-0.3px' }}>{c.brandName}</p>
-                        <p style={{ fontSize:12, color:'var(--text-muted)', marginTop:3 }}>{c.contactEmail}</p>
+        {!loading && filtered.length===0 && (
+          <div style={{ textAlign:'center', padding:'48px 0' }}>
+            <p style={{ color:'var(--text-muted)', fontSize:13, marginBottom:12 }}>No campaigns yet.</p>
+            <Link to="/create-booking" className="btn-primary" style={{ textDecoration:'none', fontSize:13 }}>Create your first campaign →</Link>
+          </div>
+        )}
+
+        {/* Campaign cards */}
+        {!loading && filtered.length>0 && (
+          <div className="space-y-3">
+            {filtered.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(c=>{
+              const bookings = c.bookings||[];
+              const total    = c.totalPrice||bookings.reduce((s,b)=>s+(b.finalPrice||0),0);
+              const s        = STATUS[(c.status||'').toUpperCase()]||{label:c.status,color:'var(--text-muted)',bg:'rgba(255,255,255,0.05)'};
+              return (
+                <div key={c.campaignId||c.id} className="page-card" style={{ padding:'14px 16px', cursor:'pointer' }}
+                  onClick={()=>navigate(`/campaigns/${c.campaignId||c.id}`)}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+                        <p style={{ fontWeight:500, fontSize:13, color:'white' }}>{c.brandName||'Campaign'}</p>
+                        <span style={{ padding:'2px 8px', borderRadius:20, fontSize:9, fontWeight:600, background:s.bg, color:s.color }}>{s.label}</span>
                       </div>
-                      <span style={{ padding:'5px 12px', borderRadius:20, background:col.bg, color:col.text, border:`1px solid ${col.border}`, fontSize:10, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
-                        {status.replaceAll('_', ' ')}
-                      </span>
+                      <p style={{ fontSize:11, color:'var(--text-muted)' }}>
+                        {bookings.length} booking{bookings.length!==1?'s':''} · Created {fmtDate(c.createdAt)}
+                        {c.campaignBrief && ` · ${c.campaignBrief.slice(0,60)}${c.campaignBrief.length>60?'…':''}`}
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between mt-4">
-                      <div>
-                        <p style={{ fontSize:10, color:'var(--text-muted)', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:3 }}>Total Spend</p>
-                        <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:20, color:'#86efac', letterSpacing:'-0.3px' }}>₦{Number(c.totalPrice).toLocaleString()}</p>
-                      </div>
-                      <div style={{ textAlign:'right' }}>
-                        <p style={{ fontSize:10, color:'var(--text-muted)', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:3 }}>Items</p>
-                        <p style={{ fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:20, color:'var(--accent-light)' }}>{c.totalItems}</p>
-                      </div>
+                    <div style={{ textAlign:'right', flexShrink:0 }}>
+                      <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, color:'var(--accent-light)' }}>{fmt(total)}</p>
+                      <p style={{ fontSize:10, color:'var(--text-muted)', marginTop:1 }}>View details →</p>
                     </div>
                   </div>
-                );
-              })}
-        </div>
-      )}
-    </Layout>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Layout>
+    </>
   );
 }
