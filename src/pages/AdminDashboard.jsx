@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import PageTitle from '../components/PageTitle';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Spinner } from '../components/UI';
@@ -31,6 +32,57 @@ export default function AdminDashboard() {
   const [subscriptions, setSubs]        = useState([]);
   const [loading, setLoading]           = useState(true);
   const [activeTab, setActiveTab]       = useState('overview');
+  const [toast, setToast]               = useState(null);
+  const [showBookingModal, setShowBM]   = useState(false);
+  const [bForm, setBForm]               = useState({ brand_name:'', contactEmail:'', mediaId:'', inventory_group:'', inventory_option:'', market:'', date:'', runs:1, campaignBrief:'' });
+  const [bSubmitting, setBSub]          = useState(false);
+
+  const showToast = (type, msg) => { setToast({type,message:msg}); setTimeout(()=>setToast(null),3500); };
+
+  const parseInv = (raw) => { if(!raw) return {}; if(typeof raw==='string') { try{return JSON.parse(raw);}catch{return{};} } return raw; };
+  const selMedia   = media.find(m => m.mediaId === bForm.mediaId);
+  const selInv     = parseInv(selMedia?.inventory);
+  const selGroup   = selInv[bForm.inventory_group];
+  const selOpts    = selGroup?.options || {};
+  const selOpt     = selOpts[bForm.inventory_option];
+  const selMarkets = selOpt ? Object.keys(selOpt.markets||{}) : [];
+  const unitPrice  = selOpt?.markets?.[bForm.market]?.price || 0;
+  const totalPrice = unitPrice * Math.max(1, Number(bForm.runs)||1);
+
+  const submitAdminBooking = async () => {
+    if (!bForm.brand_name || !bForm.contactEmail || !bForm.mediaId || !bForm.date) {
+      showToast('error', 'Please fill in all required fields'); return;
+    }
+    setBSub(true);
+    try {
+      const headers = await authHeader();
+      headers['Content-Type'] = 'application/json';
+      await axios.post(`${API}/campaigns`, {
+        brand_name:    bForm.brand_name,
+        contactEmail:  bForm.contactEmail,
+        campaignBrief: bForm.campaignBrief,
+        items: [{
+          mediaId:          bForm.mediaId,
+          mediaName:        selMedia?.name,
+          category:         selMedia?.category || '',
+          inventory_group:  bForm.inventory_group,
+          inventory_option: bForm.inventory_option,
+          groupLabel:       selGroup?.label || bForm.inventory_group,
+          optionLabel:      selOpt?.label   || bForm.inventory_option,
+          market:           bForm.market,
+          date:             bForm.date,
+          runs:             Math.max(1, Number(bForm.runs)||1),
+          price:            totalPrice,
+          unitPrice,
+        }],
+      }, { headers });
+      showToast('success', 'Booking created successfully');
+      setShowBM(false);
+      setBForm({ brand_name:'', contactEmail:'', mediaId:'', inventory_group:'', inventory_option:'', market:'', date:'', runs:1, campaignBrief:'' });
+      await loadAll();
+    } catch(e) { showToast('error', e.response?.data?.error || e.message); }
+    finally { setBSub(false); }
+  };
 
   useEffect(() => { loadAll(); }, []);
 
@@ -80,11 +132,116 @@ export default function AdminDashboard() {
     { key:'media',         label:`Media (${media.length})`        },
   ];
 
-  if (loading) return <Layout title="Admin Dashboard"><div style={{ padding:40, display:'flex', gap:10, color:'var(--text-muted)' }}><Spinner size={16}/>Loading…</div></Layout>;
+  if (loading) return <Layout title="Admin Dashboard">
+      <PageTitle title="Admin Dashboard" description="Full platform overview — bookings, providers, subscriptions and revenue."/><div style={{ padding:40, display:'flex', gap:10, color:'var(--text-muted)' }}><Spinner size={16}/>Loading…</div></Layout>;
 
   return (
     <Layout title="Admin Dashboard" subtitle="Full platform overview — bookings, providers, subscriptions and revenue"
-      actions={<button onClick={loadAll} className="btn-secondary" style={{ fontSize:12 }}>↻ Refresh</button>}>
+      actions={
+        <div style={{ display:'flex', gap:8 }}>
+          <button onClick={() => setShowBM(true)} className="btn-primary" style={{ fontSize:12 }}>+ Create Booking</button>
+          <button onClick={loadAll} className="btn-secondary" style={{ fontSize:12 }}>↻ Refresh</button>
+        </div>
+      }>
+      {toast && <Toast type={toast.type} message={toast.message} onClose={()=>setToast(null)}/>}
+
+      {/* ── ADMIN CREATE BOOKING MODAL ── */}
+      {showBookingModal && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
+          <div style={{ background:'#111118', border:'1px solid rgba(255,255,255,0.1)', borderRadius:16, padding:28, width:'100%', maxWidth:560, maxHeight:'90vh', overflowY:'auto' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
+              <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:16, color:'white' }}>Create Booking (Admin)</p>
+              <button onClick={() => setShowBM(false)} style={{ background:'none', border:'none', color:'var(--text-muted)', fontSize:20, cursor:'pointer' }}>✕</button>
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+              {[
+                ['Brand Name *',    'brand_name',    'text',  'Indomie Nigeria'],
+                ['Client Email *',  'contactEmail',  'email', 'client@company.com'],
+                ['Campaign Date *', 'date',          'date',  ''],
+                ['Number of Runs',  'runs',          'number','1'],
+              ].map(([label, key, type, ph]) => (
+                <div key={key}>
+                  <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>{label}</p>
+                  <input type={type} placeholder={ph} value={bForm[key]}
+                    onChange={e => setBForm(f=>({...f,[key]:e.target.value,[key==='mediaId'?'inventory_group':key==='inventory_group'?'inventory_option':key==='inventory_option'?'market':'']: key!=='date'&&key!=='runs'?'':f[key==='date'?'date':'runs']}))}
+                    style={{ width:'100%', padding:'10px 12px', borderRadius:9, fontSize:13, outline:'none', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'white' }}/>
+                </div>
+              ))}
+
+              {/* Media org picker */}
+              <div>
+                <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Media Organisation *</p>
+                <select value={bForm.mediaId} onChange={e => setBForm(f=>({...f, mediaId:e.target.value, inventory_group:'', inventory_option:'', market:''}))}
+                  style={{ width:'100%', padding:'10px 12px', borderRadius:9, fontSize:13, outline:'none', background:'#1a1a2e', border:'1px solid rgba(255,255,255,0.1)', color:'white' }}>
+                  <option value="">Select media organisation...</option>
+                  {[...media].sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(m => (
+                    <option key={m.mediaId} value={m.mediaId}>{m.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Inventory group */}
+              {bForm.mediaId && Object.keys(selInv).length > 0 && (
+                <div>
+                  <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Inventory Group</p>
+                  <select value={bForm.inventory_group} onChange={e => setBForm(f=>({...f, inventory_group:e.target.value, inventory_option:'', market:''}))}
+                    style={{ width:'100%', padding:'10px 12px', borderRadius:9, fontSize:13, outline:'none', background:'#1a1a2e', border:'1px solid rgba(255,255,255,0.1)', color:'white' }}>
+                    <option value="">Select group...</option>
+                    {Object.entries(selInv).map(([k,g]) => <option key={k} value={k}>{g.label}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Inventory option */}
+              {bForm.inventory_group && (
+                <div>
+                  <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Option</p>
+                  <select value={bForm.inventory_option} onChange={e => setBForm(f=>({...f, inventory_option:e.target.value, market:''}))}
+                    style={{ width:'100%', padding:'10px 12px', borderRadius:9, fontSize:13, outline:'none', background:'#1a1a2e', border:'1px solid rgba(255,255,255,0.1)', color:'white' }}>
+                    <option value="">Select option...</option>
+                    {Object.entries(selOpts).map(([k,o]) => <option key={k} value={k}>{o.label}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Market */}
+              {bForm.inventory_option && selMarkets.length > 0 && (
+                <div>
+                  <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Market</p>
+                  <select value={bForm.market} onChange={e => setBForm(f=>({...f, market:e.target.value}))}
+                    style={{ width:'100%', padding:'10px 12px', borderRadius:9, fontSize:13, outline:'none', background:'#1a1a2e', border:'1px solid rgba(255,255,255,0.1)', color:'white' }}>
+                    <option value="">Select market...</option>
+                    {selMarkets.map(m => <option key={m} value={m}>{m.replaceAll('_',' ')} — ₦{Number(selOpt.markets[m].price).toLocaleString()}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Price preview */}
+              {totalPrice > 0 && (
+                <div style={{ padding:'12px 14px', borderRadius:10, background:'rgba(99,102,241,0.08)', border:'1px solid rgba(99,102,241,0.18)' }}>
+                  <p style={{ fontSize:11, color:'var(--text-muted)' }}>Total</p>
+                  <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:22, color:'#a5b4fc' }}>₦{totalPrice.toLocaleString()}</p>
+                </div>
+              )}
+
+              {/* Campaign brief */}
+              <div>
+                <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Campaign Brief</p>
+                <textarea rows={3} placeholder="Campaign goals, target audience, KPIs..." value={bForm.campaignBrief}
+                  onChange={e => setBForm(f=>({...f, campaignBrief:e.target.value}))}
+                  style={{ width:'100%', padding:'10px 12px', borderRadius:9, fontSize:13, outline:'none', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'white', resize:'vertical', fontFamily:'Manrope,sans-serif' }}/>
+              </div>
+
+              <div style={{ display:'flex', gap:10, marginTop:4 }}>
+                <button onClick={() => setShowBM(false)} className="btn-secondary" style={{ flex:1 }}>Cancel</button>
+                <button onClick={submitAdminBooking} disabled={bSubmitting} className="btn-primary" style={{ flex:2, justifyContent:'center' }}>
+                  {bSubmitting ? <><Spinner size={13}/> Creating…</> : 'Create Booking →'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div style={{ display:'flex', gap:6, marginBottom:24, flexWrap:'wrap' }}>
