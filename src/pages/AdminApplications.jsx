@@ -1,262 +1,197 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 import Layout from '../components/Layout';
-import { LoadingBlock, ErrorBlock, EmptyBlock, Toast, Spinner } from '../components/UI';
+import { Spinner, Toast } from '../components/UI';
 import api from '../services/api';
 
-export default function AdminApplications() {
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState('');
-  const [toast, setToast]               = useState(null);
-  const [acting, setActing]             = useState({});
-  const [expanded, setExpanded]         = useState(null);
-  const navigate = useNavigate();
-  const [filter, setFilter]             = useState('PENDING_REVIEW');
+const fmtDate = (d) => { try{ return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}); }catch{ return d||'—'; }};
 
-  const showToast = (type, message) => {
-    setToast({ type, message });
-    setTimeout(() => setToast(null), 3500);
-  };
+export default function AdminApplications() {
+  const navigate                      = useNavigate();
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [toast, setToast]             = useState(null);
+  const [acting, setActing]           = useState({});
+  const [expanded, setExpanded]       = useState(null);
+  const [filter, setFilter]           = useState('PENDING_REVIEW');
+
+  const showToast = (type, msg) => { setToast({type,message:msg}); setTimeout(()=>setToast(null),3500); };
 
   const fetchApplications = async () => {
-    setLoading(true); setError('');
-    try {
-      const res = await api.get('/providers');
-      setApplications(Array.isArray(res.data) ? res.data : res.data?.providers ?? []);
-    } catch(e) { setError(e.message); }
-    finally { setLoading(false); }
+    setLoading(true);
+    try { const r = await api.get('/providers'); setApplications(Array.isArray(r)?r:r.providers??r.data??[]); }
+    catch(e){ showToast('error',e.message); }
+    finally{ setLoading(false); }
   };
 
-  useEffect(() => { fetchApplications(); }, []);
+  useEffect(()=>{ fetchApplications(); },[]);
 
   const act = async (applicationId, status) => {
-    setActing(a => ({ ...a, [applicationId]: status }));
+    setActing(a=>({...a,[applicationId]:status}));
     try {
-      await api.patch(`/providers/${applicationId}`, { status });
-      setApplications(apps => apps.map(a => a.applicationId === applicationId ? { ...a, status } : a));
-      showToast('success', `Application ${status === 'APPROVED' ? 'approved' : 'rejected'} successfully`);
-    } catch(e) { showToast('error', e.message); }
-    finally { setActing(a => { const n = { ...a }; delete n[applicationId]; return n; }); }
+      await api.patch(`/providers/${applicationId}`, {status});
+      setApplications(apps=>apps.map(a=>a.applicationId===applicationId?{...a,status}:a));
+      showToast('success', `Application ${status==='APPROVED'?'approved':'rejected'}`);
+    } catch(e){ showToast('error',e.message); }
+    finally{ setActing(a=>{const n={...a};delete n[applicationId];return n;}); }
   };
 
   const deleteProvider = async (applicationId, orgName) => {
-    if (!window.confirm(`Permanently delete "${orgName}"? This will remove their account, media listing and revoke their provider access.`)) return;
-    setActing(a => ({ ...a, [applicationId]: 'DELETE' }));
+    if(!window.confirm(`Permanently delete "${orgName}"? This removes their account, media listing and revokes provider access.`)) return;
+    setActing(a=>({...a,[applicationId]:'DELETE'}));
     try {
       await api.delete(`/providers/${applicationId}`);
-      setApplications(apps => apps.filter(a => a.applicationId !== applicationId));
-      showToast('success', `${orgName} has been removed`);
-    } catch(e) { showToast('error', e.message); }
-    finally { setActing(a => { const n = { ...a }; delete n[applicationId]; return n; }); }
+      setApplications(apps=>apps.filter(a=>a.applicationId!==applicationId));
+      showToast('success',`${orgName} removed`);
+    } catch(e){ showToast('error',e.message); }
+    finally{ setActing(a=>{const n={...a};delete n[applicationId];return n;}); }
   };
 
-  const fmtDate = (d) => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
-    catch { return d; }
-  };
+  const FILTERS = [
+    { key:'PENDING_REVIEW', label:'Pending',  color:'#fcd34d', count: applications.filter(a=>(a.status||'').toUpperCase()==='PENDING_REVIEW').length },
+    { key:'APPROVED',       label:'Approved', color:'#86efac', count: applications.filter(a=>(a.status||'').toUpperCase()==='APPROVED').length },
+    { key:'REJECTED',       label:'Rejected', color:'#fca5a5', count: applications.filter(a=>(a.status||'').toUpperCase()==='REJECTED').length },
+    { key:'ALL',            label:'All',      color:'var(--accent-light)', count: applications.length },
+  ];
 
-  const FILTERS = ['PENDING_REVIEW','APPROVED','REJECTED'];
-  const FILTER_COLORS = { PENDING_REVIEW:'#fcd34d', APPROVED:'#86efac', REJECTED:'#fca5a5' };
-  const filtered = filter === 'ALL' ? applications : applications.filter(a => (a.status || '').toUpperCase() === filter);
-
-  const pending  = applications.filter(a => (a.status || '').toUpperCase() === 'PENDING_REVIEW').length;
-  const approved = applications.filter(a => (a.status || '').toUpperCase() === 'APPROVED').length;
+  const filtered = filter==='ALL'?applications:applications.filter(a=>(a.status||'').toUpperCase()===filter);
 
   return (
-    <Layout
-      title="Provider Applications"
-      subtitle="Review and approve media organisation applications"
-      actions={
-        <button onClick={fetchApplications} className="btn-secondary" style={{ fontSize:12 }}>
-          <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
-          Refresh
-        </button>
-      }
-    >
-      {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)}/>}
+    <>
+      <PageTitle title="Provider Applications" description="Review and manage provider applications."/>
+      <Layout title="Provider Applications" subtitle="Review, approve and manage media provider applications"
+        actions={<button onClick={fetchApplications} className="btn-secondary" style={{ fontSize:12 }}>↻ Refresh</button>}
+      >
+        {toast && <Toast type={toast.type} message={toast.message} onClose={()=>setToast(null)}/>}
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        {[
-          { label:'Total Applications', value: applications.length, color:'rgba(99,102,241,0.12)',  text:'#a5b4fc' },
-          { label:'Pending Review',     value: pending,             color:'rgba(245,158,11,0.1)',   text:'#fcd34d' },
-          { label:'Approved Providers', value: approved,            color:'rgba(34,197,94,0.1)',    text:'#86efac' },
-        ].map((s) => (
-          <div key={s.label} style={{ background:s.color, border:'1px solid rgba(255,255,255,0.07)', borderRadius:'var(--radius-lg)', padding:'16px 18px' }}>
-            <p style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:8 }}>{s.label}</p>
-            <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:26, color:s.text }}>{s.value}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="flex gap-2 mb-5">
-        {FILTERS.map((f) => {
-          const count  = applications.filter(a => (a.status || '').toUpperCase() === f).length;
-          const active = filter === f;
-          return (
-            <button key={f} onClick={() => setFilter(f)}
-              style={{ padding:'6px 14px', borderRadius:20, fontSize:11, fontWeight:700, cursor:'pointer', transition:'all 0.15s',
-                background: active ? `${FILTER_COLORS[f]}18` : 'rgba(255,255,255,0.04)',
-                color:       active ? FILTER_COLORS[f] : 'var(--text-muted)',
-                border:      active ? `1px solid ${FILTER_COLORS[f]}40` : '1px solid var(--border)',
+        {/* Filter tabs */}
+        <div style={{ display:'flex', gap:5, flexWrap:'wrap', marginBottom:16 }}>
+          {FILTERS.map(f=>(
+            <button key={f.key} onClick={()=>setFilter(f.key)}
+              style={{ padding:'5px 14px', borderRadius:20, fontSize:11, fontWeight:500, cursor:'pointer', border:'none', fontFamily:'Inter,sans-serif',
+                background:filter===f.key?'rgba(255,255,255,0.07)':'rgba(255,255,255,0.03)',
+                color:filter===f.key?f.color:'var(--text-muted)',
+                outline:filter===f.key?`0.5px solid ${f.color}44`:'0.5px solid var(--border)',
               }}>
-              {f.replaceAll('_',' ')} <span style={{ opacity:0.6, marginLeft:4 }}>{count}</span>
+              {f.label} <span style={{ opacity:0.65 }}>({f.count})</span>
             </button>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      {loading && <LoadingBlock message="Loading applications…"/>}
-      {error   && <ErrorBlock message={error} onRetry={fetchApplications}/>}
-      {!loading && !error && filtered.length === 0 && <EmptyBlock message="No applications in this category."/>}
+        {loading && <div style={{ display:'flex', gap:10, color:'var(--text-muted)', padding:'20px 0' }}><Spinner size={14}/>Loading…</div>}
 
-      {!loading && !error && filtered.length > 0 && (
-        <div className="space-y-4">
-          {filtered.map((app) => {
-            const aid    = app.applicationId;
-            const status = (app.status || 'PENDING_REVIEW').toUpperCase();
-            const isOpen = expanded === aid;
-            const isPending = status === 'PENDING_REVIEW';
+        {!loading && filtered.length===0 && (
+          <div style={{ textAlign:'center', padding:'48px', color:'var(--text-muted)', fontSize:13 }}>No applications in this category.</div>
+        )}
 
-            const statusColors = {
-              PENDING_REVIEW: { bg:'rgba(245,158,11,0.1)',  text:'#fcd34d' },
-              APPROVED:       { bg:'rgba(34,197,94,0.1)',   text:'#86efac' },
-              REJECTED:       { bg:'rgba(239,68,68,0.1)',   text:'#fca5a5' },
-            };
-            const col = statusColors[status] || statusColors.PENDING_REVIEW;
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+          {filtered.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(app => {
+            const aid    = app.applicationId||app.id;
+            const status = (app.status||'PENDING_REVIEW').toUpperCase();
+            const isOpen = expanded===aid;
+            const isPending  = status==='PENDING_REVIEW';
+            const isApproved = status==='APPROVED';
+            const isRejected = status==='REJECTED';
+
+            const statusMeta = isPending
+              ? { color:'#fcd34d', bg:'rgba(245,158,11,0.1)', label:'Pending Review' }
+              : isApproved
+              ? { color:'#86efac', bg:'rgba(34,197,94,0.1)', label:'Approved' }
+              : { color:'#fca5a5', bg:'rgba(239,68,68,0.1)', label:'Rejected' };
 
             return (
-              <div key={aid} className="page-card">
-                {/* Header */}
-                <div
-                  onClick={() => setExpanded(isOpen ? null : aid)}
-                  style={{ padding:'18px 22px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}
-                >
-                  <div className="flex items-center gap-4">
-                    {/* Avatar */}
-                    <div style={{ width:40, height:40, borderRadius:12, background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15, fontWeight:700, color:'white', flexShrink:0 }}>
-                      {(app.orgName || app.contactName || '?')[0].toUpperCase()}
-                    </div>
-                    <div>
-                      <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:16, color:'white' }}>{app.orgName || '—'}</p>
-                      <p style={{ fontSize:12, color:'var(--text-muted)', marginTop:2 }}>
-                        {app.contactName} · {app.contactEmail}
-                        {app.category && <span style={{ marginLeft:8, padding:'2px 8px', borderRadius:20, background:'rgba(255,255,255,0.06)', color:'var(--text-muted)', fontSize:10, fontWeight:600 }}>{app.category.replaceAll('_',' ')}</span>}
-                      </p>
-                    </div>
+              <div key={aid} style={{ borderRadius:10, background:'var(--bg-card)', border:`0.5px solid ${isPending?'rgba(245,158,11,0.18)':'var(--border)'}`, overflow:'hidden' }}>
+
+                {/* Header row */}
+                <div onClick={()=>setExpanded(isOpen?null:aid)} style={{ padding:'13px 16px', display:'flex', alignItems:'center', gap:12, cursor:'pointer' }}>
+                  <div style={{ width:36, height:36, borderRadius:9, background:'linear-gradient(135deg,#6366f1,#a855f7)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, color:'white', flexShrink:0 }}>
+                    {(app.orgName||'?')[0].toUpperCase()}
                   </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:10, flexShrink:0 }}>
-                    <span style={{ padding:'5px 12px', borderRadius:20, background:col.bg, color:col.text, fontWeight:700, fontSize:10 }}>
-                      {status.replaceAll('_',' ')}
-                    </span>
-                    <p style={{ fontSize:11, color:'var(--text-muted)' }}>{fmtDate(app.appliedAt)}</p>
-                    <svg width="16" height="16" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition:'0.2s' }}>
-                      <path d="M6 9l6 6 6-6"/>
-                    </svg>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:2 }}>
+                      <p style={{ fontWeight:500, fontSize:13, color:'white' }}>{app.orgName||'—'}</p>
+                      <span style={{ fontSize:9, fontWeight:600, padding:'2px 7px', borderRadius:20, background:statusMeta.bg, color:statusMeta.color, whiteSpace:'nowrap' }}>{statusMeta.label}</span>
+                    </div>
+                    <p style={{ fontSize:11, color:'var(--text-muted)' }}>
+                      {(app.category||'').replaceAll('_',' ')} · {app.contactEmail} · Applied {fmtDate(app.createdAt||app.appliedAt)}
+                    </p>
                   </div>
+                  <span style={{ color:'var(--text-muted)', fontSize:12, transform:isOpen?'rotate(180deg)':'none', display:'inline-block', transition:'0.2s' }}>⌄</span>
                 </div>
 
-                {/* Expanded */}
-                {isOpen && (
-                  <div style={{ padding:'0 22px 22px', borderTop:'1px solid var(--border)' }}>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                {/* Expanded details */}
+                {isOpen&&(
+                  <div style={{ padding:'0 16px 16px', borderTop:'0.5px solid var(--border)' }}>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:8, margin:'14px 0' }}>
                       {[
-                        { label:'Phone',       value: app.contactPhone || '—' },
-                        { label:'Role',        value: app.contactRole  || '—' },
-                        { label:'Website',     value: app.website      || '—' },
-                        { label:'Founded',     value: app.founded      || '—' },
-                        { label:'Markets',     value: app.markets?.join(', ') || '—' },
-                        { label:'Monthly Reach', value: app.monthlyReach || '—' },
-                        { label:'Audience',    value: app.audienceDemo || '—' },
-                        { label:'Bank',        value: app.bankName ? `${app.bankName} · ${app.accountName} · ${app.accountNumber}` : '—' },
-                      ].map((row) => (
-                        <div key={row.label} style={{ padding:'10px 12px', borderRadius:10, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
-                          <p style={{ fontSize:10, color:'var(--text-muted)', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:3 }}>{row.label}</p>
-                          <p style={{ fontSize:12, fontWeight:500, color:'white', wordBreak:'break-all' }}>{row.value}</p>
+                        ['Contact Name', app.contactName],
+                        ['Contact Email', app.contactEmail],
+                        ['Phone', app.contactPhone],
+                        ['Role', app.contactRole||'—'],
+                        ['Category', (app.category||'—').replaceAll('_',' ')],
+                        ['Website', app.website||'—'],
+                        ['Founded', app.founded||'—'],
+                        ['Markets', (app.markets||[]).join(', ')||'—'],
+                        ['Monthly Reach', app.monthlyReach||'—'],
+                        ['Bank', app.bankName||'—'],
+                        ['Account Name', app.accountName||'—'],
+                        ['Account No.', app.accountNumber||'—'],
+                      ].map(([label,value])=>(
+                        <div key={label} style={{ padding:'8px 10px', borderRadius:8, background:'rgba(255,255,255,0.025)', border:'0.5px solid var(--border)' }}>
+                          <p style={{ fontSize:9, fontWeight:600, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:2 }}>{label}</p>
+                          <p style={{ fontSize:11, color:'white', wordBreak:'break-word' }}>{value}</p>
                         </div>
                       ))}
                     </div>
 
-                    {app.description && (
-                      <div style={{ marginTop:16, padding:'14px 16px', borderRadius:12, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)' }}>
-                        <p style={{ fontSize:10, color:'var(--text-muted)', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:6 }}>Description</p>
-                        <p style={{ fontSize:13, color:'var(--text-secondary)', lineHeight:1.7 }}>{app.description}</p>
+                    {app.description&&(
+                      <div style={{ padding:'10px 12px', borderRadius:8, background:'var(--accent-soft)', border:'0.5px solid var(--accent-border)', marginBottom:14 }}>
+                        <p style={{ fontSize:9, fontWeight:600, color:'var(--accent-light)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:4 }}>Description</p>
+                        <p style={{ fontSize:12, color:'rgba(255,255,255,0.65)', lineHeight:1.7 }}>{app.description}</p>
                       </div>
                     )}
 
-                    {isPending && (
-                      <div className="flex gap-3 mt-5">
-                        <button
-                          onClick={() => act(aid, 'APPROVED')}
-                          disabled={!!acting[aid]}
-                          className="btn-success"
-                          style={{ padding:'10px 20px', fontSize:13 }}
-                        >
-                          {acting[aid] === 'APPROVED' ? <Spinner size={13}/> : (
-                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-                          )}
-                          Approve Provider
+                    {/* Actions */}
+                    <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+                      {isPending&&(
+                        <>
+                          <button onClick={()=>act(aid,'APPROVED')} disabled={!!acting[aid]}
+                            style={{ padding:'8px 16px', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif', border:'none', background:'linear-gradient(135deg,#22c55e,#16a34a)', color:'white', display:'flex', alignItems:'center', gap:5 }}>
+                            {acting[aid]==='APPROVED'?<><Spinner size={11}/>…</>:'✓ Approve'}
+                          </button>
+                          <button onClick={()=>act(aid,'REJECTED')} disabled={!!acting[aid]}
+                            style={{ padding:'8px 16px', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif', border:'0.5px solid rgba(239,68,68,0.25)', background:'rgba(239,68,68,0.08)', color:'#fca5a5', display:'flex', alignItems:'center', gap:5 }}>
+                            {acting[aid]==='REJECTED'?<><Spinner size={11}/>…</>:'✕ Reject'}
+                          </button>
+                        </>
+                      )}
+                      {isApproved&&(
+                        <>
+                          <button onClick={()=>navigate(`/admin/inventory?name=${encodeURIComponent(app.orgName)}`)}
+                            style={{ padding:'8px 16px', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif', border:'none', background:'linear-gradient(135deg,#6366f1,#a855f7)', color:'white' }}>
+                            📦 Set Up Inventory
+                          </button>
+                          <button onClick={()=>deleteProvider(aid,app.orgName)} disabled={!!acting[aid]}
+                            style={{ padding:'8px 16px', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif', border:'0.5px solid rgba(239,68,68,0.25)', background:'rgba(239,68,68,0.08)', color:'#fca5a5', display:'flex', alignItems:'center', gap:5 }}>
+                            {acting[aid]==='DELETE'?<><Spinner size={11}/>…</>:'🗑 Delete Provider'}
+                          </button>
+                        </>
+                      )}
+                      {isRejected&&(
+                        <button onClick={()=>deleteProvider(aid,app.orgName)} disabled={!!acting[aid]}
+                          style={{ padding:'8px 16px', borderRadius:8, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'Manrope,sans-serif', border:'0.5px solid rgba(239,68,68,0.25)', background:'rgba(239,68,68,0.08)', color:'#fca5a5', display:'flex', alignItems:'center', gap:5 }}>
+                          {acting[aid]==='DELETE'?<><Spinner size={11}/>…</>:'🗑 Delete Application'}
                         </button>
-                        <button
-                          onClick={() => act(aid, 'REJECTED')}
-                          disabled={!!acting[aid]}
-                          className="btn-danger"
-                          style={{ padding:'10px 20px', fontSize:13 }}
-                        >
-                          {acting[aid] === 'REJECTED' ? <Spinner size={13}/> : (
-                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                          )}
-                          Reject Application
-                        </button>
-                      </div>
-                    )}
-                    {status === 'APPROVED' && (
-                      <div className="flex gap-3 mt-5">
-                        <button
-                          onClick={() => navigate(`/admin/inventory?name=${encodeURIComponent(app.orgName)}`)}
-                          className="btn-primary"
-                          style={{ padding:'10px 20px', fontSize:13 }}
-                        >
-                          📦 Set Up Inventory
-                        </button>
-                        <button
-                          onClick={() => deleteProvider(aid, app.orgName)}
-                          disabled={!!acting[aid]}
-                          className="btn-danger"
-                          style={{ padding:'10px 20px', fontSize:13 }}
-                        >
-                          {acting[aid] === 'DELETE' ? <Spinner size={13}/> : (
-                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-                          )}
-                          Delete Provider
-                        </button>
-                      </div>
-                    )}
-                    {status === 'REJECTED' && (
-                      <div className="flex gap-3 mt-5">
-                        <button
-                          onClick={() => deleteProvider(aid, app.orgName)}
-                          disabled={!!acting[aid]}
-                          className="btn-danger"
-                          style={{ padding:'10px 20px', fontSize:13 }}
-                        >
-                          {acting[aid] === 'DELETE' ? <Spinner size={13}/> : (
-                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-                          )}
-                          Delete Application
-                        </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
             );
           })}
         </div>
-      )}
-    </Layout>
+      </Layout>
+    </>
   );
 }
