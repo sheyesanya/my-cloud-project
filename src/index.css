@@ -1,407 +1,182 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* =========================================================
-CSS VARIABLES — DARK THEME
-========================================================= */
-
+/* ── CSS Variables ── */
 :root {
-  --bg-base:        #0a0a0f;
-  --bg-surface:     #111118;
-  --border:         rgba(255,255,255,0.08);
-  --text-muted:     rgba(255,255,255,0.38);
-  --text-secondary: rgba(255,255,255,0.55);
+  --bg-base:        #07070e;
+  --bg-surface:     #0d0d18;
+  --bg-card:        rgba(255,255,255,0.025);
+  --border:         rgba(255,255,255,0.07);
+  --border-hover:   rgba(255,255,255,0.12);
+  --text-primary:   rgba(255,255,255,0.88);
+  --text-secondary: rgba(255,255,255,0.52);
+  --text-muted:     rgba(255,255,255,0.28);
+  --accent:         #6366f1;
   --accent-light:   #a5b4fc;
+  --accent-soft:    rgba(99,102,241,0.12);
+  --accent-border:  rgba(99,102,241,0.28);
+  --success:        #86efac;
+  --warning:        #fcd34d;
+  --danger:         #fca5a5;
+  --teal:           #5eead4;
 }
 
-/* =========================================================
-BASE
-========================================================= */
-
+/* ── Base ── */
 @layer base {
-
-  * {
-    box-sizing: border-box;
-  }
-
-  html {
-    -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
-  }
+  * { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; }
 
   body {
-    background: #0a0a0f;
-    color: rgba(255,255,255,0.85);
-    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
     min-height: 100vh;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Fraunces', serif;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
+  h1,h2,h3,h4,h5,h6 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
   }
 
-  button {
-    -webkit-tap-highlight-color: transparent;
-  }
+  button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+  input, textarea, select { font-family: 'Inter', sans-serif; }
 }
 
-/* =========================================================
-COMPONENTS
-========================================================= */
-
+/* ── Components ── */
 @layer components {
 
-  /* ========================
-     SIDEBAR
-  ======================== */
-
+  /* Sidebar */
   .sidebar-link {
-
-    @apply
-      flex
-      items-center
-      gap-3
-      px-3
-      py-3
-      rounded-2xl
-      text-sm
-      font-semibold
-      transition-all
-      duration-200
-      cursor-pointer
-      select-none;
-
-    color: rgba(255,255,255,0.72);
-    position: relative;
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 cursor-pointer select-none;
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    font-weight: 450;
   }
-
-  .sidebar-link:hover {
-    color: white;
-    background: rgba(255,255,255,0.08);
-    transform: translateX(2px);
-  }
-
+  .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
   .sidebar-link.active {
-    color: white;
-    background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(236,72,153,0.22));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 10px 25px rgba(124,58,237,0.16);
+    background: var(--accent-soft);
+    color: var(--accent-light);
+    border: 0.5px solid var(--accent-border);
   }
 
-  .sidebar-link.active::before {
-    content: '';
-    position: absolute;
-    left: -12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 60%;
-    border-radius: 999px;
-    background: linear-gradient(180deg, #7c3aed, #ec4899, #06b6d4);
-  }
-
-  /* ========================
-     BUTTONS
-  ======================== */
-
+  /* Buttons */
   .btn-primary {
-
-    @apply
-      inline-flex
-      items-center
-      gap-2
-      px-4
-      py-3
-      text-white
-      text-sm
-      font-semibold
-      rounded-xl
-      transition-all
-      duration-200;
-
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
-    font-family: 'Manrope', sans-serif;
+    @apply inline-flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-lg transition-all duration-150;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
     border: none;
-    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
   }
-
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(99,102,241,0.45);
-    opacity: 0.95;
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-0.5px); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
   .btn-secondary {
-
-    @apply
-      inline-flex
-      items-center
-      gap-2
-      px-4
-      py-3
-      text-sm
-      font-medium
-      rounded-xl
-      transition-all
-      duration-200;
-
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.75);
+    @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-150;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid var(--border);
+    color: var(--text-secondary);
     font-family: 'Manrope', sans-serif;
-    cursor: pointer;
   }
-
-  .btn-secondary:hover {
-    transform: translateY(-1px);
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.18);
-    color: white;
-  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.09); color: var(--text-primary); border-color: var(--border-hover); }
 
   .btn-success {
-
-    @apply
-      inline-flex
-      items-center
-      gap-1.5
-      px-3
-      py-2
-      text-xs
-      font-semibold
-      rounded-xl
-      transition-all
-      duration-150;
-
-    background: rgba(16,185,129,0.12);
-    color: #059669;
-    border: 1px solid rgba(16,185,129,0.22);
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150;
+    background: rgba(34,197,94,0.1); color: #86efac; border: 0.5px solid rgba(34,197,94,0.2);
   }
-
   .btn-danger {
-
-    @apply
-      inline-flex
-      items-center
-      gap-1.5
-      px-3
-      py-2
-      text-xs
-      font-semibold
-      rounded-xl
-      transition-all
-      duration-150;
-
-    background: rgba(239,68,68,0.12);
-    color: #dc2626;
-    border: 1px solid rgba(239,68,68,0.18);
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150;
+    background: rgba(239,68,68,0.1); color: #fca5a5; border: 0.5px solid rgba(239,68,68,0.18);
   }
 
-  /* ========================
-     FORMS
-  ======================== */
-
-  .form-input {
-
-    @apply
-      w-full
-      px-4
-      py-3
-      rounded-xl
-      text-sm
-      transition-all
-      duration-200;
-
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: white;
-  }
-
-  .form-input::placeholder {
-    color: rgba(255,255,255,0.3);
-  }
-
-  .form-input:focus {
-    outline: none;
-    border: 1px solid rgba(99,102,241,0.4);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
-  }
-
-  .form-label {
-
-    @apply
-      block
-      mb-2
-      uppercase
-      tracking-wider;
-
-    font-size: 10px;
-    font-weight: 800;
-    color: rgba(255,255,255,0.4);
-  }
-
-  /* ========================
-     PAGE CARD
-  ======================== */
-
+  /* Cards */
   .page-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    border-radius: 14px;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
   }
 
-  /* ========================
-     BADGES
-  ======================== */
+  /* Forms */
+  .form-label {
+    @apply block mb-1.5 uppercase tracking-wider;
+    font-size: 10px; font-weight: 600; color: var(--text-muted);
+  }
+  .form-input {
+    @apply w-full px-3 py-2.5 rounded-lg text-sm transition-all duration-150;
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+  }
+  .form-input::placeholder { color: var(--text-muted); }
+  .form-input:focus { outline: none; border-color: var(--accent-border); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
 
-  .badge-pending,
-  .badge-approved,
-  .badge-rejected {
-
-    @apply
-      inline-flex
-      items-center
-      px-3
-      py-1
-      rounded-xl
-      text-xs
-      font-semibold;
+  /* Badges */
+  .badge-pending  { background: rgba(245,158,11,0.1);  color: #fcd34d; border: 0.5px solid rgba(245,158,11,0.2); }
+  .badge-approved { background: rgba(34,197,94,0.1);   color: #86efac; border: 0.5px solid rgba(34,197,94,0.2); }
+  .badge-rejected { background: rgba(239,68,68,0.1);   color: #fca5a5; border: 0.5px solid rgba(239,68,68,0.18); }
+  .badge-pending, .badge-approved, .badge-rejected {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
   }
 
-  .badge-pending {
-    background: rgba(245,158,11,0.12);
-    color: #d97706;
+  /* Stat card */
+  .stat-card {
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
   }
-
-  .badge-approved {
-    background: rgba(16,185,129,0.12);
-    color: #059669;
-  }
-
-  .badge-rejected {
-    background: rgba(239,68,68,0.12);
-    color: #dc2626;
-  }
+  .stat-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .stat-value { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; }
+  .stat-sub   { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 }
 
-/* =========================================================
-LAYOUT
-========================================================= */
-
+/* ── Layout ── */
 .sidebar-bg {
-  background: linear-gradient(180deg, #0f172a 0%, #111827 30%, #1e1b4b 100%);
+  background: #09091a;
+  border-right: 0.5px solid var(--border);
 }
 
-/* =========================================================
-ANIMATIONS
-========================================================= */
+/* ── Tables ── */
+.data-table { width: 100%; font-size: 12.5px; border-collapse: collapse; }
+.data-table thead tr { border-bottom: 0.5px solid var(--border); }
+.data-table thead th {
+  padding: 9px 12px; text-align: left; font-size: 10px; font-weight: 600;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;
+}
+.data-table tbody tr { border-bottom: 0.5px solid rgba(255,255,255,0.04); transition: background 0.1s; }
+.data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.data-table tbody td { padding: 10px 12px; color: var(--text-secondary); }
 
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(8px); }
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 999px; }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+.page-enter { animation: fadeUp 0.2s cubic-bezier(0.22,1,0.36,1); }
 
-.page-enter {
-  animation: fadeSlideIn 0.25s cubic-bezier(0.22,1,0.36,1);
-}
+/* ── Utilities ── */
+.space-y-2>*+*{margin-top:.5rem}
+.space-y-3>*+*{margin-top:.75rem}
+.space-y-4>*+*{margin-top:1rem}
+.space-y-5>*+*{margin-top:1.25rem}
 
-/* =========================================================
-TABLES
-========================================================= */
-
-.data-table {
-  width: 100%;
-  font-size: 0.84rem;
-}
-
-.data-table thead tr {
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.data-table thead th {
-  padding: 0.85rem 1.1rem;
-  text-align: left;
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: rgba(255,255,255,0.38);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.data-table tbody tr {
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  transition: all 0.15s;
-}
-
-.data-table tbody tr:hover {
-  background: rgba(255,255,255,0.03);
-}
-
-.data-table tbody td {
-  padding: 0.95rem 1.1rem;
-  color: rgba(255,255,255,0.75);
-}
-
-/* =========================================================
-SCROLLBAR
-========================================================= */
-
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #6366f1, #a855f7);
-  border-radius: 999px;
-}
-
-/* =========================================================
-UTILITIES
-========================================================= */
-
-.space-y-2 > * + * { margin-top: 0.5rem; }
-.space-y-3 > * + * { margin-top: 0.75rem; }
-.space-y-4 > * + * { margin-top: 1rem; }
-.space-y-5 > * + * { margin-top: 1.25rem; }
-
-/* =========================================================
-RESPONSIVE
-========================================================= */
-
+/* ── Responsive ── */
 @media (max-width: 768px) {
-
-  .page-card {
-    border-radius: 12px;
-  }
-
-  .sidebar-link {
-    padding-top: 14px;
-    padding-bottom: 14px;
-  }
-
-  .data-table {
-    display: block;
-    overflow-x: auto;
-  }
-
-  h1 { font-size: 1.8rem !important; }
-  h2 { font-size: 1.4rem !important; }
+  .page-card { border-radius: 10px; }
+  .sidebar-link { padding-top: 12px; padding-bottom: 12px; }
+  .data-table { display: block; overflow-x: auto; }
+  h1 { font-size: 1.6rem !important; }
+  h2 { font-size: 1.3rem !important; }
 }

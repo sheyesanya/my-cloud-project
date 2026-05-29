@@ -1,50 +1,35 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 
-export default function Layout({ children, title, subtitle, actions }) {
+export default function Layout({ title, subtitle, actions, children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'var(--bg-base)' }}>
-      <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-base)' }}>
+      <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}/>
 
-      <main className="flex-1 lg:ml-56 flex flex-col min-h-screen">
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
-        {/* Header */}
-        <header
-          className="sticky top-0 z-30 px-6 lg:px-8 py-4 flex items-center justify-between gap-4"
-          style={{ background: 'rgba(10,10,15,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid var(--border)' }}
-        >
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)' }}
-            >
-              <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" viewBox="0 0 24 24">
-                <path d="M3 12h18M3 6h18M3 18h18"/>
-              </svg>
-            </button>
+        {/* Top bar */}
+        <header style={{ padding: '14px 24px', borderBottom: '0.5px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(7,7,14,0.8)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {/* Hamburger */}
+            <button onClick={() => setMobileOpen(true)}
+              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: 20, padding: 0, display: 'none', lineHeight: 1 }}
+              className="md:hidden" aria-label="Open menu">☰</button>
             <div>
-              <h1 style={{ fontFamily: 'Syne,sans-serif', fontWeight: 700, fontSize: 22, color: 'white', letterSpacing: '-0.5px', lineHeight: 1 }}>
-                {title}
-              </h1>
-              {subtitle && (
-                <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 5, lineHeight: 1.5 }}>{subtitle}</p>
-              )}
+              {title && <h1 style={{ fontFamily: 'Manrope,sans-serif', fontSize: 16, fontWeight: 700, color: 'white', letterSpacing: '-0.3px', margin: 0 }}>{title}</h1>}
+              {subtitle && <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0, marginTop: 1 }}>{subtitle}</p>}
             </div>
           </div>
-
-          {actions && (
-            <div className="flex items-center gap-2">{actions}</div>
-          )}
+          {actions && <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>{actions}</div>}
         </header>
 
-        {/* Content */}
-        <div className="flex-1 px-6 lg:px-8 py-6 page-enter">
+        {/* Page content */}
+        <main style={{ flex: 1, padding: '22px 24px', maxWidth: 1200 }} className="page-enter">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
