@@ -71,7 +71,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <img src={LOGO} alt="BrandCasta" style={{ width:24, height:24, objectFit:'contain' }}/>
           <div>
-            <div style={{ fontFamily:'Playfair Display,serif', fontWeight:700, fontSize:14, color:'var(--text)', letterSpacing:'-0.2px' }}>BrandCasta</div>
+            <div style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color:'var(--text)', letterSpacing:'-0.2px' }}>BrandCasta</div>
             <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:8, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase', marginTop:1 }}>{role}</div>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               Unlock AI tools, analytics and campaign intelligence.
             </p>
             <Link to="/subscription" onClick={close}
-              style={{ display:'block', textAlign:'center', padding:'7px', background:'var(--amber)', color:'#0a0a0f', fontFamily:'DM Sans,sans-serif', fontWeight:700, fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', textDecoration:'none', transition:'background 0.2s' }}>
+              style={{ display:'block', textAlign:'center', padding:'7px', background:'var(--amber)', color:'#0a0a0f', fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', textDecoration:'none', transition:'background 0.2s' }}>
               View Plans →
             </Link>
           </div>
@@ -128,7 +128,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
         {/* User row */}
         <div style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer', padding:'6px 0' }}
           onClick={async () => { await logout(); navigate('/'); close(); }}>
-          <div style={{ width:26, height:26, background:'var(--amber)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#0a0a0f', flexShrink:0, fontFamily:'Playfair Display,serif' }}>
+          <div style={{ width:26, height:26, background:'var(--amber)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#0a0a0f', flexShrink:0, fontFamily:'Manrope,sans-serif' }}>
             {initial}
           </div>
           <div style={{ flex:1, minWidth:0 }}>

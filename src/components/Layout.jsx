@@ -24,7 +24,7 @@ export default function Layout({ title, subtitle, actions, children }) {
                 </div>
               )}
               {title && (
-                <h1 style={{ fontFamily:'Playfair Display,serif', fontWeight:700, fontSize:18, color:'var(--text)', letterSpacing:'-0.3px', margin:0 }}>
+                <h1 style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:18, color:'var(--text)', letterSpacing:'-0.3px', margin:0 }}>
                   {title}
                 </h1>
               )}

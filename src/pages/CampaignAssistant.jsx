@@ -77,7 +77,7 @@ export default function CampaignAssistant() {
           <div style={{ padding:'32px', background:'var(--bg)', borderRight:'1px solid var(--border)', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
             <div>
               <div className="eyebrow" style={{ marginBottom:16 }}>Media Intelligence Layer</div>
-              <h2 style={{ fontFamily:'Playfair Display,serif', fontWeight:700, fontStyle:'italic', fontSize:26, lineHeight:1.2, color:'var(--text)', marginBottom:14, letterSpacing:'-0.4px' }}>
+              <h2 style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontStyle:'italic', fontSize:26, lineHeight:1.2, color:'var(--text)', marginBottom:14, letterSpacing:'-0.4px' }}>
                 Your campaign<br/>strategy partner.
               </h2>
               <p style={{ fontSize:12, color:'var(--text3)', lineHeight:1.8, maxWidth:320 }}>
@@ -92,7 +92,7 @@ export default function CampaignAssistant() {
                   {SUGGESTED.map((q,i) => (
                     <button key={i} onClick={() => send(q)}
                       className="suggest-btn"
-                      style={{ textAlign:'left', padding:'8px 12px', background:'none', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.28)', fontSize:11, cursor:'pointer', fontFamily:"'DM Sans',sans-serif", lineHeight:1.5, transition:'all 0.15s', borderLeft:'2px solid transparent', display:'block', width:'100%' }}>
+                      style={{ textAlign:'left', padding:'8px 12px', background:'none', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.28)', fontSize:11, cursor:'pointer', fontFamily:"'Inter',sans-serif", lineHeight:1.5, transition:'all 0.15s', borderLeft:'2px solid transparent', display:'block', width:'100%' }}>
                       {q}
                     </button>
                   ))}
@@ -102,7 +102,7 @@ export default function CampaignAssistant() {
 
             <div style={{ borderTop:'1px solid var(--border)', paddingTop:16 }}>
               <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--text4)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:4 }}>Platform Stats</div>
-              <div style={{ fontFamily:'Playfair Display,serif', fontWeight:900, fontSize:22, color:'var(--amber)', letterSpacing:'-0.5px' }}>184+</div>
+              <div style={{ fontFamily:'Manrope,sans-serif', fontWeight:900, fontSize:22, color:'var(--amber)', letterSpacing:'-0.5px' }}>184+</div>
               <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, color:'var(--text3)' }}>verified Nigerian media providers</div>
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function CampaignAssistant() {
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
                   placeholder="Ask about media, budgets, or campaign strategy…"
-                  style={{ flex:1, background:'none', border:'none', fontSize:12, color:'var(--text)', fontFamily:'DM Sans,sans-serif', outline:'none' }}/>
+                  style={{ flex:1, background:'none', border:'none', fontSize:12, color:'var(--text)', fontFamily:'Inter,sans-serif', outline:'none' }}/>
                 <button onClick={() => send()} disabled={!input.trim() || loading}
                   style={{ background:'none', border:'none', color: input.trim() && !loading ? 'var(--amber)' : 'var(--text4)', fontSize:16, cursor:'pointer', transition:'color 0.2s', fontFamily:'monospace', padding:0 }}>
                   →

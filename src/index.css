@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -49,21 +49,21 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 13px;
     line-height: 1.6;
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.3px;
   }
 
   button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
-  input, textarea, select { font-family: 'DM Sans', sans-serif; }
+  input, textarea, select { font-family: 'Inter', sans-serif; }
 
   ::selection { background: rgba(212,168,67,0.2); color: var(--amber); }
 }
@@ -93,7 +93,7 @@ body::before {
     padding: 10px 22px;
     background: var(--amber);
     color: #0a0a0f;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 12px;
     letter-spacing: 0.06em;
@@ -111,7 +111,7 @@ body::before {
     padding: 10px 20px;
     background: transparent;
     color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 500;
     font-size: 12px;
     letter-spacing: 0.04em;
@@ -185,7 +185,7 @@ body::before {
     margin-bottom: 8px;
   }
   .stat-value {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 900;
     font-size: 28px;
     letter-spacing: -0.8px;
@@ -219,7 +219,7 @@ body::before {
     padding: 8px 0;
     font-size: 13px;
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     outline: none;
     transition: border-color 0.2s;
     border-radius: 0;
