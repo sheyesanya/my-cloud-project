@@ -10,10 +10,10 @@
   --bg2:          #0e0e16;
   --bg3:          #13131e;
   --bg4:          #181825;
-  --amber:        #D4A843;
-  --amber2:       #b8902e;
-  --amber-dim:    rgba(212,168,67,0.08);
-  --amber-border: rgba(212,168,67,0.22);
+  --amber:        #6366f1;
+  --amber2:       #4f51d4;
+  --amber-dim:    rgba(99,102,241,0.1);
+  --amber-border: rgba(99,102,241,0.28);
   --text:         rgba(255,255,255,0.92);
   --text2:        rgba(255,255,255,0.55);
   --text3:        rgba(255,255,255,0.28);
@@ -29,10 +29,10 @@
   --bg-base:       #0a0a0f;
   --bg-surface:    #0e0e16;
   --bg-card:       rgba(255,255,255,0.03);
-  --accent:        #D4A843;
-  --accent-light:  #D4A843;
-  --accent-soft:   rgba(212,168,67,0.08);
-  --accent-border: rgba(212,168,67,0.22);
+  --accent:        #6366f1;
+  --accent-light:  #6366f1;
+  --accent-soft:   rgba(99,102,241,0.1);
+  --accent-border: rgba(99,102,241,0.25);
   --text-primary:  rgba(255,255,255,0.92);
   --text-secondary:rgba(255,255,255,0.55);
   --text-muted:    rgba(255,255,255,0.28);
@@ -65,7 +65,7 @@
   button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   input, textarea, select { font-family: 'Inter', sans-serif; }
 
-  ::selection { background: rgba(212,168,67,0.2); color: var(--amber); }
+  ::selection { background: rgba(99,102,241,0.2); color: var(--amber); }
 }
 
 /* ─── Noise texture overlay ─── */
@@ -82,7 +82,7 @@ body::before {
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(212,168,67,0.2); border-radius: 999px; }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.2); border-radius: 999px; }
 
 /* ─── Components ─── */
 @layer components {
@@ -91,8 +91,8 @@ body::before {
   .btn-primary {
     @apply inline-flex items-center gap-2;
     padding: 10px 22px;
-    background: var(--amber);
-    color: #0a0a0f;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: white;
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 12px;
@@ -172,7 +172,7 @@ body::before {
     position: absolute;
     bottom: 0; left: 0; right: 0;
     height: 2px;
-    background: var(--amber);
+    background: linear-gradient(135deg, #6366f1, #a855f7);
     opacity: 0.5;
   }
   .stat-label {
@@ -262,7 +262,7 @@ body::before {
     transition: all 0.15s;
   }
   .data-table tbody tr:hover {
-    background: rgba(212,168,67,0.03);
+    background: rgba(99,102,241,0.03);
     border-left-color: var(--amber-border);
   }
   .data-table tbody td { padding: 11px 14px; color: var(--text2); }
@@ -302,7 +302,7 @@ body::before {
 
 /* ─── Amber glow effect ─── */
 .amber-glow {
-  box-shadow: 0 0 20px rgba(212,168,67,0.08);
+  box-shadow: 0 0 20px rgba(99,102,241,0.1);
 }
 
 /* ─── Page enter animation ─── */

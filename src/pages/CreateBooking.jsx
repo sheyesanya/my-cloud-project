@@ -131,7 +131,7 @@ export default function CreateBooking() {
 
           {/* Step header */}
           <div style={{ marginBottom:24, position:'relative' }}>
-            <div style={{ fontFamily:'Manrope,sans-serif', fontWeight:900, fontSize:80, color:'rgba(212,168,67,0.05)', position:'absolute', top:-16, left:-6, lineHeight:1, userSelect:'none', pointerEvents:'none', letterSpacing:'-4px' }}>
+            <div style={{ fontFamily:'Manrope,sans-serif', fontWeight:900, fontSize:80, color:'rgba(99,102,241,0.05)', position:'absolute', top:-16, left:-6, lineHeight:1, userSelect:'none', pointerEvents:'none', letterSpacing:'-4px' }}>
               {String(step).padStart(2,'0')}
             </div>
             <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--amber)', letterSpacing:'0.16em', textTransform:'uppercase', marginBottom:5 }}>
