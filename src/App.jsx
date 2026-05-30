@@ -26,7 +26,6 @@ import ProviderInventory   from './pages/ProviderInventory';
 import BriefGenerator      from './pages/BriefGenerator';
 import SocialMediaFunnel   from './pages/SocialMediaFunnel';
 import CampaignAssistant   from './pages/CampaignAssistant';
-import CampaignAssistant   from './pages/CampaignAssistant';
 import Subscription        from './pages/Subscription';
 import PremiumGate         from './components/PremiumGate';
 
