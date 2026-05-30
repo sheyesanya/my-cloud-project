@@ -6,10 +6,10 @@
 
 /* ─── Design Tokens ─── */
 :root {
-  --bg:           #0a0a0f;
-  --bg2:          #0e0e16;
-  --bg3:          #13131e;
-  --bg4:          #181825;
+  --bg:           #07070f;
+  --bg2:          #111120;
+  --bg3:          #1a1a2e;
+  --bg4:          #1e1e32;
   --amber:        #6366f1;
   --amber2:       #4f51d4;
   --amber-dim:    rgba(99,102,241,0.1);
@@ -18,17 +18,17 @@
   --text2:        rgba(255,255,255,0.55);
   --text3:        rgba(255,255,255,0.28);
   --text4:        rgba(255,255,255,0.14);
-  --border:       rgba(255,255,255,0.08);
-  --border2:      rgba(255,255,255,0.04);
+  --border:       rgba(255,255,255,0.12);
+  --border2:      rgba(255,255,255,0.07);
   --green:        #4ade80;
   --teal:         #5eead4;
   --orange:       #fb923c;
   --purple:       #d8b4fe;
 
   /* legacy aliases so existing components don't break */
-  --bg-base:       #0a0a0f;
-  --bg-surface:    #0e0e16;
-  --bg-card:       rgba(255,255,255,0.03);
+  --bg-base:       #07070f;
+  --bg-surface:    #111120;
+  --bg-card:       rgba(255,255,255,0.05);
   --accent:        #6366f1;
   --accent-light:  #6366f1;
   --accent-soft:   rgba(99,102,241,0.1);
@@ -157,6 +157,7 @@ body::before {
   .page-card {
     background: var(--bg2);
     border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(255,255,255,0.05) inset;
   }
 
   /* Stat card */
@@ -166,6 +167,7 @@ body::before {
     border: 1px solid var(--border);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(255,255,255,0.05) inset;
   }
   .stat-card::after {
     content: '';
@@ -283,7 +285,7 @@ body::before {
     letter-spacing: 0.01em;
   }
   .sidebar-link:hover { color: var(--text2); background: rgba(255,255,255,0.03); border-left-color: var(--amber-border); }
-  .sidebar-link.active { color: var(--amber); background: var(--amber-dim); border-left-color: var(--amber); }
+  .sidebar-link.active { color: var(--amber); background: rgba(99,102,241,0.12); border-left-color: var(--amber); box-shadow: inset 0 0 20px rgba(99,102,241,0.05); }
 }
 
 /* ─── Mono labels (used everywhere for data/labels) ─── */
