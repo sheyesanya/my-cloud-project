@@ -16,13 +16,14 @@ const TOOLS = [
   { key:'video',  icon:'🎬', label:'TV/Video Script',  color:'#fcd34d', desc:'TVC script with full storyboard'  },
 ];
 
+const API = import.meta.env.VITE_API_URL;
+
 const callClaude = async (prompt) => {
-  const res = await axios.post('https://api.anthropic.com/v1/messages', {
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1000,
-    messages: [{ role:'user', content: prompt }],
-  });
-  return res.data?.content?.find(c=>c.type==='text')?.text || '';
+  const { auth } = await import('../lib/firebase');
+  const token = await auth.currentUser?.getIdToken();
+  const headers = { 'Content-Type':'application/json', ...(token ? { Authorization:`Bearer ${token}` } : {}) };
+  const res = await axios.post(`${API}/ai/generate`, { prompt, max_tokens:1500 }, { headers });
+  return res.data?.text || '';
 };
 
 export default function BriefGenerator() {
