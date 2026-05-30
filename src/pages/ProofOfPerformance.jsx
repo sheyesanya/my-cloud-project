@@ -81,12 +81,10 @@ export default function ProofOfPerformance() {
     if(!selected) return;
     setAnalysing(true); setAnalysis(null);
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({
-          model:'claude-sonnet-4-20250514', max_tokens:1000,
-          messages:[{ role:'user', content:`You are BrandCasta's campaign performance analyst. Analyse this campaign delivery.
+      const { auth } = await import('../lib/firebase');
+      const token = await auth.currentUser?.getIdToken();
+      const headers = { 'Content-Type':'application/json', ...(token ? { Authorization:`Bearer ${token}` } : {}) };
+      const prompt = `You are BrandCasta's campaign performance analyst. Analyse this campaign delivery.
 
 Campaign Details:
 - Media: ${selected.target}
@@ -99,12 +97,16 @@ Campaign Details:
 - Proofs submitted: ${proofs.length}
 - Provider notes: ${notes||'None'}
 
-Respond with JSON only: {"verdict":"APPROVED"|"NEEDS_REVIEW"|"DISPUTED","score":85,"summary":"2-sentence summary","strengths":["..."],"concerns":[],"recommendation":"next step","estimatedReach":"estimated reach","roi":"ROI commentary"}` }],
-        }),
+Respond with JSON only (no markdown, no backticks): {"verdict":"APPROVED","score":85,"summary":"2-sentence summary","strengths":["..."],"concerns":[],"recommendation":"next step","estimatedReach":"estimated reach","roi":"ROI commentary"}`;
+
+      const API = import.meta.env.VITE_API_URL;
+      const aiRes = await fetch(`${API}/ai/generate`, {
+        method:'POST', headers,
+        body: JSON.stringify({ prompt }),
       });
-      const data = await response.json();
-      const text = data.content?.map(c=>c.text||'').join('').trim();
-      setAnalysis(JSON.parse(text.replace(/```json|```/g,'').trim()));
+      const aiData = await aiRes.json();
+      const text = (aiData.text||'').replace(/```json|```/g,'').trim();
+      setAnalysis(JSON.parse(text));
     } catch{ showToast('error','AI analysis failed'); }
     finally{ setAnalysing(false); }
   };
