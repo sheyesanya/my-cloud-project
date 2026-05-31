@@ -1,3 +1,5 @@
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+
 import { useState, useEffect, useRef } from 'react';
 const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 import { motion, AnimatePresence } from 'framer-motion';

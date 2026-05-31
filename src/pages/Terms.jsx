@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
-
 const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+
+import { Link } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
+
+
 
 const Section = ({ title, children }) => (
   <div style={{ marginBottom: 40 }}>
@@ -17,7 +20,7 @@ export default function Terms() {
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0f', color: 'white', fontFamily: "'Manrope', sans-serif" }}>
 
-      {/* Nav */}
+      <PageTitle title="Terms & Conditions" description="BrandCasta Terms and Conditions — Modulus Media."/>
       <nav style={{ background: 'rgba(10,10,15,0.9)', borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0 40px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none', color: 'white' }}>
           <img src={LOGO} alt="BrandCasta" style={{ width: 28, height: 28, objectFit: 'contain' }}/>
