@@ -5,7 +5,22 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Spinner } from '../components/UI';
 
-const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+const BrandcastaLogo = ({ size = 26 }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="7" fill="url(#bc-grad)"/>
+    <defs>
+      <linearGradient id="bc-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#6366f1"/>
+        <stop offset="1" stopColor="#a855f7"/>
+      </linearGradient>
+    </defs>
+    <circle cx="16" cy="16" r="3" fill="white"/>
+    <path d="M10 22c-1.5-1.7-2.5-4-2.5-6s1-4.3 2.5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+    <path d="M22 22c1.5-1.7 2.5-4 2.5-6s-1-4.3-2.5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+    <path d="M7 25C4.7 22.5 3 19.4 3 16s1.7-6.5 4-9" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" strokeOpacity="0.5"/>
+    <path d="M25 25c2.3-2.5 4-5.6 4-9s-1.7-6.5-4-9" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" strokeOpacity="0.5"/>
+  </svg>
+);
 
 const FEATURES = [
   { title:'Television & Radio',  desc:"Prime-time spots on Channels TV, Cool FM, TVC, Wazobia FM and 60+ stations across Nigeria." },
@@ -122,13 +137,16 @@ export default function Login() {
   }, []);
 
   const handle = async (fn) => {
+    if (loading) return;
     setLoading(true); setError('');
     try {
       const result = await fn();
-      // null means user closed the popup — don't navigate, just reset
-      if (result !== null) navigate('/dashboard');
+      if (result !== null && result !== undefined) navigate('/dashboard');
     }
-    catch(e) { setError(e.message.replace('Firebase: ','').replace(/\(auth.*?\)/g,'').trim()); }
+    catch(e) {
+      const msg = (e.message||'').replace('Firebase: ','').replace(/\(auth.*?\)/g,'').trim();
+      if (msg) setError(msg);
+    }
     finally { setLoading(false); }
   };
 
@@ -196,8 +214,11 @@ export default function Login() {
       <motion.nav initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5 }}
         style={{ position:'sticky', top:0, zIndex:100, background:'rgba(14,14,19,0.95)', backdropFilter:'blur(14px)', borderBottom:'1px solid rgba(255,255,255,0.08)' }}>
         <div className="l-px" style={{ height:60, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div onClick={()=>navigate('/')} style={{ display:'flex', alignItems:'center', gap:2, cursor:'pointer' }}>
-            <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'white', letterSpacing:'-0.2px' }}>Brand</span><span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:`${GOLD}`, letterSpacing:'-0.2px' }}>Casta</span>
+          <div onClick={()=>navigate('/')} style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer' }}>
+            <BrandcastaLogo size={26}/>
+            <div style={{ display:'flex' }}>
+              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'white', letterSpacing:'-0.2px' }}>Brand</span><span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:`${GOLD}`, letterSpacing:'-0.2px' }}>Casta</span>
+            </div>
           </div>
           <div style={{ display:'flex', gap:28 }}>
             <button className="l-nav-btn" onClick={()=>scrollTo('features')}>Features</button>

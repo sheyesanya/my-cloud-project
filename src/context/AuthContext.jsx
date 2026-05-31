@@ -14,8 +14,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Handle redirect result from Google sign-in
-    getRedirectResult(auth).catch(() => {});
+    // Handle redirect result first — catches post-redirect Google sign-in
+    getRedirectResult(auth).catch(e => {
+      if (e.code !== 'auth/no-current-user') console.log('Redirect result:', e.message);
+    });
 
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -60,11 +62,15 @@ export function AuthProvider({ children }) {
   const signup         = (email, password) => createUserWithEmailAndPassword(auth, email, password);
   const loginWithGoogle = async () => {
     try {
-      return await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      return result;
     } catch (e) {
-      // If popup blocked by COOP policy, fall back to redirect
-      if (e.code === 'auth/popup-blocked' || e.message?.includes('Cross-Origin')) {
-        return signInWithRedirect(auth, googleProvider);
+      // User deliberately closed the popup — silent fail
+      if (e.code === 'auth/popup-closed-by-user') return null;
+      // Popup blocked by browser — fall back to redirect flow
+      if (e.code === 'auth/popup-blocked') {
+        await signInWithRedirect(auth, googleProvider);
+        return null;
       }
       throw e;
     }
