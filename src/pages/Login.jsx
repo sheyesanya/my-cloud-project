@@ -1,7 +1,7 @@
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780233194/Black_and_White_Minimalist_Creative_Design_Studio_Logo_4_ykzvxb.png';
 
 import { useState, useEffect, useRef } from 'react';
-const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780233194/Black_and_White_Minimalist_Creative_Design_Studio_Logo_4_ykzvxb.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTitle from '../components/PageTitle';
 import { useNavigate, Link } from 'react-router-dom';
