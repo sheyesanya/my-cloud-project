@@ -205,23 +205,21 @@ export default function Login() {
       {/* ── NAV ── */}
       <motion.nav initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5 }}
         style={{ position:'sticky', top:0, zIndex:100, background:'rgba(14,14,19,0.95)', backdropFilter:'blur(14px)', borderBottom:'1px solid rgba(255,255,255,0.08)' }}>
-        <div className="l-px" style={{ height:60, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div onClick={()=>navigate('/')} style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer' }}>
+        <div className="l-px" style={{ height:56, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+          <div onClick={()=>navigate('/')} style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer', flexShrink:0 }}>
             <img src={LOGO} alt="BrandCasta" style={{ width:26, height:26, objectFit:"contain" }}/>
             <div style={{ display:'flex' }}>
               <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'white', letterSpacing:'-0.2px' }}>Brand</span><span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'#4d50d6', letterSpacing:'-0.2px' }}>Casta</span>
             </div>
           </div>
-          <div style={{ display:'flex', gap:28 }}>
+          <div className="l-nav-links-desktop">
             <button className="l-nav-btn" onClick={()=>scrollTo('features')}>Features</button>
             <button className="l-nav-btn" onClick={()=>scrollTo('how-it-works')}>How it works</button>
             <button className="l-nav-btn" onClick={()=>scrollTo('providers')}>Providers</button>
           </div>
           <button onClick={()=>openAuth('login')}
-            style={{ padding:'9px 22px', background:GOLD, color:'#0a0a0a', fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', border:'none', cursor:'pointer', transition:'background 0.2s' }}
-            onMouseEnter={e=>e.currentTarget.style.background='#4f51d4'}
-            onMouseLeave={e=>e.currentTarget.style.background=GOLD}>
-            Start a Campaign
+            style={{ padding:'8px 14px', background:GOLD, color:'white', fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:11, letterSpacing:'0.08em', textTransform:'uppercase', border:'none', cursor:'pointer', flexShrink:0, whiteSpace:'nowrap' }}>
+            Sign In
           </button>
         </div>
       </motion.nav>
@@ -297,7 +295,7 @@ export default function Login() {
             </div>
 
             {/* Right — auth panel */}
-            <motion.div initial={{ opacity:0, x:24 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.3, duration:0.6, ease:[0.22,1,0.36,1] }} id="auth-anchor">
+            <motion.div initial={{ opacity:0, x:24 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.3, duration:0.6, ease:[0.22,1,0.36,1] }} id="auth-anchor" style={{ width:'100%', minWidth:0 }}>
               <div style={{ background:'#0d0d1a', border:`1px solid ${GOLD_BORDER}`, padding:24 }}>
 
                 <div style={{ textAlign:'center', marginBottom:16 }}>
@@ -380,15 +378,15 @@ export default function Login() {
         </div>
 
         {/* Stats row — bottom of hero */}
-        <div style={{ position:'relative', zIndex:1, borderTop:'1px solid rgba(255,255,255,0.1)', marginTop:64 }}>
-          <div className="l-px" style={{ display:'flex' }}>
+        <div style={{ position:'relative', zIndex:1, borderTop:'1px solid rgba(255,255,255,0.1)', marginTop:40 }}>
+          <div className="l-px stats-row-inner" style={{ display:'flex', width:'100%' }}>
             {STATS.map((s, i) => {
               const num = parseInt(s.value);
               const suffix = s.value.replace(num.toString(), '');
               return (
-                <div key={s.label} style={{ flex:1, padding:'32px 0', borderRight: i < STATS.length-1 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingLeft: i > 0 ? 40 : 0, paddingRight: i < STATS.length-1 ? 40 : 0 }}>
+                <div key={s.label} className="stat-cell" style={{ flex:1, minWidth:0, overflow:'hidden', padding:'24px 0', borderRight: i < STATS.length-1 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingLeft: i > 0 ? 'clamp(12px,4%,40px)' : 0, paddingRight: i < STATS.length-1 ? 'clamp(12px,4%,40px)' : 0 }}>
                   <FadeUp delay={i * 0.1}>
-                    <p style={{ fontFamily:'Georgia,serif', fontWeight:700, fontSize:42, letterSpacing:'-1.5px', color:'white', lineHeight:1, marginBottom:8 }}>
+                    <p style={{ fontFamily:'Georgia,serif', fontWeight:700, fontSize:'clamp(26px,5vw,42px)', letterSpacing:'-1.5px', color:'white', lineHeight:1, marginBottom:8 }}>
                       {num}<span style={{ fontSize:24, color:GOLD }}>{suffix}</span>
                     </p>
                     <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, color:'rgba(255,255,255,0.38)', letterSpacing:'0.16em', textTransform:'uppercase' }}>{s.label}</p>
