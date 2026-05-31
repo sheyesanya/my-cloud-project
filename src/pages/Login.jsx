@@ -234,10 +234,10 @@ export default function Login() {
             {/* Left — headline + CTA */}
             <div>
               <h1 style={{ fontFamily:'Georgia,"Times New Roman",serif', fontWeight:700, fontSize:'clamp(48px,5.5vw,80px)', lineHeight:1.04, letterSpacing:'-2px', marginBottom:28, color:'white' }}>
-                <div style={{ overflow:'hidden' }}>
+                <div style={{ overflow:'visible', paddingBottom:'0.08em' }}>
                   <StaggerWords text="Book media"/>
                 </div>
-                <div style={{ overflow:'hidden' }}>
+                <div style={{ overflow:'visible', paddingBottom:'0.12em' }}>
                   <StaggerWords text="campaigns."/>
                 </div>
                 <div style={{ overflow:'visible', paddingBottom:'0.12em' }}>
@@ -252,7 +252,9 @@ export default function Login() {
 
               <motion.p initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
                 style={{ fontSize:15, color:'rgba(255,255,255,0.48)', lineHeight:1.78, maxWidth:480, marginBottom:36 }}>
-                One platform to discover, book, generate and manage campaigns across Podcasts, Live Streaming Apps, TV, Radio, Billboards, Print and Social-Media Influencers via any of our 184+ service providers.
+                One platform to discover, book, generate and manage campaigns across Podcasts, Live Streaming Apps, TV, Radio, Billboards, Print and Social-Media Influencers.
+
+5Sec Subsidized Ad-Spots, No Delayed Payment, MPO & Invoice documentation, Ad Tracker, Proof of Performance.
               </motion.p>
 
               <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.65, duration:0.5 }}
