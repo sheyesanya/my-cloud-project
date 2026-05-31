@@ -1,12 +1,12 @@
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780233194/Black_and_White_Minimalist_Creative_Design_Studio_Logo_4_ykzvxb.png';
-
 import { useState, useEffect, useRef } from 'react';
-const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780233194/Black_and_White_Minimalist_Creative_Design_Studio_Logo_4_ykzvxb.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTitle from '../components/PageTitle';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Spinner } from '../components/UI';
+
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
+const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 
 const FEATURES = [
   { title:'Television & Radio',  desc:"Prime-time spots on Channels TV, Cool FM, TVC, Wazobia FM and 60+ stations across Nigeria." },
@@ -152,6 +152,12 @@ export default function Login() {
       <style>{`
         *,*::before,*::after{box-sizing:border-box}
         body::before{display:none!important}
+        .l-cta-pri:hover{background:linear-gradient(135deg,#4f51d4,#7c3aed) !important}
+        .l-cta-sec:hover{color:rgba(255,255,255,0.7) !important}
+        .l-google-btn:hover{border-color:rgba(99,102,241,0.28) !important}
+        .l-prov-btn:hover{background:#b8932e !important}
+        .l-prov-btn2:hover{border-color:rgba(255,255,255,0.4) !important;color:rgba(255,255,255,0.7) !important}
+        .l-social-btn:hover{border-color:rgba(99,102,241,0.28) !important;color:#6366f1 !important}
 
         /* Grid lines background */
         .l-grid-bg {
@@ -203,7 +209,7 @@ export default function Login() {
           <div onClick={()=>navigate('/')} style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer' }}>
             <img src={LOGO} alt="BrandCasta" style={{ width:26, height:26, objectFit:"contain" }}/>
             <div style={{ display:'flex' }}>
-              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'white', letterSpacing:'-0.2px' }}>Brand</span><span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:`${GOLD}`, letterSpacing:'-0.2px' }}>Casta</span>
+              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'white', letterSpacing:'-0.2px' }}>Brand</span><span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'#4d50d6', letterSpacing:'-0.2px' }}>Casta</span>
             </div>
           </div>
           <div style={{ display:'flex', gap:28 }}>
@@ -284,8 +290,7 @@ export default function Login() {
                 </button>
                 <button onClick={()=>scrollTo('features')}
                   style={{ fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.38)', background:'none', border:'none', cursor:'pointer', transition:'color 0.2s', display:'flex', alignItems:'center', gap:8 }}
-                  onMouseEnter={e=>e.currentTarget.style.color='rgba(255,255,255,0.7)'}
-                  onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.38)'}>
+                  className="l-cta-sec">
                   Browse Providers →
                 </button>
               </motion.div>
@@ -339,8 +344,7 @@ export default function Login() {
                 {/* Google */}
                 <button onClick={()=>{ if(mode==='signup'&&!agreedToTerms){setError('Please agree to the Terms & Conditions.');return;} handle(loginWithGoogle); }} disabled={loading}
                   style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.12)', color:'rgba(255,255,255,0.7)', fontFamily:'Inter,sans-serif', fontWeight:500, fontSize:12, cursor:'pointer', marginBottom:12, transition:'all 0.15s' }}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor=GOLD_BORDER}
-                  onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(255,255,255,0.12)'}>
+                  className="l-google-btn">
                   <svg width="14" height="14" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0124 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3a12 12 0 01-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
                   {isProvider ? 'Sign in as Provider' : 'Continue with Google'}
                 </button>
@@ -510,15 +514,14 @@ export default function Login() {
             <div>
               <div style={{ display:'flex', alignItems:'center', gap:0, marginBottom:14 }}>
                 <span style={{ fontFamily:'Georgia,serif', fontWeight:700, fontSize:16, color:'white' }}>Brand</span>
-                <span style={{ fontFamily:'Georgia,serif', fontWeight:700, fontSize:16, color:GOLD }}>Casta</span>
+                <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'#4d50d6' }}>Casta</span>
               </div>
               <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)', lineHeight:1.8, maxWidth:200, marginBottom:20 }}>Nigeria's leading media campaign operations platform.</p>
               <div style={{ display:'flex', gap:6 }}>
                 {[['𝕏','https://x.com/brandcasta_ng'],['in','https://linkedin.com/company/brandcasta-nigeria'],['ig','https://instagram.com/brandcasta_ng']].map(([icon,href])=>(
                   <a key={icon} href={href} target="_blank" rel="noreferrer"
                     style={{ width:28, height:28, background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,0.35)', fontSize:10, fontWeight:700, textDecoration:'none', transition:'all 0.15s' }}
-                    onMouseEnter={e=>{ e.currentTarget.style.borderColor=GOLD_BORDER; e.currentTarget.style.color=GOLD; }}
-                    onMouseLeave={e=>{ e.currentTarget.style.borderColor='rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.35)'; }}>
+                    className="l-social-btn">
                     {icon}
                   </a>
                 ))}

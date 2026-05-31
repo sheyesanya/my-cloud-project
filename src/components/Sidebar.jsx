@@ -1,7 +1,8 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
+
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 
 const NAV_ADMIN = [
   { section: 'Platform', items: [
@@ -72,7 +73,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
           <div>
             <div style={{ display:'flex' }}>
               <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:14, color:'var(--text)', letterSpacing:'-0.2px' }}>Brand</span>
-              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:14, letterSpacing:'-0.2px', background:'linear-gradient(135deg,#6366f1,#a855f7)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>Casta</span>
+              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:14, color:'#4d50d6', letterSpacing:'-0.2px' }}>Casta</span>
             </div>
             <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:8, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase', marginTop:1 }}>{role}</div>
           </div>

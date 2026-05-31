@@ -1,10 +1,11 @@
 import { useState } from 'react';
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTitle from '../components/PageTitle';
 import { Spinner, Toast } from '../components/UI';
 import api from '../services/api';
+
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 
 const CATEGORIES = ['TELEVISION','RADIO_AUDIO','PODCASTS','OUT_OF_HOME','PRINT_MEDIA','INFLUENCERS','SOCIAL_MEDIA','MUSIC_PROMOTION','LIVE_STREAMING'];
 const CAT_LABELS = { TELEVISION:'Television', RADIO_AUDIO:'Radio / Audio', PODCASTS:'Podcasts', OUT_OF_HOME:'Out of Home', PRINT_MEDIA:'Print Media', INFLUENCERS:'Influencers', SOCIAL_MEDIA:'Social Media', MUSIC_PROMOTION:'Music Promotion', LIVE_STREAMING:'Live Streaming' };
