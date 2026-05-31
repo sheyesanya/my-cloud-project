@@ -1,23 +1,7 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
+import LOGO from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
-
-const BrandcastaLogo = ({ size = 26 }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="32" height="32" rx="7" fill="url(#bc-grad)"/>
-    <defs>
-      <linearGradient id="bc-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#6366f1"/>
-        <stop offset="1" stopColor="#a855f7"/>
-      </linearGradient>
-    </defs>
-    <circle cx="16" cy="16" r="3" fill="white"/>
-    <path d="M10 22c-1.5-1.7-2.5-4-2.5-6s1-4.3 2.5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-    <path d="M22 22c1.5-1.7 2.5-4 2.5-6s-1-4.3-2.5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-    <path d="M7 25C4.7 22.5 3 19.4 3 16s1.7-6.5 4-9" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" strokeOpacity="0.5"/>
-    <path d="M25 25c2.3-2.5 4-5.6 4-9s-1.7-6.5-4-9" stroke="white" strokeWidth="1.8" strokeLinecap="round" fill="none" strokeOpacity="0.5"/>
-  </svg>
-);
 
 const NAV_ADMIN = [
   { section: 'Platform', items: [
@@ -84,7 +68,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       {/* Logo */}
       <div style={{ padding:'20px 16px 16px', borderBottom:'1px solid var(--border)' }}>
         <Link to={role==='PROVIDER'?'/provider':role==='ADMIN'?'/dashboard':'/dashboard'} style={{ display:'flex', alignItems:'center', gap:10, textDecoration:'none' }}>
-          <BrandcastaLogo size={24}/>
+          <img src={LOGO} alt="BrandCasta" style={{ width:24, height:24, objectFit:"contain" }}/>
           <div>
             <div style={{ display:'flex' }}>
               <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:14, color:'var(--text)', letterSpacing:'-0.2px' }}>Brand</span>

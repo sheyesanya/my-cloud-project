@@ -1,11 +1,10 @@
 import { useState } from 'react';
+import LOGO from '../assets/logo.png';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTitle from '../components/PageTitle';
 import { Spinner, Toast } from '../components/UI';
 import api from '../services/api';
-
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 
 const CATEGORIES = ['TELEVISION','RADIO_AUDIO','PODCASTS','OUT_OF_HOME','PRINT_MEDIA','INFLUENCERS','SOCIAL_MEDIA','MUSIC_PROMOTION','LIVE_STREAMING'];
 const CAT_LABELS = { TELEVISION:'Television', RADIO_AUDIO:'Radio / Audio', PODCASTS:'Podcasts', OUT_OF_HOME:'Out of Home', PRINT_MEDIA:'Print Media', INFLUENCERS:'Influencers', SOCIAL_MEDIA:'Social Media', MUSIC_PROMOTION:'Music Promotion', LIVE_STREAMING:'Live Streaming' };
@@ -81,7 +80,7 @@ export default function RegisterProvider() {
 
       {/* Header */}
       <div style={{ padding:'16px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
-        <img src={LOGO} alt="BrandCasta" style={{ width:24, height:24, objectFit:'contain' }}/>
+        <img src={LOGO} alt="BrandCasta" style={{ width:24, height:24, objectFit:"contain" }}/>
         <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color:'var(--text)' }}>BrandCasta</span>
         <span style={{ marginLeft:'auto', fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--text3)', letterSpacing:'0.1em', textTransform:'uppercase' }}>Provider Application</span>
       </div>
@@ -103,7 +102,7 @@ export default function RegisterProvider() {
           <AnimatePresence mode="wait">
             <motion.div key={step} initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:16 }} transition={{ duration:0.3, ease:[0.22,1,0.36,1] }}>
 
-              <div style={{ background:'var(--bg2)', border:'1px solid var(--border)', padding:24, marginBottom:16 }}>
+              <div style={{ background:'#111120', border:'1px solid var(--border)', padding:24, marginBottom:16 }}>
 
                 {/* Step 0 — Contact */}
                 {step===0&&(
