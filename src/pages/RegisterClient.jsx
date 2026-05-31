@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Spinner } from '../components/UI';
 import api from '../services/api';
 
-const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
+import WHITE_LOGO from '../assets/logo.png';
 
 export default function RegisterClient() {
   const navigate = useNavigate();
