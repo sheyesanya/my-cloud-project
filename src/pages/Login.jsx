@@ -180,6 +180,25 @@ export default function Login() {
 
         .l-footer-link { color:rgba(255,255,255,0.35); text-decoration:none; font-size:12px; transition:color 0.2s; display:block; margin-bottom:9px; }
         .l-footer-link:hover { color:${GOLD}; }
+        @media(max-width:900px){
+          .l-hero-grid{grid-template-columns:1fr!important;gap:24px!important}
+          .l-nav-links-desktop{display:none!important}
+          #auth-anchor{width:100%!important;min-width:0!important}
+        }
+        @media(max-width:768px){
+          .l-feat-grid{grid-template-columns:1fr!important}
+          .l-steps-grid{grid-template-columns:1fr 1fr!important}
+          .l-prov-grid{grid-template-columns:1fr!important;gap:16px!important}
+          .l-foot-grid{grid-template-columns:1fr 1fr!important;gap:14px!important}
+          .l-px{padding-left:18px!important;padding-right:18px!important}
+          .stats-row-inner{overflow:hidden!important}
+          .stat-cell{padding:18px 10px!important;min-width:0!important;overflow:hidden!important}
+        }
+        @media(max-width:480px){
+          .l-steps-grid{grid-template-columns:1fr!important}
+          .l-foot-grid{grid-template-columns:1fr!important}
+          h1{font-size:40px!important;letter-spacing:-1.5px!important}
+        }
 
         .l-stat-divider { width:1px; background:rgba(255,255,255,0.1); align-self:stretch; }
 
@@ -428,7 +447,7 @@ export default function Login() {
             <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, color:GOLD, letterSpacing:'0.18em', textTransform:'uppercase', marginBottom:12 }}>Process</p>
             <h2 style={{ fontFamily:'Georgia,serif', fontWeight:700, fontSize:'clamp(28px,4vw,44px)', color:'white', letterSpacing:'-1px' }}>How it works</h2>
           </FadeUp>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:0, background:'rgba(255,255,255,0.07)' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', gap:0, background:'rgba(255,255,255,0.07)' }}>
             {STEPS.map((s,i)=>(
               <FadeUp key={s.n} delay={i*0.09}>
                 <div style={{ padding:'28px 24px', background:'#0e0e13', height:'100%', borderRight:i<3?'1px solid rgba(255,255,255,0.07)':'none', position:'relative', overflow:'hidden' }}>

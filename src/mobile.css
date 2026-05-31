@@ -1,0 +1,93 @@
+/* ═══════════════════════════════════════════════
+   BrandCasta — Mobile Responsive Overrides
+   Applies to ≤768px (tablet) and ≤480px (phone)
+   ═══════════════════════════════════════════════ */
+
+/* ── Base ── */
+@media (max-width: 768px) {
+  .desktop-sidebar { display: none !important; }
+
+  main, [class*="page-"] {
+    padding: 14px !important;
+  }
+
+  /* ── Stat grids ── */
+  [style*="minmax(140px"], [style*="minmax(150px"],
+  [style*="minmax(160px"], [style*="minmax(200px"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* ── Two-col content grids → stack ── */
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="gridTemplateColumns:'1fr 1fr'"],
+  [style*="gridTemplateColumns: '1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Three-col grids → single col ── */
+  [style*="gridTemplateColumns:'repeat(3"],
+  [style*="gridTemplateColumns:'repeat(2"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Tables ── */
+  .data-table { font-size: 11px; }
+  .data-table td, .data-table th { padding: 7px 8px !important; white-space: normal !important; }
+  [style*="overflowX:'auto'"] { overflow-x: auto !important; }
+
+  /* ── Buttons ── */
+  .btn-primary, .btn-secondary {
+    font-size: 11px !important;
+    padding: 8px 14px !important;
+  }
+
+  /* ── Page cards ── */
+  .page-card { padding: 14px !important; }
+  .stat-card  { padding: 12px 14px !important; }
+  .stat-value { font-size: 20px !important; }
+
+  /* ── Login page — hero ── */
+  .l-nav-links-desktop { display: none !important; }
+  .l-hero-grid         { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .l-feat-grid         { grid-template-columns: 1fr !important; }
+  .l-steps-grid        { grid-template-columns: 1fr 1fr !important; }
+  .l-prov-grid         { grid-template-columns: 1fr !important; gap: 20px !important; }
+  .l-foot-grid         { grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+  .l-px                { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* ── Login auth card ── */
+  #auth-anchor         { width: 100% !important; min-width: 0 !important; }
+
+  /* ── Stats row ── */
+  .stats-row-inner     { overflow-x: hidden !important; }
+  .stat-cell           { padding: 20px 12px !important; min-width: 0 !important; overflow: hidden !important; }
+  .stat-num            { font-size: clamp(24px, 7vw, 38px) !important; }
+
+  /* ── Brief generator ── */
+  [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+  /* ── Dashboard two-col ── */
+  [style*="grid-template-columns:'1fr 1fr'"] { grid-template-columns: 1fr !important; }
+
+  /* ── Topbar ── */
+  header [style*="display:'flex'"][style*="gap:8"] { gap: 6px !important; }
+
+  /* ── Modals / overlays ── */
+  [style*="maxWidth:500"], [style*="maxWidth:480"], [style*="maxWidth:440"],
+  [style*="max-width:500px"], [style*="max-width:480px"] {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+/* ── Small phones ── */
+@media (max-width: 480px) {
+  [style*="minmax(140px"], [style*="minmax(150px"],
+  [style*="minmax(160px"], [style*="minmax(200px"] {
+    grid-template-columns: 1fr !important;
+  }
+  .l-steps-grid { grid-template-columns: 1fr !important; }
+  .l-foot-grid  { grid-template-columns: 1fr !important; }
+  .stat-cell    { padding: 16px 10px !important; }
+}
