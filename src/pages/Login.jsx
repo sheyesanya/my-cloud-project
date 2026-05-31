@@ -250,12 +250,15 @@ export default function Login() {
                 </div>
               </h1>
 
-              <motion.p initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
-                style={{ fontSize:15, color:'rgba(255,255,255,0.48)', lineHeight:1.78, maxWidth:480, marginBottom:36 }}>
-                One platform to discover, book, generate and manage campaigns across Podcasts, Live Streaming Apps, TV, Radio, Billboards, Print and Social-Media Influencers.
-
-5Sec Subsidized Ad-Spots, No Delayed Payment, MPO & Invoice documentation, Ad Tracker, Proof of Performance.
-              </motion.p>
+              <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
+                style={{ maxWidth:480, marginBottom:36 }}>
+                <p style={{ fontSize:15, color:'rgba(255,255,255,0.48)', lineHeight:1.78, marginBottom:14 }}>
+                  One platform to discover, book, generate and manage campaigns across Podcasts, Live Streaming Apps, TV, Radio, Billboards, Print and Social-Media Influencers.
+                </p>
+                <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:11, color:'rgba(255,255,255,0.3)', letterSpacing:'0.04em', lineHeight:1.8 }}>
+                  5Sec Subsidized Ad-Spots · No Delayed Payment · MPO &amp; Invoice · Ad Tracker · Proof of Performance
+                </p>
+              </motion.div>
 
               <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.65, duration:0.5 }}
                 style={{ display:'flex', alignItems:'center', gap:24 }}>
