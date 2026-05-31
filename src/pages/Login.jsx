@@ -143,7 +143,7 @@ export default function Login() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#0e0e13', color:'rgba(255,255,255,0.92)', fontFamily:'Inter,sans-serif', overflowX:'hidden' }}>
-      <PageTitle title="BrandCasta — Nigeria's Media Campaign Platform" description="Book TV, radio, billboard, podcast and influencer campaigns across 184+ verified Nigerian media providers."/>
+      <PageTitle title="BrandCasta — Media Campaigns, Without Borders" description="Book TV, radio, billboard, podcast and influencer campaigns across 184+ verified Nigerian media providers."/>
 
       <style>{`
         *,*::before,*::after{box-sizing:border-box}
@@ -224,7 +224,7 @@ export default function Login() {
             style={{ display:'flex', alignItems:'center', gap:12, marginBottom:32 }}>
             <div style={{ width:32, height:1, background:GOLD }}/>
             <span style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, fontWeight:500, color:GOLD, letterSpacing:'0.2em', textTransform:'uppercase' }}>
-              Nigeria's Media Platform
+              Media Campaigns, Without Borders
             </span>
           </motion.div>
 
@@ -249,6 +249,13 @@ export default function Login() {
                   </motion.span>
                 </div>
               </h1>
+
+              <motion.div initial={{ opacity:0, y:6 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.48, duration:0.5 }}
+                style={{ marginBottom:24 }}>
+                <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:13, fontWeight:500, color:'rgba(255,255,255,0.35)', letterSpacing:'0.14em', textTransform:'uppercase' }}>
+                  Let's Run It.
+                </p>
+              </motion.div>
 
               <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
                 style={{ maxWidth:480, marginBottom:36 }}>
