@@ -320,8 +320,66 @@ body::before {
 .space-y-4>*+*{margin-top:1rem}
 .space-y-5>*+*{margin-top:1.25rem}
 
-/* ─── Responsive ─── */
+
+/* ─── Mobile Responsiveness ─── */
 @media (max-width: 768px) {
   .stat-value { font-size: 22px !important; }
   h1 { font-size: 1.6rem !important; }
+
+  /* Layout — hide desktop sidebar, show content full width */
+  main { padding: 16px !important; }
+
+  /* Stat grids — single column on mobile */
+  [style*="gridTemplateColumns"][style*="minmax(1"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Tables — horizontal scroll */
+  .data-table { font-size: 11px; }
+  .data-table td, .data-table th { padding: 8px 10px !important; }
+
+  /* Page cards */
+  .page-card { padding: 14px !important; }
+
+  /* Buttons */
+  .btn-primary, .btn-secondary { font-size: 11px !important; padding: 8px 14px !important; }
+}
+
+@media (max-width: 480px) {
+  [style*="gridTemplateColumns"][style*="minmax(1"] {
+    grid-template-columns: 1fr !important;
+  }
+  .stat-value { font-size: 19px !important; }
+}
+
+/* ─── Sidebar: hide desktop version on mobile ─── */
+@media (max-width: 768px) {
+  .desktop-sidebar { display: none !important; }
+
+  /* Login hero grid — stack on mobile */
+  .l-hero-grid  { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .l-feat-grid  { grid-template-columns: 1fr !important; }
+  .l-steps-grid { grid-template-columns: 1fr 1fr !important; }
+  .l-prov-grid  { grid-template-columns: 1fr !important; gap: 20px !important; }
+  .l-foot-grid  { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+  .l-px         { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Dashboard two-col grids */
+  [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+  /* Topbar actions wrap */
+  header { flex-wrap: wrap !important; }
+}
+
+@media (max-width: 480px) {
+  .l-steps-grid { grid-template-columns: 1fr !important; }
+  .l-foot-grid  { grid-template-columns: 1fr !important; }
+
+  /* Login hero h1 */
+  .l-hero-grid h1 { font-size: 42px !important; letter-spacing: -1.5px !important; }
+
+  /* Stat cards 2 col on small screens */
+  [style*="minmax(140px"] { grid-template-columns: 1fr 1fr !important; }
+  [style*="minmax(150px"] { grid-template-columns: 1fr 1fr !important; }
+  [style*="minmax(160px"] { grid-template-columns: 1fr 1fr !important; }
 }

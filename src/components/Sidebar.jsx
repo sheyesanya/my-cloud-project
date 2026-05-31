@@ -1,5 +1,5 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780233194/Black_and_White_Minimalist_Creative_Design_Studio_Logo_4_ykzvxb.png';
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 
@@ -144,16 +144,17 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
   return (
     <>
-      {/* Desktop */}
-      <aside style={{ width:210, height:'100vh', position:'sticky', top:0, flexShrink:0, background:'var(--bg2)', borderRight:'1px solid var(--border)', display:'flex', flexDirection:'column' }}>
+      {/* Desktop sidebar — hidden on mobile via media query */}
+      <aside style={{ width:210, height:'100vh', position:'sticky', top:0, flexShrink:0, background:'var(--bg2)', borderRight:'1px solid var(--border)', display:'flex', flexDirection:'column' }}
+        className="desktop-sidebar">
         {content}
       </aside>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay — always rendered, toggled by mobileOpen */}
       {mobileOpen && (
-        <div style={{ position:'fixed', inset:0, zIndex:200 }}>
-          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.7)' }} onClick={close}/>
-          <aside style={{ position:'absolute', left:0, top:0, bottom:0, width:220, background:'var(--bg2)', borderRight:'1px solid var(--border)', zIndex:201, display:'flex', flexDirection:'column' }}>
+        <div style={{ position:'fixed', inset:0, zIndex:300 }}>
+          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(4px)' }} onClick={close}/>
+          <aside style={{ position:'absolute', left:0, top:0, bottom:0, width:240, background:'var(--bg2)', borderRight:'1px solid var(--border)', zIndex:301, display:'flex', flexDirection:'column', overflowY:'auto' }}>
             {content}
           </aside>
         </div>
