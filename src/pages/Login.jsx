@@ -11,9 +11,9 @@ const FEATURES = [
   { title:'Television & Radio',  desc:"Prime-time spots on Channels TV, Cool FM, TVC, Wazobia FM and 60+ stations across Nigeria." },
   { title:'Podcasts',            desc:"Partner with ISWIS, The Honest Bunch, WithChude and Nigeria's fastest-growing podcast creators." },
   { title:'Out-of-Home',         desc:'Billboards, LED screens, BRT wraps, airport and mall inventory from Lagos to Abuja.' },
-  { title:'Print & Digital',     desc:'Punch, Guardian, BusinessDay and leading online publishers — display, inserts and sponsored content.' },
+  { title:'Print & Digital',     desc:'Punch, Guardian, BusinessDay and leading online publishers; display, inserts and sponsored content.' },
   { title:'Influencers',         desc:'Macro, mid-tier and micro creators across Instagram, TikTok, YouTube and X.' },
-  { title:'One Dashboard',       desc:'Brief, book, approve, pay and track campaign delivery — all in one place.' },
+  { title:'One Dashboard',       desc:'Brief, book, approve, pay and track campaign delivery, all in one place.' },
 ];
 
 const STEPS = [
@@ -240,11 +240,11 @@ export default function Login() {
                 <div style={{ overflow:'hidden' }}>
                   <StaggerWords text="campaigns."/>
                 </div>
-                <div style={{ overflow:'hidden' }}>
+                <div style={{ overflow:'visible', paddingBottom:'0.12em' }}>
                   <motion.span
                     initial={{ opacity:0, y:'110%' }} animate={{ opacity:1, y:0 }}
                     transition={{ duration:0.7, ease:[0.22,1,0.36,1], delay:0.42 }}
-                    style={{ display:'inline-block', fontStyle:'italic', background:`linear-gradient(135deg,${GOLD},#a855f7)`, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+                    style={{ display:'inline-block', fontStyle:'italic', background:`linear-gradient(135deg,${GOLD},#a855f7)`, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', paddingBottom:'0.15em', lineHeight:1.1 }}>
                     One Platform.
                   </motion.span>
                 </div>
@@ -252,7 +252,7 @@ export default function Login() {
 
               <motion.p initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
                 style={{ fontSize:15, color:'rgba(255,255,255,0.48)', lineHeight:1.78, maxWidth:480, marginBottom:36 }}>
-                One platform to discover, book and manage campaigns across TV, radio, podcasts, billboards, print and influencers — 184+ verified providers.
+                One platform to discover, book, generate and manage campaigns across Podcasts, Live Streaming Apps, TV, Radio, Billboards, Print and Social-Media Influencers via any of our 184+ service providers.
               </motion.p>
 
               <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.65, duration:0.5 }}
@@ -462,7 +462,7 @@ export default function Login() {
                   List your inventory<br/>on BrandCasta
                 </h2>
                 <p style={{ fontSize:13, color:'rgba(255,255,255,0.4)', lineHeight:1.75, maxWidth:420 }}>
-                  Receive booking requests from top Nigerian brands. Approve in one click. Get paid directly — no chasing clients.
+                  Receive booking requests from top Nigerian brands. Approve in one click. Get paid directly without chasing clients.
                 </p>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:8, minWidth:180 }}>
