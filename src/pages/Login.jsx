@@ -123,7 +123,11 @@ export default function Login() {
 
   const handle = async (fn) => {
     setLoading(true); setError('');
-    try { await fn(); navigate('/dashboard'); }
+    try {
+      const result = await fn();
+      // null means user closed the popup — don't navigate, just reset
+      if (result !== null) navigate('/dashboard');
+    }
     catch(e) { setError(e.message.replace('Firebase: ','').replace(/\(auth.*?\)/g,'').trim()); }
     finally { setLoading(false); }
   };
@@ -192,7 +196,7 @@ export default function Login() {
       <motion.nav initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5 }}
         style={{ position:'sticky', top:0, zIndex:100, background:'rgba(14,14,19,0.95)', backdropFilter:'blur(14px)', borderBottom:'1px solid rgba(255,255,255,0.08)' }}>
         <div className="l-px" style={{ height:60, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:2 }}>
+          <div onClick={()=>navigate('/')} style={{ display:'flex', alignItems:'center', gap:2, cursor:'pointer' }}>
             <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:'white', letterSpacing:'-0.2px' }}>Brand</span><span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:16, color:`${GOLD}`, letterSpacing:'-0.2px' }}>Casta</span>
           </div>
           <div style={{ display:'flex', gap:28 }}>
