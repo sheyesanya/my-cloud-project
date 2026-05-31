@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import LOGO from '../assets/logo.png';
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTitle from '../components/PageTitle';

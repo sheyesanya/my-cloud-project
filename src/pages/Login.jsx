@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import WHITE_LOGO from '../assets/logo.png';
+const WHITE_LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1779215588/Brandcasta_White_Logo_ekjvew.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTitle from '../components/PageTitle';
 import { useNavigate, Link } from 'react-router-dom';
