@@ -33,6 +33,13 @@ const PROVIDER_INVENTORY = {
       PRESENTER_MENTION:     { label: 'Presenter Mention',             markets: { NATIONAL: { price: 1250000  } } },
       BRAND_INTEGRATION:     { label: 'Brand Integration (per ep)',    markets: { NATIONAL: { price: 5000000  } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_OFFPEAK:  { label: '⚡ BrandCasta FlashSpot 5s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { NATIONAL: { price: 75000 } } },
+      FLASH_5S_PRIME:    { label: '⚡ BrandCasta FlashSpot 5s Spot — Prime Time (BrandCasta FlashSpot)', markets: { NATIONAL: { price: 125000 } } },
+    
+      FLASH_15S_OFFPEAK: { label: '⚡ BrandCasta FlashSpot 15s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { NATIONAL: { price: 225000 } } },
+      FLASH_15S_PRIME: { label: '⚡ BrandCasta FlashSpot 15s Spot — Prime Time (BrandCasta FlashSpot)', markets: { NATIONAL: { price: 375000 } } },
+    }},
     BRANDED_CONTENT: { label: 'Branded Content & Productions', options: {
       BRANDED_DOCUMENTARY:  { label: 'Branded Documentary (30 mins)', markets: { NATIONAL: { price: 25000000 } } },
       BRANDED_INTERVIEW:    { label: 'Branded Interview Segment',     markets: { NATIONAL: { price: 8000000  } } },
@@ -60,6 +67,11 @@ const PROVIDER_INVENTORY = {
       NEWS_SPONSORSHIP: { label: 'News Sponsorship', markets: { NATIONAL: { price: 180000 } } },
       TRAFFIC_SPONSOR:  { label: 'Traffic Sponsorship', markets: { NATIONAL: { price: 45000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PEAK_30S: { label: '⚡ BrandCasta FlashSpot 5s Spot (BrandCasta FlashSpot — equiv. to 30s Peak)', markets: { LAGOS: { price: 3600 } } },
+    
+      FLASH_15S_PEAK_30S: { label: '⚡ BrandCasta FlashSpot 15s Spot (BrandCasta FlashSpot — equiv. to 30s Peak)', markets: { LAGOS: { price: 10800 } } },
+    }},
     PRESENTER_TALENT: { label: 'Presenter & Talent', options: {
       PRESENTER_MENTION:    { label: 'Presenter Mention',    markets: { LAGOS: { price: 26250 }, ABUJA: { price: 17063 }, PORT_HARCOURT: { price: 18000 }, KANO: { price: 10875 } } },
       LIVE_READ:            { label: 'Live Read Slot',       markets: { LAGOS: { price: 500000 }, ABUJA_PH_KANO: { price: 150000 } } },
@@ -85,6 +97,11 @@ const PROVIDER_INVENTORY = {
       NEWS_SPONSORSHIP: { label: 'News Sponsorship', markets: { NATIONAL: { price: 180000 } } },
       TRAFFIC_SPONSOR:  { label: 'Traffic Sponsorship', markets: { NATIONAL: { price: 45000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PEAK_30S: { label: '⚡ BrandCasta FlashSpot 5s Spot (BrandCasta FlashSpot — equiv. to 30s Peak)', markets: { LAGOS: { price: 4700 } } },
+    
+      FLASH_15S_PEAK_30S: { label: '⚡ BrandCasta FlashSpot 15s Spot (BrandCasta FlashSpot — equiv. to 30s Peak)', markets: { LAGOS: { price: 14100 } } },
+    }},
     PRESENTER_TALENT: { label: 'Presenter & Talent', options: {
       PRESENTER_MENTION: { label: 'Presenter Mention',    markets: { LAGOS: { price: 36875 }, ABUJA: { price: 18125 }, PORT_HARCOURT: { price: 19063 }, KANO: { price: 12000 }, ONITSHA: { price: 10000 } } },
       COUNTDOWN_SPONSOR: { label: 'Countdown Sponsorship',markets: { LAGOS: { price: 590000 }, ABUJA: { price: 206876 }, PORT_HARCOURT: { price: 255250 }, KANO: { price: 90000 }, ONITSHA: { price: 90000 } } },
@@ -108,6 +125,10 @@ const PROVIDER_INVENTORY = {
       NEWS_SPONSORSHIP: { label: 'News Sponsorship',    markets: { NATIONAL: { price: 180000 } } },
       TRAFFIC_SPONSOR:  { label: 'Traffic Sponsorship', markets: { NATIONAL: { price: 45000  } } },
       LIVE_READ:        { label: 'Live Read Slot',       markets: { NATIONAL: { price: 500000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PEAK:     { label: '⚡ BrandCasta FlashSpot 5s Spot — Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 4100 }, ABUJA: { price: 3000 } } },
+      FLASH_5S_OFFPEAK:  { label: '⚡ BrandCasta FlashSpot 5s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 2900 }, ABUJA: { price: 2200 } } },
     }},
     PRESENTER_TALENT: { label: 'Presenter & Talent', options: {
       PRESENTER_MENTION: { label: 'Presenter Mention',    markets: { NATIONAL: { price: 18938  } } },
@@ -133,6 +154,11 @@ const PROVIDER_INVENTORY = {
       NEWS_MENTION:   { label: 'News Mention',   markets: { LAGOS: { price: 100000 }, ABUJA: { price: 40000 }, PORT_HARCOURT: { price: 40000 } } },
       TIME_CHECK:     { label: 'Time Check Sponsorship', markets: { LAGOS: { price: 20000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_SUPER_PREMIUM_60S: { label: '⚡ BrandCasta FlashSpot 5s Spot (BrandCasta FlashSpot — equiv. to 60s Super Premium)', markets: { LAGOS: { price: 1800 } } },
+    
+      FLASH_15S_SUPER_PREMIUM_60S: { label: '⚡ BrandCasta FlashSpot 15s Spot (BrandCasta FlashSpot — equiv. to 60s Super Premium)', markets: { LAGOS: { price: 5400 } } },
+    }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION:  { label: 'Jingle Production',   markets: { LAGOS: { price: 150000 }, ABUJA_PH: { price: 50000 } } },
       VOICE_OVER:         { label: 'Additional Voice',     markets: { LAGOS: { price: 50000  } } },
@@ -155,6 +181,11 @@ const PROVIDER_INVENTORY = {
       NEWS_MENTION:          { label: 'News Mention',          markets: { LAGOS: { price: 100000 }, ABUJA: { price: 40000  } } },
       MORNING_DRIVE_SPONSOR: { label: 'Morning Drive Sponsorship', markets: { LAGOS: { price: 750000 }, ABUJA: { price: 350000 } } },
       TRAFFIC_UPDATE_SPONSOR:{ label: 'Traffic Update Sponsorship', markets: { LAGOS: { price: 200000 }, ABUJA: { price: 100000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_OFFPEAK_15S: { label: '⚡ BrandCasta FlashSpot 5s Spot (BrandCasta FlashSpot — equiv. to 15s Off-Peak)', markets: { LAGOS: { price: 2500 } } },
+    
+      FLASH_15S_OFFPEAK_15S: { label: '⚡ BrandCasta FlashSpot 15s Spot (BrandCasta FlashSpot — equiv. to 15s Off-Peak)', markets: { LAGOS: { price: 7500 } } },
     }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production',  markets: { LAGOS: { price: 150000 }, ABUJA: { price: 60000 } } },
@@ -184,6 +215,13 @@ const PROVIDER_INVENTORY = {
       MORNING_DRIVE_SPONSOR: { label: 'Morning Drive Sponsorship',markets: { LAGOS: { price: 600000 } } },
       TRAFFIC_UPDATE:        { label: 'Traffic Update Sponsorship',markets: { LAGOS: { price: 180000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_OFFPEAK:       { label: '⚡ BrandCasta FlashSpot 5s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 1600 } } },
+      FLASH_5S_SUPER_PREMIUM: { label: '⚡ BrandCasta FlashSpot 5s Spot — Super Premium (BrandCasta FlashSpot)', markets: { LAGOS: { price: 2300 } } },
+    
+      FLASH_15S_OFFPEAK: { label: '⚡ BrandCasta FlashSpot 15s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 4800 } } },
+      FLASH_15S_SUPER_PREMIUM: { label: '⚡ BrandCasta FlashSpot 15s Spot — Super Premium (BrandCasta FlashSpot)', markets: { LAGOS: { price: 6900 } } },
+    }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production', markets: { LAGOS: { price: 150000 } } },
       VOICE_OVER:        { label: 'Voice Over',         markets: { LAGOS: { price: 65000  } } },
@@ -211,6 +249,13 @@ const PROVIDER_INVENTORY = {
       NEWS_MENTION:           { label: 'News Mention',              markets: { LAGOS: { price: 100000 } } },
       MORNING_DRIVE_SPONSOR:  { label: 'Morning Drive Sponsorship', markets: { LAGOS: { price: 650000 } } },
       TRAFFIC_UPDATE:         { label: 'Traffic Update Sponsorship',markets: { LAGOS: { price: 180000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_OFFPEAK:       { label: '⚡ BrandCasta FlashSpot 5s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 1300 } } },
+      FLASH_5S_SUPER_PREMIUM: { label: '⚡ BrandCasta FlashSpot 5s Spot — Super Premium (BrandCasta FlashSpot)', markets: { LAGOS: { price: 1800 } } },
+    
+      FLASH_15S_OFFPEAK: { label: '⚡ BrandCasta FlashSpot 15s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 3900 } } },
+      FLASH_15S_SUPER_PREMIUM: { label: '⚡ BrandCasta FlashSpot 15s Spot — Super Premium (BrandCasta FlashSpot)', markets: { LAGOS: { price: 5400 } } },
     }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production', markets: { LAGOS: { price: 150000 } } },
@@ -240,6 +285,11 @@ const PROVIDER_INVENTORY = {
       TRAFFIC_SPONSOR: { label: 'Traffic Update Sponsorship',    markets: { LAGOS: { price: 180000  } } },
       MORNING_DRIVE:   { label: 'Morning Drive Sponsorship',     markets: { LAGOS: { price: 650000  } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_OFFPEAK_15S: { label: '⚡ BrandCasta FlashSpot 5s Spot (BrandCasta FlashSpot — equiv. to 15s Off-Peak)', markets: { LAGOS: { price: 3000 } } },
+    
+      FLASH_15S_OFFPEAK_15S: { label: '⚡ BrandCasta FlashSpot 15s Spot (BrandCasta FlashSpot — equiv. to 15s Off-Peak)', markets: { LAGOS: { price: 9000 } } },
+    }},
     PRODUCTION: { label: 'Audio Production', options: {
       JINGLE_PRODUCTION: { label: 'Jingle Production',  markets: { LAGOS: { price: 70777 }, OTHER: { price: 28000 } } },
       VOICE_OVER:        { label: 'Additional Voice',    markets: { LAGOS: { price: 35070 } } },
@@ -268,6 +318,10 @@ const PROVIDER_INVENTORY = {
       TRAFFIC_SPONSOR: { label: 'Traffic Update Sponsorship', markets: { LAGOS: { price: 180000 } } },
       PROMO_MENTION:   { label: 'Promo Mention (per week)',   markets: { LAGOS: { price: 85000  } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_OFFPEAK:  { label: '⚡ BrandCasta FlashSpot 5s Spot — Off-Peak (BrandCasta FlashSpot)', markets: { LAGOS: { price: 3000 }, ABUJA: { price: 2500 } } },
+      FLASH_5S_PRIME:    { label: '⚡ BrandCasta FlashSpot 5s Spot — Prime Time (BrandCasta FlashSpot)', markets: { LAGOS: { price: 4600 }, ABUJA: { price: 3800 } } },
+    }},
     DIGITAL: { label: 'Digital & Streaming', options: {
       ONLINE_STREAM:   { label: 'Online Stream Ad (per week)',  markets: { LAGOS: { price: 65000  } } },
       SOCIAL_MENTION:  { label: 'Social Media Mention',         markets: { LAGOS: { price: 45000  } } },
@@ -293,6 +347,11 @@ const PROVIDER_INVENTORY = {
       PRODUCT_PLACEMENT:      { label: 'Product Placement',         markets: { PER_VIDEO: { price: 1650000 } } },
       BRANDED_BACKDROP:       { label: 'Branded Backdrop (monthly)',markets: { MONTHLY:   { price: 1125000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 166700 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 500100 } } },
+    }},
     TALENT: { label: 'Talent & Host Inventory', options: {
       HOST_MENTION:           { label: 'Host Mention',             markets: { PER_EPISODE: { price: 800000  } } },
       SOCIAL_CROSS_PROMO:     { label: 'Social Media Cross Promo', markets: { PER_POST:    { price: 1575000 } } },
@@ -315,6 +374,11 @@ const PROVIDER_INVENTORY = {
       YOUTUBE_MID_ROLL:  { label: 'YouTube Mid-roll', markets: { PER_VIDEO: { price: 1075000 } } },
       SPONSORED_SEGMENT: { label: 'Sponsored Segment',markets: { PER_VIDEO: { price: 2750000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 150000 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 450000 } } },
+    }},
   },
 
   // Generic podcast template for all other podcasts
@@ -331,6 +395,11 @@ const PROVIDER_INVENTORY = {
       IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 200000 } } },
       IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 160000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 31700 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 95100 } } },
+    }},
   },
   'Menisms': {
     PODCAST_ADS: { label: 'Podcast Advertising', options: {
@@ -344,6 +413,11 @@ const PROVIDER_INVENTORY = {
       IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 80000  } } },
       IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 160000  } } },
       IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 128000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 26700 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 80100 } } },
     }},
   },
   'WithChude': {
@@ -359,6 +433,11 @@ const PROVIDER_INVENTORY = {
       IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 300000  } } },
       IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 240000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 48300 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 144900 } } },
+    }},
   },
   'Loose Talk Podcast': {
     PODCAST_ADS: { label: 'Podcast Advertising', options: {
@@ -372,6 +451,11 @@ const PROVIDER_INVENTORY = {
       IG_STORY: { label: 'Instagram Story Feature', markets: { PER_POST: { price: 115000  } } },
       IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 230000  } } },
       IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 184000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 37500 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 112500 } } },
     }},
   },
   'Bahd and Boujee Podcast': {
@@ -387,6 +471,11 @@ const PROVIDER_INVENTORY = {
       IG_REEL:  { label: 'Instagram Reel Feature',  markets: { PER_POST: { price: 180000  } } },
       IG_POST:  { label: 'Instagram Feed Post',     markets: { PER_POST: { price: 144000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_PRE_ROLL:  { label: '⚡ BrandCasta FlashSpot 5s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 30000 } } },
+    
+      FLASH_15S_PRE_ROLL: { label: '⚡ BrandCasta FlashSpot 15s Pre-Roll Mention (BrandCasta FlashSpot)', markets: { PER_EPISODE: { price: 90000 } } },
+    }},
   },
   'XL Billboards': {
     STATIC_BILLBOARDS: { label: 'Static Billboards (monthly)', options: {
@@ -400,6 +489,9 @@ const PROVIDER_INVENTORY = {
     ROOFTOP: { label: 'Rooftop Boards (monthly)', options: {
       ROOFTOP_STANDARD: { label: 'Standard Rooftop', markets: { LAGOS: { price: 2750000  } } },
       ROOFTOP_PREMIUM:  { label: 'Premium Rooftop',  markets: { LAGOS: { price: 12500000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_LED_PRIME:  { label: '⚡ BrandCasta FlashSpot 5s LED Rotation — Prime (BrandCasta FlashSpot)', markets: { LAGOS: { price: 1250000 }, ABUJA: { price: 900000 } } },
     }},
     DIGITAL_LED: { label: 'Digital LED Boards (monthly)', options: {
       LED_10S:  { label: '10s Rotation — Prime',    markets: { LAGOS: { price: 2500000 }, ABUJA: { price: 1800000 } } },
@@ -448,6 +540,9 @@ const PROVIDER_INVENTORY = {
       ESCALATOR:     { label: 'Escalator Branding',   markets: { NATIONAL: { price: 4000000 } } },
       FOOD_COURT:    { label: 'Food Court Branding',  markets: { NATIONAL: { price: 3000000 } } },
     }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_DIGITAL_STREET: { label: '⚡ BrandCasta FlashSpot 5s Digital Street (BrandCasta FlashSpot)', markets: { LAGOS: { price: 900000 }, ABUJA: { price: 650000 } } },
+    }},
     STREET_FURNITURE: { label: 'Street Furniture (monthly)', options: {
       BUS_SHELTER:      { label: 'Bus Shelter Panel',     markets: { LAGOS: { price: 800000  }, ABUJA: { price: 600000 } } },
       KIOSK_PANEL:      { label: 'Kiosk Panel',           markets: { LAGOS: { price: 550000  }, ABUJA: { price: 400000 } } },
@@ -469,6 +564,9 @@ const PROVIDER_INVENTORY = {
       TEN_SECS:    { label: '10s Rotation', markets: { LAGOS: { price: 1400000 }, ABUJA: { price: 1000000 } } },
       FIFTEEN_SECS:{ label: '15s Rotation', markets: { LAGOS: { price: 2500000 }, ABUJA: { price: 1800000 } } },
       THIRTY_SECS: { label: '30s Rotation', markets: { LAGOS: { price: 5000000 }, ABUJA: { price: 3500000 } } },
+    }},
+    FLASHSPOT: { label: '⚡ BrandCasta FlashSpot', options: {
+      FLASH_5S_DIGITAL:  { label: '⚡ BrandCasta FlashSpot 5s Digital Rotation (BrandCasta FlashSpot)', markets: { LAGOS: { price: 700000 }, ABUJA: { price: 500000 } } },
     }},
     UNIPOLE_GANTRY: { label: 'Unipoles & Gantries (monthly)', options: {
       UNIPOLE_STANDARD:  { label: 'Standard Unipole',   markets: { LAGOS: { price: 4000000 }, ABUJA: { price: 2800000 } } },
@@ -574,7 +672,7 @@ const PROVIDER_INVENTORY = {
       CAMPAIGN_APPEARANCE:  { label: 'Campaign Appearance',         markets: { PER_CAMPAIGN: { price: 5000000  } } },
       EVENT_HOSTING:        { label: 'Event Hosting',               markets: { PER_EVENT:    { price: 2000000  } } },
       AMBASSADOR_QUARTERLY: { label: 'Brand Ambassador (quarterly)',markets: { PER_CAMPAIGN: { price: 8000000  } } },
-      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 20000000 } } },
+      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 12000000 } } },
     }},
     PODCAST: { label: 'Podcast (On Air With Toke)', options: {
       PRE_ROLL:       { label: 'Pre-Roll Mention',       markets: { PER_EPISODE: { price: 600000  } } },
@@ -593,15 +691,15 @@ const PROVIDER_INVENTORY = {
       TWITTER_X:        { label: 'Twitter/X Campaign', markets: { PER_POST:  { price: 1500000  } } },
     }},
     VIDEO_CONTENT: { label: 'Video Content', options: {
-      COMEDY_SKIT:          { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 10000000 } } },
-      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 5500000  } } },
-      PRODUCT_REVIEW_VIDEO: { label: 'Product Review/Feature',  markets: { PER_VIDEO: { price: 3500000  } } },
+      COMEDY_SKIT:          { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 4000000 } } },
+      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 3000000 } } },
+      PRODUCT_REVIEW_VIDEO: { label: 'Product Review/Feature',  markets: { PER_VIDEO: { price: 2000000 } } },
     }},
     BRAND_DEALS: { label: 'Brand Deals', options: {
       CAMPAIGN_APPEARANCE:  { label: 'Campaign Appearance',         markets: { PER_CAMPAIGN: { price: 5000000  } } },
       EVENT_APPEARANCE:     { label: 'Event Appearance',            markets: { PER_EVENT:    { price: 2500000  } } },
       AMBASSADOR_QUARTERLY: { label: 'Brand Ambassador (quarterly)',markets: { PER_CAMPAIGN: { price: 8000000  } } },
-      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 20000000 } } },
+      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 12000000 } } },
     }},
     EXPERIENTIAL: { label: 'Experiential & Live', options: {
       LIVE_EVENT_HOST:    { label: 'Live Event Hosting',      markets: { PER_EVENT:    { price: 3500000 } } },
@@ -620,15 +718,15 @@ const PROVIDER_INVENTORY = {
       TWITTER_X:        { label: 'Twitter/X Campaign', markets: { PER_POST:  { price: 1400000  } } },
     }},
     VIDEO_CONTENT: { label: 'Video Content', options: {
-      COMEDY_SKIT:          { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 10000000 } } },
-      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 5500000  } } },
-      PRODUCT_REVIEW_VIDEO: { label: 'Product Review/Feature',  markets: { PER_VIDEO: { price: 3200000  } } },
+      COMEDY_SKIT:          { label: 'Comedy Skit Integration', markets: { PER_SKIT:  { price: 3500000 } } },
+      YOUTUBE_INTEGRATION:  { label: 'YouTube Integration',     markets: { PER_VIDEO: { price: 2500000 } } },
+      PRODUCT_REVIEW_VIDEO: { label: 'Product Review/Feature',  markets: { PER_VIDEO: { price: 1800000 } } },
     }},
     BRAND_DEALS: { label: 'Brand Deals', options: {
       CAMPAIGN_APPEARANCE:  { label: 'Campaign Appearance',         markets: { PER_CAMPAIGN: { price: 5000000  } } },
       EVENT_APPEARANCE:     { label: 'Event Appearance',            markets: { PER_EVENT:    { price: 2000000  } } },
       AMBASSADOR_QUARTERLY: { label: 'Brand Ambassador (quarterly)',markets: { PER_CAMPAIGN: { price: 7500000  } } },
-      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 18000000 } } },
+      AMBASSADOR_ANNUAL:    { label: 'Brand Ambassador (annual)',   markets: { ANNUAL:       { price: 10000000 } } },
     }},
     EXPERIENTIAL: { label: 'Experiential & Live', options: {
       LIVE_EVENT_HOST:   { label: 'Live Event Hosting',         markets: { PER_EVENT: { price: 3000000 } } },

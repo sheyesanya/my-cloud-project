@@ -1,168 +1,136 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import PageTitle from '../components/PageTitle';
 import Layout from '../components/Layout';
-import { Spinner } from '../components/UI';
-import { getAnalytics, getBookings } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { auth } from '../lib/firebase';
+import axios from 'axios';
 
-const fmt     = (n) => n == null ? '—' : `₦${Number(n).toLocaleString('en-NG')}`;
-const fmtDate = (d) => { try { return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short'}); } catch { return d||'—'; }};
+const API = import.meta.env.VITE_API_URL;
+const h = async () => { const t = await auth.currentUser?.getIdToken(); return t?{Authorization:`Bearer ${t}`}:{}; };
+const fmt = n => `₦${Number(n||0).toLocaleString('en-NG')}`;
+const fmtD = d => { try{return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short'});}catch{return d||'-';} };
 
-const STATUS_META = {
-  COMPLETED:                     { label:'Completed',        color:'#4ade80' },
-  PAID:                          { label:'Live',             color:'#5eead4' },
-  IN_PROGRESS:                   { label:'In Progress',      color:'#d8b4fe' },
-  PENDING_DELIVERY_REVIEW:       { label:'Proof Review',     color:'var(--amber)' },
-  PENDING_PROVIDER_CONFIRMATION: { label:'Awaiting Provider',color:'var(--amber)' },
-  PAYMENT_PENDING:               { label:'Invoice Sent',     color:'#a5b4fc' },
-  REJECTED:                      { label:'Declined',         color:'#fca5a5' },
+const STATUS_COLOR = {
+  COMPLETED:'#16a34a',PAID:'#0d9488',IN_PROGRESS:'#7c3aed',
+  PENDING_DELIVERY_REVIEW:'#d97706',PENDING_PROVIDER_CONFIRMATION:'#d97706',
+  PAYMENT_PENDING:'#4338ca',REJECTED:'#dc2626',
 };
-
-const CAT_COLOR = {
-  TELEVISION:'var(--amber)', RADIO_AUDIO:'#5eead4', OUT_OF_HOME:'#fb923c',
-  PODCASTS:'#d8b4fe', INFLUENCERS:'#f472b6', SOCIAL_MEDIA:'#60a5fa',
-  LIVE_STREAMING:'#4ade80', MUSIC_PROMOTION:'#fcd34d', PRINT_MEDIA:'#94a3b8',
-};
-
-const stagger = { hidden:{}, show:{ transition:{ staggerChildren:0.07 } } };
-const fadeUp  = { hidden:{ opacity:0, y:16 }, show:{ opacity:1, y:0, transition:{ duration:0.45, ease:[0.22,1,0.36,1] } } };
 
 export default function Dashboard() {
-  const { user }                  = useAuth();
-  const [data, setData]           = useState(null);
-  const [bookings, setBookings]   = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const { user } = useAuth();
+  const [data, setData]       = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const [analytics, bks] = await Promise.all([getAnalytics(), getBookings()]);
-      setData(analytics);
-      const all = Array.isArray(bks) ? bks : bks?.bookings ?? [];
-      setBookings(all.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6));
-    } catch(e) { console.error(e); }
-    finally { setLoading(false); }
-  };
+  useEffect(() => {
+    (async () => {
+      try {
+        const hd = await h();
+        const [a,b] = await Promise.all([
+          axios.get(`${API}/analytics`,{headers:hd}),
+          axios.get(`${API}/bookings`,{headers:hd}),
+        ]);
+        setData(a.data);
+        const all = Array.isArray(b.data)?b.data:b.data?.bookings??[];
+        setBookings(all.sort((x,y)=>new Date(y.createdAt)-new Date(x.createdAt)).slice(0,6));
+      } catch(e){console.error(e);}
+      finally{setLoading(false);}
+    })();
+  },[]);
 
-  useEffect(() => { load(); }, []);
+  const name = user?.name?.split(' ')[0]||user?.email?.split('@')[0]||'there';
+  const hr = new Date().getHours();
+  const greeting = hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
 
-  const greeting = () => {
-    const h = new Date().getHours();
-    return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  };
-  const name = user?.name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+  const STATS = data?[
+    {label:'Total Spend',    val:fmt(data.totalRevenue),      note:`${data.totalBookings||0} bookings`},
+    {label:'Active',         val:data.activeBookings||0,      note:'In flight',    color:'#0d9488'},
+    {label:'Completed',      val:data.completedBookings||0,   note:'Delivered',    color:'#16a34a'},
+    {label:'Needs Attention',val:data.pendingBookings||0,     note:'Pending',      color:'#d97706'},
+  ]:[];
 
-  const STATS = data ? [
-    { label:'Total Spend',    value:fmt(data.totalRevenue),      sub:`${data.totalBookings||0} bookings`   },
-    { label:'Active',         value:data.activeBookings||0,      sub:'In flight',   color:'#5eead4'        },
-    { label:'Completed',      value:data.completedBookings||0,   sub:'Delivered',   color:'#4ade80'        },
-    { label:'Needs Attention',value:data.pendingBookings||0,     sub:'Pending',     color:'var(--amber)'   },
-  ] : [];
+  const th = {fontFamily:'IBM Plex Mono,monospace',fontSize:9,textTransform:'uppercase',letterSpacing:'0.12em',color:'#464554',padding:'10px 14px',textAlign:'left',borderBottom:'1px solid #e1e4f0',fontWeight:500};
+  const td = {padding:'11px 14px',fontFamily:'Inter,sans-serif',fontSize:12,color:'#131b2e',borderBottom:'1px solid #f2f3ff'};
 
   return (
-    <>
-      <PageTitle title="Dashboard"/>
-      <Layout
-        title={`${greeting()}, ${name}`}
-        subtitle="Campaign Overview"
-        actions={
-          <div style={{ display:'flex', gap:8 }}>
-            <Link to="/create-booking" className="btn-primary" style={{ textDecoration:'none', fontSize:11, padding:'8px 18px' }}>+ New Campaign</Link>
-            <button onClick={load} className="btn-secondary" style={{ fontSize:11, padding:'8px 14px' }}>↻</button>
+    <Layout title={`${greeting}, ${name}`} subtitle="Campaign Overview"
+      actions={<Link to="/create-booking" style={{padding:'8px 16px',background:'#4338ca',color:'white',fontFamily:'IBM Plex Mono,monospace',fontSize:10,textTransform:'uppercase',letterSpacing:'0.08em',textDecoration:'none',display:'inline-block'}}>+ New Campaign</Link>}>
+
+      {loading && <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:11,color:'#777586',padding:'40px 0'}}>Loading…</div>}
+
+      {!loading && (
+        <div style={{display:'flex',flexDirection:'column',gap:24}}>
+
+          {/* Stats */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:16}}>
+            {STATS.map(s=>(
+              <div key={s.label} style={{background:'white',border:'1px solid #e1e4f0',padding:'20px 22px',position:'relative',overflow:'hidden'}}>
+                <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,textTransform:'uppercase',letterSpacing:'0.14em',color:'#464554',marginBottom:10}}>{s.label}</div>
+                <div style={{fontFamily:'Manrope,sans-serif',fontWeight:800,fontSize:28,letterSpacing:'-0.8px',color:s.color||'#1e1b4b',lineHeight:1}}>{s.val}</div>
+                <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#777586',marginTop:6}}>{s.note}</div>
+                <div style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:s.color||'#4338ca',opacity:0.4}}/>
+              </div>
+            ))}
           </div>
-        }
-      >
-        {loading && <div style={{ display:'flex', gap:10, color:'var(--text3)', padding:'40px 0', alignItems:'center' }}><Spinner size={14}/>Loading…</div>}
 
-        {!loading && data && (
-          <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
+          {/* Two col */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:20}}>
 
-            {/* Stats */}
-            <motion.div variants={fadeUp} style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:10 }}>
-              {STATS.map(s => (
-                <div key={s.label} className="stat-card">
-                  <div className="stat-label">{s.label}</div>
-                  <div className="stat-value" style={{ color:s.color||'var(--text)', fontSize:22 }}>{s.value}</div>
-                  <div className="stat-sub">{s.sub}</div>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Two col */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
-
-              {/* Recent bookings */}
-              <motion.div variants={fadeUp} className="page-card" style={{ padding:'18px 20px' }}>
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
-                  <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, color:'var(--text)' }}>Recent Bookings</p>
-                  <Link to="/bookings" style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--amber)', textDecoration:'none', letterSpacing:'0.1em', textTransform:'uppercase' }}>View all →</Link>
-                </div>
-                {bookings.length === 0 ? (
-                  <p style={{ fontSize:12, color:'var(--text3)', padding:'12px 0' }}>No bookings yet. <Link to="/create-booking" style={{ color:'var(--amber)', textDecoration:'none' }}>Start your first campaign →</Link></p>
-                ) : bookings.map((b, i) => {
-                  const sm = STATUS_META[b.status] || { label: b.status, color:'var(--text3)' };
-                  const catColor = CAT_COLOR[(b.category||'').toUpperCase()] || 'var(--amber)';
-                  return (
-                    <motion.div key={b.bookingId}
-                      initial={{ opacity:0, x:-8 }} animate={{ opacity:1, x:0 }} transition={{ delay: i*0.05, duration:0.35 }}
-                      style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:'1px solid var(--border2)', borderLeft:'2px solid transparent', paddingLeft:8, marginLeft:-8, transition:'border-color 0.15s', cursor:'default' }}
-                      onMouseEnter={e => e.currentTarget.style.borderLeftColor='var(--amber)'}
-                      onMouseLeave={e => e.currentTarget.style.borderLeftColor='transparent'}>
-                      <div style={{ width:6, height:6, background:catColor, flexShrink:0 }}/>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ fontSize:12, fontWeight:500, color:'var(--text)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{b.target||b.brandName||'—'}</p>
-                        <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--text3)', marginTop:2 }}>{fmtDate(b.date)} · {(b.market||'').replaceAll('_',' ')}</p>
-                      </div>
-                      <div style={{ textAlign:'right', flexShrink:0 }}>
-                        <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:12, color:'var(--amber)' }}>{fmt(b.finalPrice)}</p>
-                        <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:sm.color, marginTop:2 }}>{sm.label}</p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-
-              {/* Quick actions */}
-              <motion.div variants={fadeUp} className="space-y-3">
-                {[
-                  { to:'/create-booking',  label:'Create Campaign',        sub:'Book TV, radio, OOH and more',           icon:'✦' },
-                  { to:'/media',           label:'Browse Media Inventory', sub:'184+ verified Nigerian providers',         icon:'▦' },
-                  { to:'/analytics',       label:'View Analytics',         sub:'Spend breakdown and performance',          icon:'↗' },
-                  { to:'/brief-generator', label:'AI Brief Generator',     sub:'Generate a campaign brief with AI',        icon:'✧' },
-                  { to:'/assistant',       label:'Campaign Assistant',     sub:'Ask our AI media strategist anything',     icon:'◈' },
-                ].map(a => (
-                  <Link key={a.to} to={a.to}
-                    style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', background:'var(--bg2)', border:'1px solid var(--border)', textDecoration:'none', transition:'all 0.15s', borderLeft:'2px solid transparent' }}
-                    onMouseEnter={e => e.currentTarget.style.borderLeftColor='var(--amber)'}
-                    onMouseLeave={e => e.currentTarget.style.borderLeftColor='transparent'}>
-                    <div style={{ width:30, height:30, background:'var(--amber-dim)', border:'1px solid var(--amber-border)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'var(--amber)', flexShrink:0, fontFamily:'Manrope,sans-serif' }}>
-                      {a.icon}
-                    </div>
-                    <div>
-                      <p style={{ fontSize:12, fontWeight:600, color:'var(--text)', fontFamily:'Manrope,sans-serif' }}>{a.label}</p>
-                      <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--text3)', marginTop:2 }}>{a.sub}</p>
-                    </div>
-                  </Link>
-                ))}
-              </motion.div>
+            {/* Recent Bookings */}
+            <div style={{background:'white',border:'1px solid #e1e4f0',padding:20}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+                <div style={{fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:13,color:'#131b2e'}}>Recent Bookings</div>
+                <Link to="/bookings" style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#4338ca',textDecoration:'none',textTransform:'uppercase',letterSpacing:'0.08em'}}>View all →</Link>
+              </div>
+              {bookings.length===0?<p style={{fontSize:12,color:'#777586'}}>No bookings yet. <Link to="/create-booking" style={{color:'#4338ca'}}>Start your first →</Link></p>:(
+                <table style={{width:'100%',borderCollapse:'collapse'}}>
+                  <thead><tr>{['Brand','Media','Value','Status'].map(c=><th key={c} style={th}>{c}</th>)}</tr></thead>
+                  <tbody>
+                    {bookings.map(b=>(
+                      <tr key={b.bookingId}>
+                        <td style={td}>{b.brandName||b.contactEmail||'-'}</td>
+                        <td style={{...td,color:'#464554'}}>{b.target||'-'}</td>
+                        <td style={{...td,fontFamily:'Manrope,sans-serif',fontWeight:700,color:'#4338ca'}}>{fmt(b.finalPrice)}</td>
+                        <td style={td}><span style={{fontFamily:'IBM Plex Mono,monospace',fontSize:8,padding:'2px 8px',background:'#f2f3ff',color:STATUS_COLOR[b.status]||'#464554',letterSpacing:'0.06em',textTransform:'uppercase'}}>{(b.status||'').replaceAll('_',' ')}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
 
-            {/* Spend banner */}
-            <motion.div variants={fadeUp}
-              style={{ padding:'22px 28px', background:'var(--bg2)', border:'1px solid var(--border)', borderLeft:'3px solid var(--amber)', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
-              <div>
-                <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:6 }}>Total Campaign Spend</div>
-                <div style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:34, color:'var(--text)', letterSpacing:'-1px', lineHeight:1 }}>{fmt(data.totalRevenue)}</div>
-                <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, color:'var(--text3)', marginTop:4 }}>Across {data.totalBookings||0} bookings on BrandCasta</div>
-              </div>
-              <Link to="/create-booking" className="btn-primary" style={{ textDecoration:'none', fontSize:11 }}>Book a Campaign →</Link>
-            </motion.div>
+            {/* Quick actions */}
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              {[
+                {to:'/create-booking', label:'Create Campaign',      sub:'Book TV, radio, OOH and more'},
+                {to:'/media',          label:'Media Inventory',      sub:'184+ verified providers'},
+                {to:'/analytics',      label:'Analytics',            sub:'Spend breakdown'},
+                {to:'/brief-generator',label:'AI Brief Generator',   sub:'Generate with AI'},
+                {to:'/assistant',      label:'Campaign Assistant',   sub:'Ask our AI strategist'},
+              ].map(a=>(
+                <Link key={a.to} to={a.to} style={{display:'block',padding:'12px 14px',background:'white',border:'1px solid #e1e4f0',textDecoration:'none',borderLeft:'2px solid transparent',transition:'border-color 0.15s'}}
+                  onMouseEnter={e=>e.currentTarget.style.borderLeftColor='#4338ca'}
+                  onMouseLeave={e=>e.currentTarget.style.borderLeftColor='transparent'}>
+                  <div style={{fontFamily:'Manrope,sans-serif',fontWeight:600,fontSize:12,color:'#131b2e'}}>{a.label}</div>
+                  <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#777586',marginTop:2}}>{a.sub}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
 
-          </motion.div>
-        )}
-      </Layout>
-    </>
+          {/* Spend banner */}
+          {data && (
+            <div style={{padding:'22px 28px',background:'white',border:'1px solid #e1e4f0',borderLeft:'3px solid #4338ca',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12}}>
+              <div>
+                <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#4338ca',textTransform:'uppercase',letterSpacing:'0.14em',marginBottom:6}}>Total Campaign Spend</div>
+                <div style={{fontFamily:'Manrope,sans-serif',fontWeight:800,fontSize:32,color:'#1e1b4b',letterSpacing:'-1px',lineHeight:1}}>{fmt(data.totalRevenue)}</div>
+                <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:10,color:'#777586',marginTop:4}}>Across {data.totalBookings||0} bookings</div>
+              </div>
+              <Link to="/create-booking" style={{padding:'10px 22px',background:'#4338ca',color:'white',fontFamily:'IBM Plex Mono,monospace',fontWeight:700,fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',textDecoration:'none'}}>Book a Campaign →</Link>
+            </div>
+          )}
+        </div>
+      )}
+    </Layout>
   );
 }

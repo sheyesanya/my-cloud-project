@@ -1,112 +1,73 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import ProtectedRoute       from './components/ProtectedRoute';
-import RoleRoute            from './components/RoleRoute';
-
-// Public
-import Login                from './pages/Login';
-import RegisterClient       from './pages/RegisterClient';
-import RegisterProvider     from './pages/RegisterProvider';
-import Terms               from './pages/Terms';
-import Privacy             from './pages/Privacy';
-
-// Shared
-import Dashboard            from './pages/Dashboard';
-import Media                from './pages/Media';
-import Bookings             from './pages/Bookings';
-import CreateBooking        from './pages/CreateBooking';
-import CreateMedia          from './pages/CreateMedia';
-import Campaigns            from './pages/Campaigns';
-import CampaignDetails      from './pages/CampaignDetails';
-import Analytics            from './pages/Analytics';
-
-// Admin only
-import AdminApplications    from './pages/AdminApplications';
-import ProviderInventory   from './pages/ProviderInventory';
-import BriefGenerator      from './pages/BriefGenerator';
-import SocialMediaFunnel   from './pages/SocialMediaFunnel';
-import CampaignAssistant   from './pages/CampaignAssistant';
-import Subscription        from './pages/Subscription';
-import PremiumGate         from './components/PremiumGate';
-
-// Admin sees admin dashboard subscriptions tab instead of upgrade page
-function AdminOrSubscription() {
-  const { user } = useAuth();
-  const role = (user?.role || 'CLIENT').toUpperCase();
-  if (role === 'ADMIN') return <AdminDashboard />;
-  return <Subscription />;
-}
-
-// Admin bypasses premium gates
-function AdminOrPremiumGate({ requiredTier, children }) {
-  const { user } = useAuth();
-  const role = (user?.role || 'CLIENT').toUpperCase();
-  if (role === 'ADMIN') return children;
-  return <PremiumGate requiredTier={requiredTier}>{children}</PremiumGate>;
-}
-
-// Role-based dashboard — admin gets AdminDashboard, everyone else gets Dashboard
-function AdminOrClientDashboard() {
-  const { user } = useAuth();
-  const role = (user?.role || 'CLIENT').toUpperCase();
-  if (role === 'ADMIN') return <AdminDashboard />;
-  return <Dashboard />;
-}
-
-// Proof of Performance is free for providers, premium-gated for clients
-function ProofOfPerformanceGated() {
-  const { user } = useAuth();
-  const role = (user?.role || 'CLIENT').toUpperCase();
-  if (role === 'PROVIDER' || role === 'ADMIN') return <ProofOfPerformance />;
-  return <PremiumGate requiredTier="PREMIUM"><ProofOfPerformance /></PremiumGate>;
-}
 import { SubscriptionProvider } from './context/SubscriptionContext';
-import ProofOfPerformance  from './pages/ProofOfPerformance';
+import { NotificationProvider } from './context/NotificationContext';
 
-// Provider only
-import ProviderDashboard    from './pages/ProviderDashboard';
+import Login              from './pages/Login';
+import Dashboard          from './pages/Dashboard';
+import Bookings           from './pages/Bookings';
+import Campaigns          from './pages/Campaigns';
+import CreateBooking      from './pages/CreateBooking';
+import Media              from './pages/Media';
+import Analytics          from './pages/Analytics';
+import BriefGenerator     from './pages/BriefGenerator';
+import CampaignAssistant  from './pages/CampaignAssistant';
+import ProofOfPerformance from './pages/ProofOfPerformance';
+import Subscription       from './pages/Subscription';
+import ProviderDashboard  from './pages/ProviderDashboard';
+import AdminDashboard     from './pages/AdminDashboard';
+import AdminApplications  from './pages/AdminApplications';
+import RegisterProvider   from './pages/RegisterProvider';
+
+function Protected({ children, roles }) {
+  const { user, loading } = useAuth();
+  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'IBM Plex Mono,monospace',fontSize:12,color:'#464554'}}>Loading…</div>;
+  if (!user) return <Navigate to="/" replace />;
+  if (roles && !roles.includes((user.role||'CLIENT').toUpperCase())) return <Navigate to="/dashboard" replace />;
+  return children;
+}
+
+function AppRoutes() {
+  const { user, loading } = useAuth();
+  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'IBM Plex Mono,monospace',fontSize:12,color:'#464554'}}>Loading…</div>;
+
+  return (
+    <Routes>
+      <Route path="/"                  element={user ? <Navigate to="/dashboard" replace/> : <Login/>}/>
+      <Route path="/register/provider" element={<RegisterProvider/>}/>
+
+      {/* Client routes */}
+      <Route path="/dashboard"  element={<Protected><Dashboard/></Protected>}/>
+      <Route path="/bookings"   element={<Protected><Bookings/></Protected>}/>
+      <Route path="/campaigns"  element={<Protected><Campaigns/></Protected>}/>
+      <Route path="/create-booking" element={<Protected><CreateBooking/></Protected>}/>
+      <Route path="/media"      element={<Protected><Media/></Protected>}/>
+      <Route path="/analytics"  element={<Protected><Analytics/></Protected>}/>
+      <Route path="/brief-generator" element={<Protected><BriefGenerator/></Protected>}/>
+      <Route path="/assistant"  element={<Protected><CampaignAssistant/></Protected>}/>
+      <Route path="/proof"      element={<Protected><ProofOfPerformance/></Protected>}/>
+      <Route path="/subscription" element={<Protected><Subscription/></Protected>}/>
+
+      {/* Provider routes */}
+      <Route path="/provider"   element={<Protected roles={['PROVIDER','ADMIN']}><ProviderDashboard/></Protected>}/>
+
+      {/* Admin routes */}
+      <Route path="/admin"         element={<Protected roles={['ADMIN']}><AdminDashboard/></Protected>}/>
+      <Route path="/applications"  element={<Protected roles={['ADMIN']}><AdminApplications/></Protected>}/>
+
+      <Route path="*" element={<Navigate to="/" replace/>}/>
+    </Routes>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <SubscriptionProvider>
-        <Routes>
-          <Route path="/"                    element={<Navigate to="/dashboard" replace />} />
-
-          {/* Public */}
-          <Route path="/login"               element={<Login />} />
-          <Route path="/register"            element={<Navigate to="/register/client" replace />} />
-          <Route path="/register/client"     element={<RegisterClient />} />
-          <Route path="/register/provider"   element={<RegisterProvider />} />
-          <Route path="/terms"               element={<Terms />} />
-          <Route path="/privacy"             element={<Privacy />} />
-
-          {/* Protected — all logged-in users */}
-          <Route path="/dashboard"           element={<ProtectedRoute><AdminOrClientDashboard /></ProtectedRoute>} />
-          <Route path="/media"               element={<ProtectedRoute><Media /></ProtectedRoute>} />
-          <Route path="/bookings"            element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
-          <Route path="/campaigns"           element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
-          <Route path="/campaigns/:campaignId" element={<ProtectedRoute><CampaignDetails /></ProtectedRoute>} />
-          <Route path="/create-booking"      element={<ProtectedRoute><CreateBooking /></ProtectedRoute>} />
-          <Route path="/analytics"           element={<ProtectedRoute><AdminOrPremiumGate requiredTier="PREMIUM"><Analytics /></AdminOrPremiumGate></ProtectedRoute>} />
-
-          {/* Admin only */}
-          <Route path="/create-media"        element={<RoleRoute role="ADMIN"><CreateMedia /></RoleRoute>} />
-          <Route path="/applications"        element={<RoleRoute role="ADMIN"><AdminApplications /></RoleRoute>} />
-          <Route path="/admin/inventory"     element={<RoleRoute role="ADMIN"><ProviderInventory /></RoleRoute>} />
-          <Route path="/inventory"           element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderInventory /></RoleRoute>} />
-
-          {/* Provider (+ admin can view) */}
-          <Route path="/provider"            element={<RoleRoute role={['ADMIN','PROVIDER']}><ProviderDashboard /></RoleRoute>} />
-
-          <Route path="/subscription"        element={<ProtectedRoute><AdminOrSubscription /></ProtectedRoute>} />
-          <Route path="/social-media"         element={<ProtectedRoute><SocialMediaFunnel /></ProtectedRoute>} />
-          <Route path="/assistant" element={<ProtectedRoute><CampaignAssistant/></ProtectedRoute>}/>
-          <Route path="/brief-generator"     element={<ProtectedRoute><AdminOrPremiumGate requiredTier="PRO"><BriefGenerator /></AdminOrPremiumGate></ProtectedRoute>} />
-          <Route path="/proof-of-performance" element={<ProtectedRoute><ProofOfPerformanceGated /></ProtectedRoute>} />
-          <Route path="*"                    element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+          <NotificationProvider>
+            <AppRoutes/>
+          </NotificationProvider>
         </SubscriptionProvider>
       </AuthProvider>
     </BrowserRouter>
