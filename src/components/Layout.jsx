@@ -6,25 +6,33 @@ export default function Layout({ title, subtitle, actions, children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'var(--bg)' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'var(--bg2)' }}>
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}/>
 
-      <div style={{ flex:1, display:'flex', flexDirection:'column', minWidth:0 }}>
+      <div style={{ flex:1, display:'flex', flexDirection:'column', minWidth:0, maxWidth:'100%' }}>
 
         {/* Topbar */}
-        <header style={{ padding:'0 12px', minHeight:52, borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(7,7,15,0.97)', backdropFilter:'blur(12px)', position:'sticky', top:0, zIndex:50, gap:8, flexWrap:'wrap' }}>
-
+        <header style={{
+          height:56, padding:'0 24px',
+          background:'white',
+          borderBottom:'1px solid var(--border)',
+          display:'flex', alignItems:'center', justifyContent:'space-between',
+          position:'sticky', top:0, zIndex:50, gap:12,
+          boxShadow:'0 1px 0 var(--border)',
+        }}>
           <div style={{ display:'flex', alignItems:'center', gap:12, minWidth:0 }}>
             {/* Hamburger */}
-            <button onClick={() => setMobileOpen(true)}
-              style={{ background:'none', border:'none', color:'var(--text3)', cursor:'pointer', padding:4, display:'flex', flexDirection:'column', gap:4, flexShrink:0 }}>
-              <span style={{ display:'block', width:18, height:2, background:'currentColor', borderRadius:1 }}/>
-              <span style={{ display:'block', width:18, height:2, background:'currentColor', borderRadius:1 }}/>
-              <span style={{ display:'block', width:18, height:2, background:'currentColor', borderRadius:1 }}/>
+            <button onClick={()=>setMobileOpen(true)}
+              style={{ background:'none', border:'none', color:'var(--text3)', cursor:'pointer', padding:6, display:'flex', flexDirection:'column', gap:4, flexShrink:0, borderRadius:4 }}
+              onMouseEnter={e=>e.currentTarget.style.background='var(--bg2)'}
+              onMouseLeave={e=>e.currentTarget.style.background='none'}>
+              <span style={{ display:'block', width:16, height:2, background:'currentColor', borderRadius:1 }}/>
+              <span style={{ display:'block', width:16, height:2, background:'currentColor', borderRadius:1 }}/>
+              <span style={{ display:'block', width:16, height:2, background:'currentColor', borderRadius:1 }}/>
             </button>
             <div style={{ minWidth:0 }}>
-              {subtitle && <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:1 }}>{subtitle}</div>}
-              {title    && <h1 style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, color:'var(--text)', letterSpacing:'-0.3px', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:'40vw' }}>{title}</h1>}
+              {subtitle && <p style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, color:'var(--accent)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:1 }}>{subtitle}</p>}
+              {title    && <h1 style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:16, color:'var(--text)', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{title}</h1>}
             </div>
           </div>
 
@@ -34,8 +42,8 @@ export default function Layout({ title, subtitle, actions, children }) {
           </div>
         </header>
 
-        {/* Content */}
-        <main style={{ flex:1, padding:'20px', overflowX:'hidden' }} className="page-enter">
+        {/* Page content */}
+        <main style={{ flex:1, padding:24, overflowX:'hidden' }} className="page-enter">
           {children}
         </main>
       </div>

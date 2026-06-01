@@ -1,143 +1,123 @@
+import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 
 const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 
-const NAV_ADMIN = [
-  { section: 'Platform', items: [
-    { to:'/dashboard',        label:'Admin Dashboard'     },
-    { to:'/bookings',         label:'All Bookings'        },
-    { to:'/applications',     label:'Applications'        },
-    { to:'/analytics',        label:'Analytics'           },
-    { to:'/subscription',     label:'Subscriptions'       },
-  ]},
-  { section: 'Media', items: [
-    { to:'/media',            label:'Media Inventory'     },
-    { to:'/create-media',     label:'Add Media'           },
-    { to:'/admin/inventory',  label:'Inventory Manager'   },
-    { to:'/campaigns',        label:'Campaigns'           },
-  ]},
-  { section: 'Tools', items: [
-    { to:'/create-booking',   label:'Create Campaign'     },
-    { to:'/social-media',     label:'Social & Music'      },
-    { to:'/brief-generator',  label:'Brief Generator'     },
-  ]},
-];
-
 const NAV_CLIENT = [
-  { section: 'Campaigns', items: [
-    { to:'/dashboard',            label:'Dashboard'           },
-    { to:'/create-booking',       label:'New Campaign'        },
-    { to:'/campaigns',            label:'My Campaigns'        },
-    { to:'/bookings',             label:'My Bookings'         },
-    { to:'/social-media',         label:'Social & Music'      },
+  { section:'Campaigns', items:[
+    { to:'/dashboard',        label:'Dashboard',          icon:'⊞' },
+    { to:'/create-booking',   label:'New Campaign',       icon:'＋' },
+    { to:'/campaigns',        label:'My Campaigns',       icon:'◫' },
+    { to:'/bookings',         label:'My Bookings',        icon:'☰' },
+    { to:'/social-marketing', label:'Social & Music',     icon:'♪' },
   ]},
-  { section: 'Tools', items: [
-    { to:'/media',                label:'Media Inventory'     },
-    { to:'/brief-generator',      label:'Brief Generator'     },
-    { to:'/proof-of-performance', label:'Proof of Performance'},
-    { to:'/analytics',            label:'Analytics'           },
-    { to:'/assistant',            label:'Campaign Assistant'  },
+  { section:'Tools', items:[
+    { to:'/media',            label:'Media Inventory',    icon:'◉' },
+    { to:'/brief-generator',  label:'Brief Generator',   icon:'✦' },
+    { to:'/analytics',        label:'Analytics',         icon:'↗' },
+    { to:'/assistant',        label:'AI Assistant',      icon:'◈' },
+    { to:'/proof-of-performance', label:'Proof of Perf.', icon:'✓' },
   ]},
-  { section: 'Account', items: [
-    { to:'/subscription',         label:'Plans & Pricing'     },
+  { section:'Account', items:[
+    { to:'/subscription',     label:'Plans & Pricing',   icon:'◎' },
   ]},
 ];
 
 const NAV_PROVIDER = [
-  { section: 'Dashboard', items: [
-    { to:'/provider',             label:'My Bookings'         },
-    { to:'/inventory',            label:'My Inventory'        },
-    { to:'/proof-of-performance', label:'Proof of Performance'},
+  { section:'Provider', items:[
+    { to:'/provider',         label:'My Bookings',        icon:'⊞' },
+    { to:'/inventory',        label:'My Inventory',       icon:'◫' },
+    { to:'/proof-of-performance', label:'Proof of Perf.', icon:'✓' },
+  ]},
+];
+
+const NAV_ADMIN = [
+  { section:'Platform', items:[
+    { to:'/dashboard',        label:'Admin Dashboard',    icon:'⊞' },
+    { to:'/applications',     label:'Applications',       icon:'◫' },
+    { to:'/admin/inventory',  label:'Inventory Manager',  icon:'☰' },
+  ]},
+  { section:'Finance', items:[
+    { to:'/analytics',        label:'Analytics',          icon:'↗' },
   ]},
 ];
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
-  const { user, logout }           = useAuth();
-  const { isPremium, isPro }       = useSubscription();
-  const navigate                   = useNavigate();
-  const role                       = (user?.role || 'CLIENT').toUpperCase();
-  const NAV                        = role === 'ADMIN' ? NAV_ADMIN : role === 'PROVIDER' ? NAV_PROVIDER : NAV_CLIENT;
-  const close                      = () => setMobileOpen(false);
-  const initial                    = (user?.name?.[0] || user?.email?.[0] || 'U').toUpperCase();
-  const displayName                = user?.name || user?.email?.split('@')[0] || 'User';
+  const { user, logout } = useAuth();
+  const { isPremium, isPro } = useSubscription();
+  const navigate = useNavigate();
+  const role = (user?.role || 'CLIENT').toUpperCase();
+  const nav = role === 'ADMIN' ? NAV_ADMIN : role === 'PROVIDER' ? NAV_PROVIDER : NAV_CLIENT;
+  const close = () => setMobileOpen(false);
+  const homeRoute = role === 'PROVIDER' ? '/provider' : '/dashboard';
 
   const content = (
-    <div style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden' }}>
-
+    <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
       {/* Logo */}
-      <div style={{ padding:'20px 16px 16px', borderBottom:'1px solid var(--border)' }}>
-        <Link to={role==='PROVIDER'?'/provider':role==='ADMIN'?'/dashboard':'/dashboard'} style={{ display:'flex', alignItems:'center', gap:10, textDecoration:'none' }}>
-          <img src={LOGO} alt="BrandCasta" style={{ width:24, height:24, objectFit:"contain" }}/>
-          <div>
-            <div style={{ display:'flex' }}>
-              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:14, color:'var(--text)', letterSpacing:'-0.2px' }}>Brand</span>
-              <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:14, color:'#4d50d6', letterSpacing:'-0.2px' }}>Casta</span>
-            </div>
-            <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:8, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase', marginTop:1 }}>{role}</div>
+      <div style={{ padding:'18px 16px 14px', borderBottom:'1px solid var(--border)', flexShrink:0 }}>
+        <Link to={homeRoute} onClick={close} style={{ display:'flex', alignItems:'center', gap:9, textDecoration:'none' }}>
+          <img src={LOGO} alt="BrandCasta"
+            style={{ width:28, height:28, objectFit:'contain', borderRadius:6, background:'#635bff', padding:2 }}
+            onError={e=>{ e.target.style.display='none'; }}
+          />
+          <div style={{ display:'flex' }}>
+            <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:15, color:'var(--text)' }}>Brand</span>
+            <span style={{ fontFamily:'Manrope,sans-serif', fontWeight:800, fontSize:15, color:'#4d50d6' }}>Casta</span>
           </div>
         </Link>
+        <div style={{ marginTop:8, display:'inline-flex', alignItems:'center', gap:5, padding:'3px 8px', background:'var(--bg2)', border:'1px solid var(--border)', borderRadius:4 }}>
+          <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--accent)', display:'block', flexShrink:0 }}/>
+          <span style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:10, color:'var(--text3)', letterSpacing:'0.08em', textTransform:'uppercase' }}>{role}</span>
+        </div>
       </div>
 
       {/* Nav */}
-      <div style={{ flex:1, overflowY:'auto', padding:'8px 0' }}>
-        {NAV.map(group => (
-          <div key={group.section} style={{ marginBottom:4 }}>
-            <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:8, fontWeight:500, color:'var(--text4)', textTransform:'uppercase', letterSpacing:'0.16em', padding:'10px 16px 4px' }}>
+      <div style={{ flex:1, overflowY:'auto', padding:'10px 10px', scrollbarWidth:'none' }}>
+        {nav.map(group => (
+          <div key={group.section} style={{ marginBottom:20 }}>
+            <p style={{ fontFamily:'Inter,sans-serif', fontSize:11, fontWeight:600, color:'var(--text4)', textTransform:'uppercase', letterSpacing:'0.1em', padding:'0 8px', marginBottom:4 }}>
               {group.section}
-            </div>
+            </p>
             {group.items.map(item => (
-              <NavLink key={item.to} to={item.to}
-                className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
-                onClick={close}
-                style={{ padding:'7px 16px', fontSize:12 }}>
-                <span style={{ width:4, height:4, borderRadius:'50%', background:'currentColor', flexShrink:0, opacity:0.5 }}/>
-                {item.label}
+              <NavLink key={item.to} to={item.to} onClick={close}
+                className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}>
+                <span style={{ fontSize:13, width:18, textAlign:'center', flexShrink:0, opacity:0.7 }}>{item.icon}</span>
+                <span>{item.label}</span>
               </NavLink>
             ))}
           </div>
         ))}
       </div>
 
-      {/* Bottom */}
-      <div style={{ borderTop:'1px solid var(--border)', padding:'12px 14px' }}>
+      {/* Upgrade banner — free users */}
+      {!isPremium && !isPro && role === 'CLIENT' && (
+        <div style={{ margin:'0 10px 10px', padding:'12px 14px', background:'linear-gradient(135deg,rgba(99,91,255,0.06),rgba(124,58,237,0.06))', border:'1px solid var(--accent-border)', borderRadius:8 }}>
+          <p style={{ fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:12, color:'var(--text)', marginBottom:3 }}>Upgrade to Pro</p>
+          <p style={{ fontSize:11, color:'var(--text3)', marginBottom:10, lineHeight:1.5 }}>Unlock AI tools, analytics and unlimited campaigns.</p>
+          <Link to="/subscription" style={{ display:'block', textAlign:'center', padding:'7px', background:'var(--accent)', color:'white', borderRadius:5, fontSize:12, fontWeight:600, textDecoration:'none' }}>
+            View Plans
+          </Link>
+        </div>
+      )}
 
-        {/* Upgrade card — clients only */}
-        {role === 'CLIENT' && !isPremium && !isPro && (
-          <div style={{ marginBottom:12, padding:'12px 14px', background:'var(--amber-dim)', border:'1px solid var(--amber-border)' }}>
-            <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:8, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:6 }}>
-              Upgrade to Pro
-            </div>
-            <p style={{ fontSize:11, color:'var(--text3)', lineHeight:1.5, marginBottom:10 }}>
-              Unlock AI tools, analytics and campaign intelligence.
-            </p>
-            <Link to="/subscription" onClick={close}
-              style={{ display:'block', textAlign:'center', padding:'7px', background:'var(--amber)', color:'#0a0a0f', fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', textDecoration:'none', transition:'background 0.2s' }}>
-              View Plans →
-            </Link>
-          </div>
-        )}
-
-        {/* Active plan badge */}
-        {role === 'CLIENT' && (isPremium || isPro) && (
-          <div style={{ marginBottom:12, padding:'8px 12px', background:'var(--amber-dim)', border:'1px solid var(--amber-border)' }}>
-            <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:8, color:'var(--amber)', letterSpacing:'0.14em', textTransform:'uppercase' }}>
-              {isPro ? '◈ Pro Plan Active' : '◈ Premium Plan Active'}
-            </div>
-          </div>
-        )}
-
-        {/* User row */}
-        <div style={{ display:'flex', alignItems:'center', gap:9, cursor:'pointer', padding:'6px 0' }}
-          onClick={async () => { await logout(); navigate('/'); close(); }}>
-          <div style={{ width:26, height:26, background:'var(--amber)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#0a0a0f', flexShrink:0, fontFamily:'Manrope,sans-serif' }}>
-            {initial}
+      {/* User / logout */}
+      <div style={{ borderTop:'1px solid var(--border)', padding:'12px 14px', flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+          <div style={{ width:30, height:30, borderRadius:'50%', background:'linear-gradient(135deg,var(--accent),var(--purple))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, color:'white', flexShrink:0 }}>
+            {(user?.name || user?.email || '?')[0].toUpperCase()}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ fontSize:11, fontWeight:500, color:'var(--text)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{displayName}</div>
-            <div style={{ fontFamily:'IBM Plex Mono,monospace', fontSize:9, color:'var(--text3)', letterSpacing:'0.06em' }}>Sign out</div>
+            <p style={{ fontSize:13, fontWeight:500, color:'var(--text)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user?.name || 'User'}</p>
+            <p style={{ fontSize:11, color:'var(--text3)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user?.email}</p>
           </div>
+          <button onClick={()=>{ logout(); navigate('/'); }} title="Sign out"
+            style={{ background:'none', border:'none', color:'var(--text4)', cursor:'pointer', fontSize:14, padding:4, transition:'color 0.15s' }}
+            onMouseEnter={e=>e.currentTarget.style.color='var(--red)'}
+            onMouseLeave={e=>e.currentTarget.style.color='var(--text4)'}>
+            ⇥
+          </button>
         </div>
       </div>
     </div>
@@ -145,17 +125,16 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
   return (
     <>
-      {/* Desktop sidebar — hidden on mobile via media query */}
-      <aside style={{ width:210, height:'100vh', position:'sticky', top:0, flexShrink:0, background:'var(--bg2)', borderRight:'1px solid var(--border)', display:'flex', flexDirection:'column' }}
-        className="desktop-sidebar">
+      {/* Desktop */}
+      <aside className="desktop-sidebar" style={{ width:216, height:'100vh', position:'sticky', top:0, flexShrink:0, background:'white', borderRight:'1px solid var(--border)', display:'flex', flexDirection:'column' }}>
         {content}
       </aside>
 
-      {/* Mobile overlay — always rendered, toggled by mobileOpen */}
+      {/* Mobile overlay */}
       {mobileOpen && (
         <div style={{ position:'fixed', inset:0, zIndex:300 }}>
-          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(4px)' }} onClick={close}/>
-          <aside style={{ position:'absolute', left:0, top:0, bottom:0, width:240, background:'var(--bg2)', borderRight:'1px solid var(--border)', zIndex:301, display:'flex', flexDirection:'column', overflowY:'auto' }}>
+          <div style={{ position:'absolute', inset:0, background:'rgba(10,37,64,0.4)', backdropFilter:'blur(4px)' }} onClick={close}/>
+          <aside style={{ position:'absolute', left:0, top:0, bottom:0, width:240, background:'white', borderRight:'1px solid var(--border)', zIndex:301, display:'flex', flexDirection:'column', overflowY:'auto', boxShadow:'var(--shadow-lg)' }}>
             {content}
           </aside>
         </div>
