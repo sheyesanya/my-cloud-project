@@ -49,8 +49,6 @@ export default function Login() {
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
   const [activeTest, setActive] = useState(0);
-  // Google terms gate
-  const [showGoogleTerms, setShowGoogleTerms] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setActive(a => (a + 1) % TESTIMONIALS.length), 5500);
@@ -65,14 +63,12 @@ export default function Login() {
     finally { setLoading(false); }
   };
 
-  // Google sign-in — always shows terms confirmation first
   const handleGoogleClick = () => {
     setError('');
-    setShowGoogleTerms(true);
-  };
-
-  const confirmGoogleSignIn = () => {
-    setShowGoogleTerms(false);
+    if (mode === 'signup' && !agreed) {
+      setError('Please agree to the Terms & Privacy Policy before continuing.');
+      return;
+    }
     handle(loginWithGoogle);
   };
 
@@ -91,31 +87,6 @@ export default function Login() {
   return (
     <div style={{ minHeight: '100vh', background: '#faf8ff', display: 'flex', flexDirection: 'column' }}>
 
-      {/* ── Google Terms Modal ─────────────────────────────────── */}
-      {showGoogleTerms && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(19,27,46,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-          <div style={{ background: 'white', border: '1.5px solid #c7c4d7', padding: 28, maxWidth: 420, width: '100%', boxShadow: '0 12px 40px rgba(19,27,46,0.18)' }}>
-            <img src={LOGO} alt="BrandCasta" style={{ width: 32, height: 32, objectFit: 'contain', display: 'block', marginBottom: 14 }}/>
-            <div style={{ fontFamily: 'Manrope,sans-serif', fontWeight: 700, fontSize: 16, color: '#131b2e', marginBottom: 8 }}>Before you continue</div>
-            <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, color: '#464554', lineHeight: 1.75, marginBottom: 18 }}>
-              By continuing with Google you confirm that you have read and agree to BrandCasta's{' '}
-              <Link to="/terms" target="_blank" style={{ color: '#4338ca', fontWeight: 600 }}>Terms of Service</Link>
-              {' '}and{' '}
-              <Link to="/privacy" target="_blank" style={{ color: '#4338ca', fontWeight: 600 }}>Privacy Policy</Link>.
-            </p>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => setShowGoogleTerms(false)}
-                style={{ flex: 1, padding: '10px', border: '1.5px solid #c7c4d7', background: 'transparent', fontFamily: 'IBM Plex Mono,monospace', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', color: '#464554' }}>
-                Cancel
-              </button>
-              <button onClick={confirmGoogleSignIn}
-                style={{ flex: 2, padding: '10px', background: '#4338ca', color: 'white', border: 'none', fontFamily: 'IBM Plex Mono,monospace', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer' }}>
-                Continue with Google →
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── NAV ──────────────────────────────────────────────────── */}
       <nav style={{ background: 'white', borderBottom: '1px solid #e1e4f0', padding: `0 ${px}`, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, position: 'sticky', top: 0, zIndex: 100 }}>
@@ -210,7 +181,7 @@ export default function Login() {
             )}
 
             {/* Terms checkbox — shown for signup AND always visible for Google on any mode */}
-            {(mode === 'signup' || mode === 'login' || isProvider) && (
+            {mode === 'signup' && (
               <div
                 onClick={() => setAgreed(a => !a)}
                 style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 14, cursor: 'pointer', padding: '10px 12px', border: `1.5px solid ${agreed ? '#4338ca' : '#c7c4d7'}`, background: agreed ? '#f0f1ff' : '#fafafa', transition: 'all 0.15s' }}>
