@@ -44,7 +44,9 @@ export function AuthProvider({ children }) {
     if (popupRef.current) return null;
     popupRef.current = true;
     try {
-      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      const result = await signInWithPopup(auth, provider);
       return result;
     } finally {
       popupRef.current = false;
