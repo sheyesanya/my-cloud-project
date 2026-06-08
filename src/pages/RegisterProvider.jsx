@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
+const LOGO = '/favicon.png';
 const API  = import.meta.env.VITE_API_URL;
 
 const CATEGORIES = ['TELEVISION','RADIO_AUDIO','PODCASTS','OUT_OF_HOME','PRINT_MEDIA','INFLUENCERS','SOCIAL_MEDIA','MUSIC_PROMOTION','LIVE_STREAMING'];
