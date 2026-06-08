@@ -6,7 +6,7 @@ import axios from 'axios';
 const API = import.meta.env.VITE_API_URL;
 const h = async () => { const t = await auth.currentUser?.getIdToken(); return t?{Authorization:`Bearer ${t}`,'Content-Type':'application/json'}:{}; };
 
-const LOGO = '/favicon.png';
+const LOGO = 'https://res.cloudinary.com/dehap9dpe/image/upload/v1780240711/BrandCasta_offffff_new_w3n72w.png';
 
 const SUGGESTED = ['What radio stations cover Lagos?','Best OOH markets for FMCG?','How do I track campaign delivery?','What are the 5Sec Ad-Spots?','Cheapest TV slots in Nigeria?'];
 
