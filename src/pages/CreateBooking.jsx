@@ -13,14 +13,22 @@ const parseInv = raw => { if(!raw)return{}; if(typeof raw==='string'){try{return
 const CAT_LABELS = {ALL:'All',TELEVISION:'TV',RADIO_AUDIO:'Radio',PODCASTS:'Podcasts',OUT_OF_HOME:'OOH',PRINT_MEDIA:'Print',INFLUENCERS:'Influencers',SOCIAL_MEDIA:'Social Media',MUSIC_PROMOTION:'Music Promo',LIVE_STREAMING:'Live Streaming'};
 const STEPS = ['Brief','Build Campaign','Review'];
 
+const formatBytes = bytes => {
+  if (!bytes) return '0 KB';
+  const kb = bytes / 1024;
+  if (kb < 1024) return `${kb.toFixed(0)} KB`;
+  return `${(kb / 1024).toFixed(1)} MB`;
+};
+
 export default function CreateBooking() {
   const navigate = useNavigate();
   const [step, setStep]         = useState(1);
-  const [brief, setBrief]       = useState({brand_name:'',email:'',campaignBrief:''});
+  const [brief, setBrief]       = useState({brand_name:'',email:'',campaignBrief:'',promotionFiles:[]});
   const [sel, setSel]           = useState({mediaId:'',inventory_group:'',inventory_option:'',market:'',date:'',runs:1});
   const [media, setMedia]       = useState([]);
   const [loadingMedia, setLM]   = useState(true);
   const [submitting, setSub]    = useState(false);
+  const [uploadingFiles, setUF] = useState(false);
   const [items, setItems]       = useState([]);
   const [errors, setErrors]     = useState({});
   const [apiErr, setApiErr]     = useState('');
@@ -56,6 +64,31 @@ export default function CreateBooking() {
     return matchCat&&matchSearch;
   });
 
+  // ── File handling ──────────────────────────────────────────────────────
+  const addFiles = newFiles => {
+    setBrief(f => ({ ...f, promotionFiles: [...f.promotionFiles, ...Array.from(newFiles)] }));
+  };
+
+  const removeFile = idx => {
+    setBrief(f => ({ ...f, promotionFiles: f.promotionFiles.filter((_, i) => i !== idx) }));
+  };
+
+  const uploadFiles = async () => {
+    if (!brief.promotionFiles?.length) return [];
+    setUF(true);
+    const out = [];
+    try {
+      const hd = await h();
+      for (const file of brief.promotionFiles) {
+        const signedRes = await axios.post(`${API}/uploads/url`, { fileName: file.name, fileType: file.type }, { headers: hd });
+        const signed = signedRes.data;
+        await axios.put(signed.uploadUrl, file, { headers: { 'Content-Type': file.type } });
+        out.push({ name: file.name, url: signed.fileUrl, type: file.type, size: file.size });
+      }
+    } finally { setUF(false); }
+    return out;
+  };
+
   const addItem = () => {
     const e={};
     if(!sel.mediaId)e.mediaId='Select a media organisation';
@@ -70,14 +103,15 @@ export default function CreateBooking() {
     if(!items.length){setApiErr('Add at least one item');return;}
     setSub(true);setApiErr('');
     try {
+      const uploadedFiles = await uploadFiles();
       const hd=await h();
-      await axios.post(`${API}/campaigns`,{brand_name:brief.brand_name.trim(),contactEmail:brief.email.trim(),campaignBrief:brief.campaignBrief,items},{headers:hd});
+      await axios.post(`${API}/campaigns`,{brand_name:brief.brand_name.trim(),contactEmail:brief.email.trim(),campaignBrief:brief.campaignBrief,promotionFiles:uploadedFiles,items},{headers:hd});
       navigate('/campaigns');
     } catch(e){setApiErr(e.message);}
     finally{setSub(false);}
   };
 
-  const inp = {width:'100%',border:'1px solid #e1e4f0',padding:'9px 12px',fontFamily:'Inter,sans-serif',fontSize:13,outline:'none',boxSizing:'border-box',marginBottom:12,borderRadius:0};
+  const inp = {width:'100%',border:'1.5px solid #c7c4d7',padding:'9px 12px',fontFamily:'Inter,sans-serif',fontSize:13,outline:'none',boxSizing:'border-box',marginBottom:12,borderRadius:0};
   const label = {fontFamily:'IBM Plex Mono,monospace',fontSize:9,textTransform:'uppercase',letterSpacing:'0.12em',color:'#464554',display:'block',marginBottom:6};
 
   return (
@@ -94,20 +128,63 @@ export default function CreateBooking() {
           <h2 style={{fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:20,color:'#131b2e',letterSpacing:'-0.4px'}}>{STEPS[step-1]}</h2>
         </div>
 
-        {/* STEP 1 */}
+        {/* STEP 1 — Brief + File Upload */}
         {step===1&&(
           <div>
-            <div style={{background:'white',border:'1px solid #e1e4f0',padding:24,marginBottom:16}}>
+            <div style={{background:'white',border:'1.5px solid #c7c4d7',padding:24,marginBottom:16}}>
               <label style={label}>Brand Name *</label>
-              <input style={{...inp,borderColor:errors.brand_name?'#fecaca':undefined}} placeholder="e.g. Indomie Nigeria" value={brief.brand_name} onChange={e=>setBrief(f=>({...f,brand_name:e.target.value}))}/>
+              <input style={{...inp,borderColor:errors.brand_name?'#fca5a5':undefined}} placeholder="e.g. Indomie Nigeria" value={brief.brand_name} onChange={e=>setBrief(f=>({...f,brand_name:e.target.value}))}/>
               {errors.brand_name&&<div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#dc2626',marginTop:-6,marginBottom:8}}>{errors.brand_name}</div>}
 
               <label style={label}>Contact Email *</label>
-              <input type="email" style={{...inp,borderColor:errors.email?'#fecaca':undefined}} placeholder="brand@company.com" value={brief.email} onChange={e=>setBrief(f=>({...f,email:e.target.value}))}/>
+              <input type="email" style={{...inp,borderColor:errors.email?'#fca5a5':undefined}} placeholder="brand@company.com" value={brief.email} onChange={e=>setBrief(f=>({...f,email:e.target.value}))}/>
               {errors.email&&<div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#dc2626',marginTop:-6,marginBottom:8}}>{errors.email}</div>}
 
               <label style={label}>Campaign Brief</label>
               <textarea rows={3} style={{...inp,resize:'vertical',fontFamily:'Inter,sans-serif'}} placeholder="Campaign goals, target audience, KPIs…" value={brief.campaignBrief} onChange={e=>setBrief(f=>({...f,campaignBrief:e.target.value}))}/>
+
+              {/* ── Promotion Files ── */}
+              <label style={label}>Promotion Files</label>
+              <div
+                onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#4338ca'; e.currentTarget.style.background = '#f2f3ff'; }}
+                onDragLeave={e => { e.currentTarget.style.borderColor = '#c7c4d7'; e.currentTarget.style.background = '#fafafa'; }}
+                onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#c7c4d7'; e.currentTarget.style.background = '#fafafa'; addFiles(e.dataTransfer.files); }}
+                style={{ border: '1.5px dashed #c7c4d7', padding: '20px 16px', textAlign: 'center', background: '#fafafa', marginBottom: 8, position: 'relative', transition: 'all 0.15s' }}>
+                <input
+                  type="file" multiple
+                  onChange={e => { addFiles(e.target.files); e.target.value = ''; }}
+                  style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}/>
+                <div style={{ fontSize: 20, marginBottom: 6 }}>📎</div>
+                <p style={{ fontFamily: 'Manrope,sans-serif', fontWeight: 600, fontSize: 12, color: '#131b2e', marginBottom: 3 }}>
+                  Drag files here or click to browse
+                </p>
+                <p style={{ fontFamily: 'IBM Plex Mono,monospace', fontSize: 9, color: '#777586', letterSpacing: '0.04em' }}>
+                  Decks, creatives, videos, PDFs, brand assets, media plans, references
+                </p>
+              </div>
+
+              {/* Uploaded file list */}
+              {brief.promotionFiles.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 4 }}>
+                  {brief.promotionFiles.map((file, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: '#f2f3ff', border: '1px solid #e1e4f0' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1 }}>
+                        <span style={{ fontSize: 14, flexShrink: 0 }}>
+                          {file.type.startsWith('image/') ? '🖼️' : file.type.includes('pdf') ? '📄' : file.type.startsWith('video/') ? '🎬' : '📁'}
+                        </span>
+                        <div style={{ minWidth: 0 }}>
+                          <p style={{ fontFamily: 'Manrope,sans-serif', fontWeight: 600, fontSize: 12, color: '#131b2e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</p>
+                          <p style={{ fontFamily: 'IBM Plex Mono,monospace', fontSize: 9, color: '#777586' }}>{formatBytes(file.size)}</p>
+                        </div>
+                      </div>
+                      <button type="button" onClick={() => removeFile(idx)}
+                        style={{ fontFamily: 'IBM Plex Mono,monospace', fontSize: 9, padding: '3px 8px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', cursor: 'pointer', flexShrink: 0, marginLeft: 8 }}>
+                        ✕ Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div style={{display:'flex',justifyContent:'flex-end'}}>
               <button onClick={()=>{ if(!brief.brand_name.trim()||!brief.email.trim()){setErrors({brand_name:!brief.brand_name.trim()?'Required':'',email:!brief.email.trim()?'Required':''});return;} setStep(2); }}
@@ -126,7 +203,7 @@ export default function CreateBooking() {
             </div>
 
             {/* Media picker */}
-            <div style={{background:'white',border:'1px solid #e1e4f0',padding:16,marginBottom:16}}>
+            <div style={{background:'white',border:'1.5px solid #c7c4d7',padding:16,marginBottom:16}}>
               <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,textTransform:'uppercase',letterSpacing:'0.14em',color:'#464554',marginBottom:12}}>Select Media Organisation</div>
 
               {/* Category tabs */}
@@ -162,7 +239,7 @@ export default function CreateBooking() {
 
             {/* Inventory selector */}
             {sel.mediaId&&(
-              <div style={{background:'white',border:'1px solid #e1e4f0',padding:16,marginBottom:16}}>
+              <div style={{background:'white',border:'1.5px solid #c7c4d7',padding:16,marginBottom:16}}>
                 <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16,paddingBottom:12,borderBottom:'1px solid #e1e4f0'}}>
                   <div style={{width:32,height:32,background:'#4338ca',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:13,flexShrink:0}}>{selectedMedia?.name?.[0]}</div>
                   <div>
@@ -181,7 +258,6 @@ export default function CreateBooking() {
                   </div>
                 ):(
                   <div style={{display:'flex',flexDirection:'column',gap:16}}>
-                    {/* Groups */}
                     <div>
                       <label style={label}>Inventory Group</label>
                       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:6}}>
@@ -196,7 +272,6 @@ export default function CreateBooking() {
                       {errors.inventory_group&&<div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#dc2626',marginTop:4}}>{errors.inventory_group}</div>}
                     </div>
 
-                    {/* Options */}
                     {sel.inventory_group&&(
                       <div>
                         <label style={label}>Option</label>
@@ -214,7 +289,6 @@ export default function CreateBooking() {
                       </div>
                     )}
 
-                    {/* Markets */}
                     {sel.inventory_option&&(
                       <div>
                         <label style={label}>Market</label>
@@ -231,7 +305,6 @@ export default function CreateBooking() {
                       </div>
                     )}
 
-                    {/* Date + Runs */}
                     {sel.market&&(
                       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
                         <div>
@@ -253,7 +326,6 @@ export default function CreateBooking() {
                       </div>
                     )}
 
-                    {/* Price preview */}
                     {sel.market&&unitPrice>0&&(
                       <div style={{padding:'12px 16px',background:'#eef2ff',borderLeft:'3px solid #4338ca'}}>
                         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:2}}>
@@ -273,7 +345,7 @@ export default function CreateBooking() {
 
             {/* Cart */}
             {items.length>0&&(
-              <div style={{background:'white',border:'1px solid #e1e4f0',padding:16,marginBottom:16}}>
+              <div style={{background:'white',border:'1.5px solid #c7c4d7',padding:16,marginBottom:16}}>
                 <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
                   <div style={{fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:13,color:'#131b2e'}}>Campaign Cart <span style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,padding:'1px 7px',background:'#eef2ff',color:'#4338ca',letterSpacing:'0.06em',marginLeft:6}}>{items.length}</span></div>
                   <div style={{fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:16,color:'#4338ca'}}>₦{campaignTotal.toLocaleString()}</div>
@@ -296,7 +368,7 @@ export default function CreateBooking() {
             {apiErr&&<div style={{padding:'10px 14px',background:'#fef2f2',border:'1px solid #fecaca',fontFamily:'IBM Plex Mono,monospace',fontSize:10,color:'#dc2626',marginBottom:12}}>{apiErr}</div>}
 
             <div style={{display:'flex',gap:8}}>
-              <button onClick={()=>setStep(1)} style={{padding:'10px 20px',border:'1px solid #e1e4f0',fontFamily:'IBM Plex Mono,monospace',fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',background:'transparent',cursor:'pointer'}}>← Back</button>
+              <button onClick={()=>setStep(1)} style={{padding:'10px 20px',border:'1.5px solid #c7c4d7',fontFamily:'IBM Plex Mono,monospace',fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',background:'transparent',cursor:'pointer'}}>← Back</button>
               <button onClick={()=>{if(!items.length){setApiErr('Add at least one item');return;}setStep(3);}} style={{flex:1,padding:'10px',background:'#4338ca',color:'white',fontFamily:'IBM Plex Mono,monospace',fontWeight:700,fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',border:'none',cursor:'pointer'}}>Review Campaign →</button>
             </div>
           </div>
@@ -305,12 +377,22 @@ export default function CreateBooking() {
         {/* STEP 3 */}
         {step===3&&(
           <div>
-            <div style={{background:'white',border:'1px solid #e1e4f0',padding:20,marginBottom:16}}>
+            <div style={{background:'white',border:'1.5px solid #c7c4d7',padding:20,marginBottom:16}}>
               <div style={{padding:'12px 14px',background:'#faf8ff',border:'1px solid #e1e4f0',borderLeft:'2px solid #4338ca',marginBottom:16}}>
                 <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#777586',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:4}}>Brief</div>
                 <div style={{fontFamily:'Manrope,sans-serif',fontWeight:600,fontSize:13,color:'#131b2e'}}>{brief.brand_name}</div>
                 <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:10,color:'#777586'}}>{brief.email}</div>
                 {brief.campaignBrief&&<p style={{fontSize:11,color:'#464554',marginTop:6,lineHeight:1.6}}>{brief.campaignBrief}</p>}
+                {brief.promotionFiles.length>0&&(
+                  <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid #e1e4f0'}}>
+                    <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:8,color:'#777586',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:6}}>Attached Files ({brief.promotionFiles.length})</div>
+                    <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                      {brief.promotionFiles.map((file,idx)=>(
+                        <span key={idx} style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,padding:'4px 9px',background:'#eef2ff',color:'#4338ca',border:'1px solid #c7d2fe'}}>📎 {file.name}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div style={{fontFamily:'IBM Plex Mono,monospace',fontSize:9,color:'#777586',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:8}}>Items ({items.length})</div>
@@ -333,9 +415,9 @@ export default function CreateBooking() {
             {apiErr&&<div style={{padding:'10px 14px',background:'#fef2f2',border:'1px solid #fecaca',fontFamily:'IBM Plex Mono,monospace',fontSize:10,color:'#dc2626',marginBottom:12}}>{apiErr}</div>}
 
             <div style={{display:'flex',gap:8}}>
-              <button onClick={()=>setStep(2)} style={{padding:'10px 20px',border:'1px solid #e1e4f0',fontFamily:'IBM Plex Mono,monospace',fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',background:'transparent',cursor:'pointer'}}>← Edit</button>
-              <button onClick={launch} disabled={submitting} style={{flex:1,padding:'10px',background:'#4338ca',color:'white',fontFamily:'IBM Plex Mono,monospace',fontWeight:700,fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',border:'none',cursor:'pointer'}}>
-                {submitting?'Launching…':'🚀 Launch Campaign'}
+              <button onClick={()=>setStep(2)} style={{padding:'10px 20px',border:'1.5px solid #c7c4d7',fontFamily:'IBM Plex Mono,monospace',fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',background:'transparent',cursor:'pointer'}}>← Edit</button>
+              <button onClick={launch} disabled={submitting} style={{flex:1,padding:'10px',background:'#4338ca',color:'white',fontFamily:'IBM Plex Mono,monospace',fontWeight:700,fontSize:11,textTransform:'uppercase',letterSpacing:'0.08em',border:'none',cursor:'pointer',opacity:submitting?0.7:1}}>
+                {uploadingFiles?'Uploading files…':submitting?'Launching…':'🚀 Launch Campaign'}
               </button>
             </div>
           </div>
