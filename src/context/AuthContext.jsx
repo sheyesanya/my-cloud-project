@@ -24,8 +24,10 @@ export function AuthProvider({ children }) {
         try {
           const token = await firebaseUser.getIdToken();
           const res   = await axios.get(`${API}/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+          console.log('✅ /users/me success:', res.data);
           setUser({ ...res.data, uid: firebaseUser.uid, email: firebaseUser.email });
-        } catch {
+        } catch (e) {
+          console.error('❌ /users/me FAILED — defaulting to CLIENT. Error:', e.response?.status, e.response?.data || e.message);
           setUser({ uid: firebaseUser.uid, email: firebaseUser.email, role: 'CLIENT' });
         }
       } else {
