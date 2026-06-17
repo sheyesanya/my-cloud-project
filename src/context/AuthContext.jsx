@@ -22,12 +22,30 @@ export function AuthProvider({ children }) {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const token = await firebaseUser.getIdToken();
-          const res   = await axios.get(`${API}/users/me`, { headers: { Authorization: `Bearer ${token}` } });
-          console.log('✅ /users/me success:', res.data);
-          setUser({ ...res.data, uid: firebaseUser.uid, email: firebaseUser.email });
+          let token  = await firebaseUser.getIdToken();
+          let claims = await firebaseUser.getIdTokenResult();
+          let role   = (claims.claims.role || 'CLIENT').toUpperCase();
+
+          if (role === 'CLIENT') {
+            try {
+              const checkRes = await axios.post(
+                `${API}/auth/check-provider`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              if (checkRes.data?.role === 'PROVIDER') {
+                token  = await firebaseUser.getIdToken(true);
+                claims = await firebaseUser.getIdTokenResult();
+                role   = (claims.claims.role || 'CLIENT').toUpperCase();
+              }
+            } catch (e) {
+              console.error('check-provider failed:', e.message);
+            }
+          }
+
+          setUser({ uid: firebaseUser.uid, email: firebaseUser.email, role });
         } catch (e) {
-          console.error('❌ /users/me FAILED — defaulting to CLIENT. Error:', e.response?.status, e.response?.data || e.message);
+          console.error('Auth init failed:', e.message);
           setUser({ uid: firebaseUser.uid, email: firebaseUser.email, role: 'CLIENT' });
         }
       } else {
