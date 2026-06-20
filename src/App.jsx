@@ -18,10 +18,11 @@ import ProviderDashboard  from './pages/ProviderDashboard';
 import AdminDashboard     from './pages/AdminDashboard';
 import AdminApplications  from './pages/AdminApplications';
 import RegisterProvider   from './pages/RegisterProvider';
+import Waitlist           from './pages/Waitlist';
 
 function Protected({ children, roles }) {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'IBM Plex Mono,monospace',fontSize:12,color:'#464554'}}>Loading…</div>;
+  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'IBM Plex Mono,monospace',fontSize:12,color:'#464554'}}>Loading...</div>;
   if (!user) return <Navigate to="/" replace />;
   if (roles && !roles.includes((user.role||'CLIENT').toUpperCase())) return <Navigate to="/dashboard" replace />;
   return children;
@@ -29,12 +30,13 @@ function Protected({ children, roles }) {
 
 function AppRoutes() {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'IBM Plex Mono,monospace',fontSize:12,color:'#464554'}}>Loading…</div>;
+  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'IBM Plex Mono,monospace',fontSize:12,color:'#464554'}}>Loading...</div>;
 
   return (
     <Routes>
       <Route path="/"                  element={user ? <Navigate to="/dashboard" replace/> : <Login/>}/>
       <Route path="/register/provider" element={<RegisterProvider/>}/>
+      <Route path="/waitlist"          element={<Waitlist/>}/>
 
       {/* Client routes */}
       <Route path="/dashboard"  element={<Protected><Dashboard/></Protected>}/>
